@@ -1,12 +1,12 @@
 This is my personal emacs config, set up for Clojure. I'm using it with [Emacs 23.3 for OS X](http://emacsformacosx.com/).
 
 ## What's in there
-1. [https://github.com/clojure-emacs/clojure-mode](Clojure Mode)
-2. [http://www.emacswiki.org/emacs/HighlightParentheses](Parenthesis highlighting)
-3. [http://www.emacswiki.org/emacs/ParEdit](Paredit)
-4. [https://github.com/clojure/tools.nrepl](nREPL)
-5. [http://www.emacswiki.org/emacs/TrampMode](Tramp)
-6. [http://www.emacswiki.org/emacs/SmoothScrolling]Smooth scrolling
+1. [Clojure Mode](https://github.com/clojure-emacs/clojure-mode)
+2. [Parenthesis highlighting](http://www.emacswiki.org/emacs/HighlightParentheses)
+3. [Paredit](http://www.emacswiki.org/emacs/ParEdit)
+4. [nREPL](https://github.com/clojure/tools.nrepl)
+5. [Tramp](http://www.emacswiki.org/emacs/TrampMode)
+6. [Smooth scrolling]http://www.emacswiki.org/emacs/SmoothScrolling
 
 ## Other small things included
 
@@ -15,8 +15,10 @@ This is my personal emacs config, set up for Clojure. I'm using it with [Emacs 2
 3. Cursor set to no blink
 4. Font set to Menlo
 5. Mac key bindings
-6. [http://www.emacswiki.org/emacs/DynamicAbbreviations](Dynamic auto-complete) on Ctrl+Enter
+6. [Dynamic auto-complete](http://www.emacswiki.org/emacs/DynamicAbbreviations) on Ctrl+Enter
 7. TODO:, FIXME: and BUG: highlighting for Clojure code
+8. Key bindings for record/play macros
+9. Other small things
 
 ## Installation
 1. backup ~/.emacs.d if there is anything you wish to keep
