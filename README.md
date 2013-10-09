@@ -6,7 +6,7 @@ This is my personal emacs config, set up for Clojure. I'm using it with [Emacs 2
 3. [Paredit](http://www.emacswiki.org/emacs/ParEdit)
 4. [nREPL](https://github.com/clojure/tools.nrepl)
 5. [Tramp](http://www.emacswiki.org/emacs/TrampMode)
-6. [Smooth scrolling]http://www.emacswiki.org/emacs/SmoothScrolling
+6. [Smooth scrolling](http://www.emacswiki.org/emacs/SmoothScrolling)
 
 ## Other small things included
 
