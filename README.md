@@ -1,4 +1,4 @@
-This is my personal emacs config, set for Clojure. I'm using it with [http://emacsformacosx.com/](Emacs 23.3 for OS X).
+This is my personal emacs config, set up for Clojure. I'm using it with [Emacs 23.3 for OS X](http://emacsformacosx.com/).
 
 ## What's in there
 1. [https://github.com/clojure-emacs/clojure-mode](Clojure Mode)
