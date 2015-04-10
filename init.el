@@ -10,9 +10,9 @@
 (setq tramp-default-method "ssh")
 (setq tramp-verbose 10)
 (require 'tramp)
-(setcdr (assoc 'tramp-remote-sh (assoc "ssh" tramp-methods)) '("/bin/bash"))
-(setcdr (assoc 'tramp-remote-sh (assoc "scp" tramp-methods)) '("/bin/bash"))
-(setcdr (assoc 'tramp-remote-sh (assoc "rsync" tramp-methods)) '("/bin/bash"))
+(setcdr (assoc 'tramp-remote-shell (assoc "ssh" tramp-methods)) '("/bin/bash"))
+(setcdr (assoc 'tramp-remote-shell (assoc "scp" tramp-methods)) '("/bin/bash"))
+(setcdr (assoc 'tramp-remote-shell (assoc "rsync" tramp-methods)) '("/bin/bash"))
 ;; disable version control
 (setq vc-ignore-dir-regexp
                 (format "\\(%s\\)\\|\\(%s\\)"
@@ -28,7 +28,7 @@
  '(menu-bar-mode nil)
  '(tool-bar-mode nil)
  '(column-number-mode t)
- '(blink-cursor-interval 0))
+ '(blink-cursor-interval nil))
 
 ;; tab width as two, using spaces
 (setq default-tab-width 2)
