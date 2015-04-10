@@ -156,3 +156,6 @@
 (load-file "~/.emacs.d/nrepl.el")
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
 (add-hook 'nrepl-mode-hook 'paredit-mode)
+
+; Open LOG file
+(find-file "~/Google Drive Stuph/LOG.txt")
