@@ -57,6 +57,12 @@
 (global-set-key (kbd "s-<down>") 'end-of-buffer)
 (global-set-key (kbd "s-<up>") 'beginning-of-buffer)
 
+;; Switch command and option for emacs key bindings
+(setq mac-option-key-is-meta nil)
+(setq mac-command-key-is-meta t)
+(setq mac-command-modifier 'meta)
+(setq mac-option-modifier 'alt)
+
 ;; Clojure mode
 (load-file "~/.emacs.d/clojure-mode.el")
 
