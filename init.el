@@ -93,7 +93,7 @@
 
 ;; make emacs use the clipboard
 (setq x-select-enable-clipboard t)
-(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+(setq interprogram-paste-function 'x-selection-value)
 
 ;; set font and current line highlighting
 (set-face-attribute 'default nil :family "Menlo" :weight 'normal :height 120)
