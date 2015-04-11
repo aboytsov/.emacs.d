@@ -133,7 +133,7 @@
 (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
 (defclojureface clojure-java-call    "#4bcf68"   "Clojure Java calls")
 (defclojureface clojure-special      "#4682b4"   "Clojure special")
-(defclojureface clojure-double-quote "#4682b4"   "Clojure special" (:background "unspecified"))
+(defclojureface clojure-double-quote "#4682b4"   "Clojure double quote")
 
 (defun tweak-clojure-syntax ()
   (mapcar (lambda (x) (font-lock-add-keywords nil x))
@@ -156,6 +156,3 @@
 (load-file "~/.emacs.d/nrepl.el")
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
 (add-hook 'nrepl-mode-hook 'paredit-mode)
-
-; Open LOG file
-(find-file "~/Google Drive Stuph/LOG.txt")
