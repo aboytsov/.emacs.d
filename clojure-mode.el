@@ -1,4 +1,4 @@
-;;; clojure-mode.el --- Major mode for Clojure code
+;; clojure-mode.el --- Major mode for Clojure code
 
 ;; Copyright © 2007-2013 Jeffrey Chu, Lennart Staflin, Phil Hagelberg
 ;;
@@ -69,7 +69,10 @@
     `( ;; Definitions.
       (,(concat "(\\(?:clojure.core/\\)?\\("
                 (regexp-opt '("defn" "defn-" "def" "defonce"
+                              ;; ### Stuph extensions
                               "defmulti" "defmethod" "defmacro"
+                              "def+" "def-decorator" "defn+"
+                              ;; ### Stuph extensions
                               "defstruct" "deftype" "defprotocol"
                               "defrecord" "deftest" "def\\[a-z\\]"))
                 ;; Function declarations.
@@ -116,6 +119,24 @@
             "for" "loop" "recur"
             "when" "when-not" "when-let" "when-first"
             "if" "if-let" "if-not"
+            ;; ### Stuph extensions
+            "stuph.ns/ns" "stuph.ns/sns"
+            "forcat"
+            "or'" "and'"
+            "with-recovery" "with-clear-recovery"
+            "with-trace" "with-traceu"
+            "with-recovery-log" "with-recovery-alert"
+            "let-trace" "let-traceu"
+            "if-not-let" "when-not-let"
+            "if-empty" "if-not-empty" "if-let-empty" "if-not-let-empty"
+            "when-empty" "when-not-empty" "when-let-empty" "when-not-let-empty"
+            "if-string" "if-not-string" "if-let-string" "if-not-let-string"
+            "when-string" "when-not-string" "when-let-string" "when-not-let-string"
+            "if-coll" "if-not-coll" "if-let-coll" "if-not-let-coll"
+            "when-coll" "when-not-coll" "when-let-coll" "when-not-let-coll"
+            "if-nil" "if-not-nil" "if-let-nil" "if-not-let-nil"
+            "when-nil" "when-not-nil" "when-let-nil" "when-not-let-nil"
+            ;; ### Stuph extensions
             "." ".." "->" "->>" "doto"
             "and" "or"
             "dosync" "doseq" "dotimes" "dorun" "doall"
@@ -177,6 +198,31 @@
         "gen-class" "gen-interface" "gensym" "get" "get-in"
         "get-method" "get-proxy-class" "get-thread-bindings" "get-validator" "group-by"
         "hash" "hash-map" "hash-set" "identical?" "identity" "if-let"
+        ;; ### Stuph extensions
+        "stuph.ns/ns" "stuph.ns/sns"
+        "forcat"
+        "filter-not" "concatv" "make-seq"
+        "merge-coll" "deep-merge" "deep-merge-coll"
+        "def+" "def-decorator" "defn+"
+        "|" "!" "*>" "*<" "*&"
+        "-*" "*-" "*-1" "*-2" "*-3" "*-4" "*-5"
+        "?" "?u"
+        "or'" "and'"
+        "not-nil?" "not-empty?" "scalar?" "not-nil-or-empty?"
+        "with-recovery" "with-clear-recovery"
+        "with-trace" "with-traceu"
+        "with-recovery-log" "with-recovery-alert"
+        "let-trace" "let-traceu"
+        "if-not-let" "when-not-let"
+        "if-empty" "if-not-empty" "if-let-empty" "if-not-let-empty"
+        "when-empty" "when-not-empty" "when-let-empty" "when-not-let-empty"
+        "if-string" "if-not-string" "if-let-string" "if-not-let-string"
+        "when-string" "when-not-string" "when-let-string" "when-not-let-string"
+        "if-coll" "if-not-coll" "if-let-coll" "if-not-let-coll"
+        "when-coll" "when-not-coll" "when-let-coll" "when-not-let-coll"
+        "if-nil" "if-not-nil" "if-let-nil" "if-not-let-nil"
+        "when-nil" "when-not-nil" "when-let-nil" "when-not-let-nil"
+        ;; ### Stuph extensions
         "if-not" "ifn?" "import" "in-ns" "inc"
         "init-proxy" "instance?" "int" "int-array" "integer?"
         "interleave" "intern" "interpose" "into" "into-array"
@@ -580,6 +626,11 @@ in regular expression."
 (put 'ns 'clojure-doc-string-elt 2)
 (put 'defn 'clojure-doc-string-elt 2)
 (put 'defn- 'clojure-doc-string-elt 2)
+;; ### Stuph extensions
+(put 'def+ 'clojure-doc-string-elt 2)
+(put 'defn+ 'clojure-doc-string-elt 2)
+(put 'def-decorator 'clojure-doc-string-elt 2)
+;; ### Stuph extensions
 (put 'defmulti 'clojure-doc-string-elt 2)
 (put 'defmacro 'clojure-doc-string-elt 2)
 (put 'definline 'clojure-doc-string-elt 2)
@@ -803,6 +854,27 @@ use (put-clojure-indent 'some-symbol 'defun)."
   (dotimes 1)
   (when-let 1)
   (if-let 1)
+  ;; ### Stuph extensions
+  (forcat 1)
+  (stuph.ns/sns 1)
+  (stuph.ns/ns 1)
+;;            "let-trace" "let-traceu"
+        ;; "if-not-let" "when-not-let"
+        ;; "if-empty" "if-not-empty" "if-let-empty" "if-not-let-empty"
+        ;; "when-empty" "when-not-empty" "when-let-empty" "when-not-let-empty"
+        ;; "if-string" "if-not-string" "if-let-string" "if-not-let-string"
+        ;; "when-string" "when-not-string" "when-let-string" "when-not-let-string"
+        ;; "if-coll" "if-not-coll" "if-let-coll" "if-not-let-coll"
+        ;; "when-coll" "when-not-coll" "when-let-coll" "when-not-let-coll"
+        ;; "if-nil" "if-not-nil" "if-let-nil" "if-not-let-nil"
+        ;; "when-nil" "when-not-nil" "when-let-nil" "when-not-let-nil"
+  (with-recovery 1)
+  (with-clear-recovery 1)
+  (with-trace 1)
+  (with-traceu 1)
+  (with-recovery-log 1)
+  (with-recovery-alert 1)
+  ;; ### Stuph extensions
 
   ;; data structures
   (defstruct 1)
@@ -926,7 +998,7 @@ returned."
       "("
       (zero-or-one (group (regexp "clojure.core/")))
       (zero-or-one (submatch "in-"))
-      "ns"
+      (or "ns" "stuph.ns/ns" "stuph.ns/sns")
       (zero-or-one "+")
       (one-or-more (any whitespace "\n"))
       (zero-or-more (or (submatch (zero-or-one "#")
@@ -1040,6 +1112,9 @@ Clojure test file for the given namespace.")
 
   (add-to-list 'auto-mode-alist '("\\.clj\\'" . clojure-mode))
   (add-to-list 'auto-mode-alist '("\\.cljs\\'" . clojure-mode))
+  ;; ### Stuph extensions
+  (add-to-list 'auto-mode-alist '("\\.cljx\\'" . clojure-mode))
+  ;; ### Stuph extensions
   (add-to-list 'auto-mode-alist '("\\.dtm\\'" . clojure-mode))
   (add-to-list 'auto-mode-alist '("\\.edn\\'" . clojure-mode))
   (add-to-list 'interpreter-mode-alist '("jark" . clojure-mode))

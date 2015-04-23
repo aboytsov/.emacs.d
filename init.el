@@ -20,15 +20,16 @@
                         tramp-file-name-regexp))
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(blink-cursor-interval nil)
  '(clojure-mode-use-backtracking-indent t)
- '(menu-bar-mode nil)
- '(tool-bar-mode nil)
  '(column-number-mode t)
- '(blink-cursor-interval nil))
+ '(menu-bar-mode nil)
+ '(package-archives (quote (("gnu" . "http://elpa.gnu.org/packages/"))))
+ '(tool-bar-mode nil))
 
 ;; tab width as two, using spaces
 (setq default-tab-width 2)
@@ -63,11 +64,23 @@
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier 'alt)
 
+;; Multiple cursors
+(add-to-list 'load-path "~/.emacs.d/multiple-cursors.el/")
+(require 'multiple-cursors)
+(global-unset-key (kbd "C-M-c"))
+(global-unset-key (kbd "C-M-."))
+(global-unset-key (kbd "C-M-."))
+(global-set-key (kbd "C-M-c C-M-c") 'mc/edit-lines)
+(global-set-key (kbd "C-M-.") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-M-,") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-M-c C-M-.") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-M-c C-M-,") 'mc/mark-all-like-this)
+
 ;; Clojure mode
-(load-file "~/.emacs.d/clojure-mode.el")
+(require 'clojure-mode)
 
 ;; Paredit
-(load-file "~/.emacs.d/paredit.el")
+(require 'paredit)
 (add-hook 'clojure-mode-hook          (lambda () (paredit-mode +1)))
 (add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
 (add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
@@ -75,7 +88,7 @@
 (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode -1)))
 
 ;; Parenthesis highlighting
-(load-file "~/.emacs.d/highlight-parenthesis.el")
+(require 'highlight-parentheses)
 (add-hook 'clojure-mode-hook '(lambda () (highlight-parentheses-mode 1)))
 (setq hl-paren-colors
       '("#ff0000" "#0000ff" "#00ff00" "#ff00ff" "#ffff00" "#00ffff"))
@@ -116,7 +129,7 @@
 (scroll-bar-mode -1)
 
 ;; Smooth scrolling
-(load-file "~/.emacs.d/smooth-scrolling.el")
+(require 'smooth-scrolling)
 (setq smooth-scroll-margin 3)
 
 ;; Auto-complete to Ctrl-Enter
@@ -159,6 +172,13 @@
   (lambda ()
     (set (make-local-variable 'compile-command) "~/bin/lein compile")))
 
+
 (load-file "~/.emacs.d/nrepl.el")
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
 (add-hook 'nrepl-mode-hook 'paredit-mode)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
