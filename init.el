@@ -1,3 +1,5 @@
+(toggle-debug-on-error)
+
 ;; -- Set window width/height
 (setq default-frame-alist (append (list
                                    '(width  . 80)
@@ -6,17 +8,23 @@
 
 ;; -- Various settings
 (custom-set-variables
- '(inhibit-startup-message t)
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(blink-cursor-interval nil)
  '(clojure-mode-use-backtracking-indent t)
  '(column-number-mode t)
- '(menu-bar-mode nil)
- '(tool-bar-mode nil)
- '(frame-title-format '("%f"))
- '(default-tab-width 2)
+ '(company-idle-delay 0.3)
+ '(company-minimum-prefix-length 2)
+ '(default-tab-width 2 t)
+ '(frame-title-format (quote ("%f")) t)
  '(indent-tabs-mode nil)
- '(x-select-enable-clipboard t)
- '(mouse-wheel-scroll-amount '(1 ((shift) . 1))))
+ '(inhibit-startup-screen t)
+ '(menu-bar-mode nil)
+ '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1))))
+ '(tool-bar-mode nil)
+ '(x-select-enable-clipboard t))
 (scroll-bar-mode -1)
 
 ;; -- Trail whitespaces in all files
@@ -27,11 +35,16 @@
 (global-hl-line-mode 1)
 (set-face-background 'hl-line "#FFD")
 
-;; -- Mac key bindings
+;; -- Utility functions
 (defun global-reset-key (key func)
   (global-unset-key key)
   (global-set-key key func))
 
+(defun local-reset-key (key func)
+  (local-unset-key key)
+  (local-set-key key func))
+
+;; -- Mac key bindings
 (defun sfp-page-down (&optional arg)
   (interactive "^P")
 ;;  (setq this-command 'next-line)
@@ -47,15 +60,23 @@
       next-screen-context-lines))
   )
 
-(global-set-key (kbd "<next>") 'sfp-page-down)
-(global-set-key (kbd "<prior>") 'sfp-page-up)
+;; (global-set-key (kbd "<next>") 'sfp-page-down)
+;; (global-set-key (kbd "<prior>") 'sfp-page-up)
 ;;(global-set-key "\C-m" 'newline-and-indent)
 
+(global-set-key (kbd "s-<right>") 'end-of-line)
+(global-set-key (kbd "s-<left>") 'beginning-of-line)
+(global-set-key (kbd "s-<down>") 'end-of-buffer)
+(global-set-key (kbd "s-<up>") 'beginning-of-buffer)
+
+(global-reset-key (kbd "C-q")
+  (lambda () (interactive) (kill-this-buffer) (other-window -1)))
+
 ;; Switch command and option for emacs key bindings
-(setq mac-option-key-is-meta nil)
-(setq mac-command-key-is-meta t)
-(setq mac-command-modifier 'meta)
-(setq mac-option-modifier 'alt)
+;;(setq mac-option-key-is-meta nil)
+;;(setq mac-command-key-is-meta t)
+;;(setq mac-command-modifier 'meta)
+;;(setq mac-option-modifier 'alt)
 
 ;; OS X clipboard
 (global-reset-key (kbd "M-c") 'kill-ring-save)
@@ -155,9 +176,14 @@
 ;; -- Paredit
 (add-to-list 'load-path "~/.emacs.d/paredit/")
 (require 'paredit)
-(dolist (hook '(clojure-mode emacs-lisp-mode-hook lisp-mode-hook
-                scheme-mode-hook lisp-interaction-mode-hook))
-  (add-hook hook (lambda () (paredit-mode +1))))
+;;(dolist (hook ('clojure-mode-hook
+;;               emacs-lisp-mode-hook lisp-mode-hook
+;;               scheme-mode-hook lisp-interaction-mode-hook
+;;               ))
+(add-hook 'clojure-mode-hook 'paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+
+;;)
 (global-set-key [backspace] 'paredit-backward-delete)
 (global-set-key [kp-delete] 'paredit-forward-delete)
 
@@ -190,3 +216,73 @@
                 (format "\\(%s\\)\\|\\(%s\\)"
                         vc-ignore-dir-regexp
                         tramp-file-name-regexp))
+
+;; --- CIDER
+;; TODO: add-to-list & require
+(add-to-list 'load-path "~/.emacs.d/dash.el/")
+(require 'dash)
+(add-to-list 'load-path "~/.emacs.d/queue/")
+(require 'queue)
+(add-to-list 'load-path "~/.emacs.d/CIDER")
+(require 'cider)
+(require 'cider-macroexpansion)
+
+(setq nrepl-log-messages t)
+(setq nrepl-hide-special-buffers t)
+(setq cider-prefer-local-resources t)
+(setq cider-stacktrace-fill-column 80)
+(setq nrepl-buffer-name-show-port t)
+(setq cider-repl-display-in-current-window t)
+(setq cider-prompt-save-file-on-load nil)
+(setq cider-repl-use-clojure-font-lock t)
+(setq cider-interactive-eval-result-prefix "")
+(cider-repl-toggle-pretty-printing)
+
+(add-to-list 'load-path "~/.emacs.d/use-package/")
+(require 'bind-key)
+
+(add-hook 'cider-mode-hook 'eldoc-mode)
+(add-hook 'clojure-mode-hook 'eldoc-mode)
+
+;; TODO: was for syntax highlighting, but problem with namespaces now
+;; should turn syntax highlighting on somehow else
+;;(add-hook 'cider-repl-mode-hook 'clojure-mode)
+(add-hook 'cider-repl-mode-hook 'paredit-mode)
+
+(add-hook 'cider-repl-mode-hook
+          (lambda ()
+            (bind-keys*
+              ("S-<return>" . cider-repl-return)
+              ("M-<up>"     . cider-repl-previous-input)
+              ("M-<down>"   . cider-repl-next-input)
+              ("M-S-<up>"   . cider-repl-previous-prompt)
+              ("M-S-<down>" . cider-repl-next-prompt))))
+
+(defun cider-local ()
+  (interactive)
+  (cider "127.0.0.1" 12121))
+
+(global-set-key (kbd "C-c C-l") 'cider-local)
+
+;; -- Autocomplete (in mini-buffer)
+(require 'icomplete)
+(icomplete-mode 99)
+
+(require 'ido)
+(ido-mode t)
+
+(add-to-list 'load-path "~/.emacs.d/flx")
+(require 'flx-ido)
+
+(ido-mode 1)
+(ido-everywhere 1)
+(flx-ido-mode 1)
+;; disable ido faces to see flx highlights.
+(setq ido-enable-flex-matching t)
+(setq ido-use-faces nil)
+
+;; -- Symbol completion
+(add-to-list 'load-path "~/.emacs.d/company-mode")
+(require 'company)
+(global-company-mode)
+(global-set-key (kbd "M-<return>") 'company-complete)
