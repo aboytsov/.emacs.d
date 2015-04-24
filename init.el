@@ -1,3 +1,6 @@
+(if (not (boundp 'init-ok))
+  (x-popup-dialog t '("Please start Emacs with --load init-kinesis.el or --load init-mac.el")))
+
 (toggle-debug-on-error)
 
 ;; -- Set window width/height
@@ -23,9 +26,13 @@
  '(inhibit-startup-screen t)
  '(menu-bar-mode nil)
  '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1))))
- '(tool-bar-mode nil)
- '(x-select-enable-clipboard t))
+ '(tool-bar-mode nil))
 (scroll-bar-mode -1)
+
+;; -- Clipboard
+(setq x-select-enable-clipboard t)
+(global-reset-key (kbd "M-c") 'kill-ring-save)
+(global-reset-key (kbd "M-v") 'yank)
 
 ;; -- Trail whitespaces in all files
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -34,15 +41,6 @@
 (set-face-attribute 'default nil :family "Menlo" :weight 'normal :height 120)
 (global-hl-line-mode 1)
 (set-face-background 'hl-line "#FFD")
-
-;; -- Utility functions
-(defun global-reset-key (key func)
-  (global-unset-key key)
-  (global-set-key key func))
-
-(defun local-reset-key (key func)
-  (local-unset-key key)
-  (local-set-key key func))
 
 ;; -- Mac key bindings
 (defun sfp-page-down (&optional arg)
@@ -60,30 +58,13 @@
       next-screen-context-lines))
   )
 
+;; TODO
 ;; (global-set-key (kbd "<next>") 'sfp-page-down)
 ;; (global-set-key (kbd "<prior>") 'sfp-page-up)
 ;;(global-set-key "\C-m" 'newline-and-indent)
 
-(global-set-key (kbd "s-<right>") 'end-of-line)
-(global-set-key (kbd "s-<left>") 'beginning-of-line)
-(global-set-key (kbd "s-<down>") 'end-of-buffer)
-(global-set-key (kbd "s-<up>") 'beginning-of-buffer)
-
 (global-reset-key (kbd "C-q")
   (lambda () (interactive) (kill-this-buffer) (other-window -1)))
-
-;; Switch command and option for emacs key bindings
-;;(setq mac-option-key-is-meta nil)
-;;(setq mac-command-key-is-meta t)
-;;(setq mac-command-modifier 'meta)
-;;(setq mac-option-modifier 'alt)
-
-;; OS X clipboard
-(global-reset-key (kbd "M-c") 'kill-ring-save)
-(global-reset-key (kbd "M-v") 'yank)
-
-(global-set-key [end] 'move-end-of-line)
-(global-set-key [home] 'move-beginning-of-line)
 
 ;; -- Other key bindings
 ;; auto-complete on Ctrl-Enter
@@ -93,10 +74,15 @@
 (global-set-key (kbd "C-x p") (lambda () (interactive) (other-window -1)))
 
 ;; recording and replaying macros
-;; TODO: figure out keys
-(global-set-key (kbd "C-,")        'kmacro-start-macro-or-insert-counter)
-(global-set-key (kbd "C-.")        'kmacro-end-or-call-macro)
-(global-set-key (kbd "C-/")        'kmacro-call-macro)
+(global-set-key (kbd "C-,") 'kmacro-start-macro-or-insert-counter)
+(global-set-key (kbd "C-.") 'kmacro-end-or-call-macro)
+(global-set-key (kbd "C-/") 'kmacro-call-macro)
+
+;; rgrep
+(global-set-key (kbd "M-g s") 'rgrep)
+(global-set-key (kbd "C->") 'next-error)      ;; Control + Shift + >
+(global-set-key (kbd "C-<") 'previous-error)  ;; Control + Shift + <
+
 
 ;; -- Smooth scrolling
 (add-to-list 'load-path "~/.emacs.d/smooth-scrolling/")
@@ -187,15 +173,20 @@
 (global-set-key [backspace] 'paredit-backward-delete)
 (global-set-key [kp-delete] 'paredit-forward-delete)
 
-(defun comment-sexp ()
+(defun comment-sexp (arg)
   "Comment out the sexp at point."
-  (interactive)
   (save-excursion
-    (forward-sexp)
-    (backward-sexp)
-    (mark-sexp)
-    (paredit-comment-dwim)))
-(global-reset-key (kbd "M-;") 'comment-sexp)
+    (paredit-forward)
+    (call-interactively 'set-mark-command)
+    (paredit-backward)
+    (paredit-comment-dwim arg)))
+
+(add-hook 'paredit-mode-hook
+          (lambda () (bind-keys*
+                 ("M-<right>" . paredit-forward)
+                 ("M-<left>"  . paredit-backward)
+                 ("M-;"       . (lambda () (interactive) (comment-sexp 1)))
+                 ("C-M-;"     . (lambda () (interactive) (comment-sexp -1))))))
 
 ;; -- Parenthesis highlighting
 (add-to-list 'load-path "~/.emacs.d/highlight-parentheses.el/")
@@ -236,6 +227,7 @@
 (setq cider-prompt-save-file-on-load nil)
 (setq cider-repl-use-clojure-font-lock t)
 (setq cider-interactive-eval-result-prefix "")
+(setq cider-repl-tab-command 'indent-for-tab-command)
 (cider-repl-toggle-pretty-printing)
 
 (add-to-list 'load-path "~/.emacs.d/use-package/")
@@ -252,7 +244,7 @@
 (add-hook 'cider-repl-mode-hook
           (lambda ()
             (bind-keys*
-              ("S-<return>" . cider-repl-return)
+              ("S-<return>" . newline-and-indent)
               ("M-<up>"     . cider-repl-previous-input)
               ("M-<down>"   . cider-repl-next-input)
               ("M-S-<up>"   . cider-repl-previous-prompt)
@@ -262,7 +254,9 @@
   (interactive)
   (cider "127.0.0.1" 12121))
 
-(global-set-key (kbd "C-c C-l") 'cider-local)
+(global-reset-key (kbd "C-c C-l") 'cider-local)
+(global-reset-key (kbd "M-g f") 'find-tag)
+(global-reset-key (kbd "M-g r") 'cider-switch-to-repl-buffer)
 
 ;; -- Autocomplete (in mini-buffer)
 (require 'icomplete)
@@ -275,6 +269,7 @@
 (require 'flx-ido)
 
 (ido-mode 1)
+;; TOOD: possible to use on Meta-X?
 (ido-everywhere 1)
 (flx-ido-mode 1)
 ;; disable ido faces to see flx highlights.
@@ -286,3 +281,12 @@
 (require 'company)
 (global-company-mode)
 (global-set-key (kbd "M-<return>") 'company-complete)
+
+;; -- Git
+(add-to-list 'load-path "~/.emacs.d/magit")
+(require 'magit)
+
+;; -- Finding any file in the current git repository
+(add-to-list 'load-path "~/.emacs.d/find-file-in-repository")
+(require 'find-file-in-repository)
+(global-reset-key (kbd "C-x C-g") 'find-file-in-repository)

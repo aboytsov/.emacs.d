@@ -90,3 +90,31 @@ nil
 ;; should not be prettified
 (partial 1 2)
 (comp 1 2)
+
+;; -- indentation
+(defn f [x y p]
+  (command))
+
+(fn f [param1 :a
+      param2 :b]
+  (command))
+
+#(lambda-shortcut %1 %2)
+(fn[x y] (can-it-be-confused-with-fn?))
+
+(when-not-let-empty [x f]
+  (command))
+
+(when-not-let-empty [x f
+                     y g]
+  (command))
+
+(function-call
+ long-argument-list1 long-argument-list1 long-argument-list1)
+
+(let [variable-name
+        (very-log-value)]
+  {:key-1
+     (a-very-long-function-call arg1 arg2)
+   :key-1
+     (a-very-long-function-call arg1 arg2)})

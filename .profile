@@ -2,7 +2,7 @@ echo
 echo "Welcome."
 echo
 
-export PATH=$PATH:~/bin
+export PATH=~/bin:$PATH
 
 unset PS1
 unset PS2
@@ -39,9 +39,9 @@ color_magenta=5
 color_cyan=6
 color_gray=7
 
-color_non_git_path=$color_cyan
-color_git_path=$color_cyan
-color_git_branch=$color_gray
+color_non_git_path=$color_blue
+color_git_path=$color_blue
+color_git_branch=$color_cyan
 color_prompt=$color_blue
 color_right=$color_gray
 
