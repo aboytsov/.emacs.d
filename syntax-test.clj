@@ -118,3 +118,8 @@ nil
      (a-very-long-function-call arg1 arg2)
    :key-1
      (a-very-long-function-call arg1 arg2)})
+
+;; namespaces here!
+(defmacro yop
+  `(ns (:require [clojure.string :as s])
+     (:gen-class)))
