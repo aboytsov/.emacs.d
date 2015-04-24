@@ -8,3 +8,4 @@
 /magit-*.tar.gz
 /magit-autoloads.el
 /magit-version.el
+#*
