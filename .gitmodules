@@ -31,3 +31,6 @@
 [submodule "use-package"]
 	path = use-package
 	url = https://github.com/jwiegley/use-package
+[submodule "smooth-scrolling"]
+	path = smooth-scrolling
+	url = https://github.com/aspiers/smooth-scrolling
