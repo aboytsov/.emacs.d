@@ -31,3 +31,6 @@
 [submodule "use-package"]
 	path = use-package
 	url = https://github.com/jwiegley/use-package
+[submodule "magit"]
+	path = magit
+	url = https://github.com/magit/magit
