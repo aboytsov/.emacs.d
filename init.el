@@ -1,9 +1,5 @@
 (load-file "~/.emacs.d/utils.el")
-
-(if (not (boundp 'init-ok))
-  (x-popup-dialog t '("Please start Emacs with --load init-kinesis.el or --load init-mac.el")))
-
-;;(toggle-debug-on-error)
+(load-file (concat "~/.emacs.d/profile-" (getenv "EMACS_PROFILE") ".el"))
 
 ;; -- Set window width/height
 (setq default-frame-alist (append (list
@@ -26,10 +22,10 @@
  '(frame-title-format (quote ("%f")) t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
+ '(kill-whole-line t)
  '(menu-bar-mode nil)
  '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1))))
- '(tool-bar-mode nil)
- '(kill-whole-line t))
+ '(tool-bar-mode nil))
 
 (scroll-bar-mode -1)
 (delete-selection-mode t)
@@ -37,8 +33,11 @@
 ;; -- Clipboard and undo
 (setq x-select-enable-clipboard t)
 (global-reset-key (kbd "M-c") 'kill-ring-save)
+(global-reset-key (kbd "A-c") 'kill-ring-save)
 (global-reset-key (kbd "M-v") 'yank)
+(global-reset-key (kbd "A-v") 'yank)
 (global-reset-key (kbd "M-z") 'undo)
+(global-reset-key (kbd "A-z") 'undo)
 
 ;; -- Trail whitespaces in all files
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -73,6 +72,9 @@
   (lambda () (interactive) (kill-this-buffer) (other-window -1)))
 
 ;; -- Other key bindings
+;; don't need isearch extended actions
+(global-unset-key (kbd "M-s"))
+
 ;; auto-complete on Ctrl-Enter
 (global-reset-key (kbd "C-<return>") 'dabbrev-expand)
 
@@ -149,6 +151,11 @@
    )
   )
 
+;; symbol
+;;   into [] etc
+;; indentation
+;;   facts
+
   ; (mapcar (lambda (x) (font-lock-add-keywords nil x))
 ;           '(
 ;             (("@\\|%[1-9]?" . 'clojure-special))
@@ -182,7 +189,7 @@
 ;;             ("\\(#\\)(" 0 (replacement-region "λ"))
 ;;             ("(\\(partial\\)[[:space:]]" 0 (replacement-region "Ƥ"))
 ;;             ("(\\(comp\\)[[:space:]]" 0 (replacement-region "ο"))
-
+;; TOOD: apply
 
 ;;             )))
 
@@ -201,80 +208,168 @@
 ;;               emacs-lisp-mode-hook lisp-mode-hook
 ;;               scheme-mode-hook lisp-interaction-mode-hook
 ;;               ))
-(add-hook 'clojure-mode-hook 'paredit-mode)
-(add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+;;(add-hook 'clojure-mode-hook 'paredit-mode)
+;;(add-hook 'emacs-lisp-mode-hook 'paredit-mode)
 
 ;;)
 
-(defun comment-sexp (arg)
-  "Comment out the sexp at point."
-  (save-excursion
-    (paredit-forward)
-    (call-interactively 'set-mark-command)
-    (paredit-backward)
-    (paredit-comment-dwim arg)))
+;; -- Smartparens
+(add-to-list 'load-path "~/.emacs.d/dash.el/")
+(require 'dash)
+;; TODO: auto-format doc strings
 
-(eval-after-load "paredit-mode-hook"
-  '(progn
-     ;; https://github.com/Fuco1/smartparens/wiki/Paredit-and-smartparens
-     ;; http://www.meetup.com/stl-clojure/messages/70487902/
-     ;; http://www.reddit.com/r/emacs/comments/1q99wi/moving_from_paredit_to_smartparens/
-     (define-key paredit-mode-map (kbd "C-<right>") nil)
-     (define-key paredit-mode-map (kbd "C-<left>") nil)
-     (define-key paredit-mode-map (kbd "C-M-<left>") nil)
-     (define-key paredit-mode-map (kbd "C-M-<right>") nil)
-     (define-key paredit-mode-map (kbd "C-(") nil)
-     (define-key paredit-mode-map (kbd "C-)") nil)
-     (define-key paredit-mode-map (kbd "C-{") nil)
-     (define-key paredit-mode-map (kbd "C-}") nil)
-     (define-key paredit-mode-map (kbd "M-)" ) nil)
-     (define-key paredit-mode-map (kbd "M-}" ) nil)
-     (define-key paredit-mode-map (kbd "M-]" ) nil)
-     (define-key paredit-mode-map (kbd "M-\"") nil)))
+ ;; Key bindings:
+ ;;*  ctrl-left/right       switch desktop space
+ ;;*  ctrl-up/down          switch desktop space
+ ;;
+ ;;*  shift-left/right      mark region
+ ;;*  shift-up/down         mark region
+ ;;
+ ;;*  command-left/right        go to end/beginning of line
+ ;;*  command-up/down           go to end/beginning of document
+ ;;*  shift+command-left/right  mark to end/beginning of line
+ ;;*  shift+command-up/down     mark to end/beginning of document
+ ;;
+ ;;?  ctrl+command-left/right   switch window
+ ;;?  ctrl+command-up/down      switch window
+ ;;
+ ;;*  alt-left/right             next/previous word
+ ;;*  shift+alt-left/right       mark to next/previous word
 
-(add-hook 'paredit-mode-hook
-          (lambda () (bind-keys*
-                 ;; sensibile key bindings
-                 ("M-<right>" . paredit-forward)
-                 ("M-<left>"  . paredit-backward)
-                 ;; commenting/uncommenting
-                 ("M-;"       . (lambda () (interactive) (comment-sexp 1)))
-                 ("C-M-;"     . (lambda () (interactive) (comment-sexp -1)))
-                 ;; barf/slurp
-                 ("A-<right>"   . paredit-forward-slurp-sexp)
-                 ("A-S-<left>"  . paredit-forward-barf-sexp)
-                 ("A-<left>"    . paredit-backward-slurp-sexp)
-                 ("A-S-<right>" . paredit-backward-barf-sexp)
-                 ;; closing
-                 ("S-<return>"  . paredit-close-parenthesis-and-newline)
-                 ("A-)"         . paredit-close-round)
-                 ("A-}"         . paredit-close-curly)
-                 ("A-]"         . paredit-close-bracket)
-                 ("A-\""        . paredit-meta-doublequote)
-                 ;; killing
-                 ("C-<backspace>" . paredit-backward-kill-word)
-                 ("C-<delete>"    . paredit-forward-kill-word)
-                 ;; if a selection is active, use the default behavior
-                 ;; (see delete-selection-mode above) otherwise call
-                 ;; paredit
-                 ("<backspace>"   . (lambda ()
-                                      (interactive)
-                                      (if (use-region-p)
-                                        (delete-backward-char 1)
-                                        (paredit-backward-delete))))
-                 ("<deletechar>"  . (lambda ()
-                                      (interactive)
-                                      (if (use-region-p)
-                                        (delete-forward-char 1)
-                                        (paredit-forward-delete))))
-                 ;; TODO:
-                 ;; killing sexpr
-                 ;; splicing and joining
-                 ;; killing up or down
-                 ;; go through the whole list
-                 )))
+ ;;*  ctrl+alt-left/right       next/previous sexpr
+ ;;?  + shift????????
+ ;;*  ctrl+alt-up/down          down/up sexpr
+ ;;?  + shift?????????
+
+ ;;*  alt+], alt+shift+]              slurp/barf forwards
+ ;;*  alt+[, alt+shift+[              slurp/barf backwards
+
+ ;;  alt-up/down
+ ;;  shift+alt-up/down
+ ;;
+ ;;  shift+ctrl-left/right
+ ;;  shift+ctrl-up/down
+ ;;
+ ;;  alt+command-left/right
+ ;;  alt+command-up/down
+ ;;
+
+;;
+;; TODO: continuning comments on enter
+;; TODO: (comment's )
+
+(setq sp-autoskip-closing-pair 'always)
+(setq sp-base-key-bindings 'sp)
+(setq sp-cancel-autoskip-on-backward-movement nil)
+(setq sp-hybrid-kill-entire-symbol t)
+(setq sp-hybrid-kill-excessive-whitespace t)
+(setq sp-navigate-close-if-unbalanced t)
+(setq sp-successive-kill-preserve-whitespace 2)
+(setq sp-override-key-bindings
+      '(("<eturn>" . indent-new-comment-line)
+        ("C-k"   . sp-kill-sexp)
+        ("C-M-k" . sp-kill-hybrid-sexp)
+        ("C-M-<right>" . sp-forward-sexp)
+        ("C-M-<left>" . sp-backward-sexp)
+        ("C-M-<down>" . sp-down-sexp)
+        ("C-M-<up>" . sp-up-sexp)
+        ("M-]" . sp-forward-slurp-sexp)
+        ("M-C-]" . sp-forward-barf-sexp)
+        ("M-[" . sp-backward-slurp-sexp)
+        ("M-C-[" . sp-backward-barf-sexp)
+        ("M-s" . sp-split-sexp)
+        ("M-j" . sp-join-sexp)
+        ))
+
+(add-to-list 'load-path "~/.emacs.d/smartparens")
+(require 'smartparens)
+(require 'smartparens-config)
+
+(add-hook 'smartparens-mode-hook 'smartparens-strict-mode)
+
+
+(dolist (hook '(clojure-mode-hook
+                emacs-lisp-mode-hook
+                lisp-mode-hook
+                scheme-mode-hook
+                lisp-interaction-mode-hook
+                cider-repl-mode-hook))
+  (add-hook hook 'smartparens-mode))
+
+;; (defun comment-sexp (arg)
+;;   "Comment out the sexp at point."
+;;   (save-excursion
+;;     (paredit-forward)
+;;     (call-interactively 'set-mark-command)
+;;     (paredit-backward)
+;;     (paredit-comment-dwim arg)))
+
+;; (eval-after-load "paredit-mode-hook"
+;;   '(progn
+;;      ;; https://github.com/Fuco1/smartparens/wiki/Paredit-and-smartparens
+;;      ;; http://www.meetup.com/stl-clojure/messages/70487902/
+;;      ;; http://www.reddit.com/r/emacs/comments/1q99wi/moving_from_paredit_to_smartparens/
+;;      (define-key paredit-mode-map (kbd "C-<right>") nil)
+;;      (define-key paredit-mode-map (kbd "C-<left>") nil)
+;;      (define-key paredit-mode-map (kbd "C-M-<left>") nil)
+;;      (define-key paredit-mode-map (kbd "C-M-<right>") nil)
+;;      (define-key paredit-mode-map (kbd "C-(") nil)
+;;      (define-key paredit-mode-map (kbd "C-)") nil)
+;;      (define-key paredit-mode-map (kbd "C-{") nil)
+;;      (define-key paredit-mode-map (kbd "C-}") nil)
+;;      (define-key paredit-mode-map (kbd "M-)" ) nil)
+;;      (define-key paredit-mode-map (kbd "M-}" ) nil)
+;;      (define-key paredit-mode-map (kbd "M-]" ) nil)
+;;      (define-key paredit-mode-map (kbd "M-\"") nil)))
+
+;; (add-hook 'paredit-mode-hook
+;;           (lambda () (local-set-key (kbd "<backspace>")
+;;                                (lambda ()
+;;                                  (interactive)
+;;                                  (if (use-region-p)
+;;                                      (delete-backward-char 1)
+;;                                    (paredit-backward-delete))))
+;;             (local-set-key (kbd "<deletechar>")
+;;                            (lambda ()
+;;                              (interactive)
+;;                              (if (use-region-p)
+;;                                  (delete-forward-char 1)
+;;                                (paredit-forward-delete))))
+;;                  (bind-keys*
+;;                  ;; sensibile key bindings
+;;                  ("M-<right>" . paredit-forward)
+;;                  ("M-<left>"  . paredit-backward)
+;;                  ;; commenting/uncommenting
+;;                  ("M-;"       . (lambda () (interactive) (comment-sexp 1)))
+;;                  ("C-M-;"     . (lambda () (interactive) (comment-sexp -1)))
+;;                  ;; barf/slurp
+;;                  ("A-<right>"   . paredit-forward-slurp-sexp)
+;;                  ("A-S-<left>"  . paredit-forward-barf-sexp)
+;;                  ("A-<left>"    . paredit-backward-slurp-sexp)
+;;                  ("A-S-<right>" . paredit-backward-barf-sexp)
+;;                  ;; closing
+;;                  ("S-<return>"  . paredit-close-parenthesis-and-newline)
+;;                  ("A-)"         . paredit-close-round)
+;;                  ("A-}"         . paredit-close-curly)
+;;                  ("A-]"         . paredit-close-bracket)
+;;                  ("A-\""        . paredit-meta-doublequote)
+;;                  ;; killing
+;;                  ("C-<backspace>" . paredit-backward-kill-word)
+;;                  ("C-<delete>"    . paredit-forward-kill-word)
+;;                  ;; if a selection is active, use the default behavior
+;;                  ;; (see delete-selection-mode above) otherwise call
+;;                  ;; paredit
+
+;;                  ;; TODO:
+;;                  ;; killing sexpr
+;;                  ;; splicing and joining
+;;                  ;; killing up or down
+;;                  ;; go through the whole list
+;;                  )))
 
 ;; -- Parenthesis highlighting
+;; TODO: better colors, maybe slightly darker background or
+;; symbols?
 (add-to-list 'load-path "~/.emacs.d/highlight-parentheses.el/")
 (require 'highlight-parentheses)
 (add-hook 'clojure-mode-hook '(lambda () (highlight-parentheses-mode 1)))
@@ -282,6 +377,7 @@
       '("#ff0000" "#0000ff" "#00ff00" "#ff00ff" "#ffff00" "#00ffff"))
 
 ;; -- Tramp
+;; TODO: is scp faster? which one is the fastest one?
 (setq tramp-default-method "ssh")
 (setq tramp-verbose 10)
 (require 'tramp)
@@ -296,8 +392,6 @@
 
 ;; --- CIDER
 ;; TODO: add-to-list & require
-(add-to-list 'load-path "~/.emacs.d/dash.el/")
-(require 'dash)
 (add-to-list 'load-path "~/.emacs.d/queue/")
 (require 'queue)
 (add-to-list 'load-path "~/.emacs.d/CIDER")
@@ -325,7 +419,8 @@
 ;; TODO: was for syntax highlighting, but problem with namespaces now
 ;; should turn syntax highlighting on somehow else
 ;;(add-hook 'cider-repl-mode-hook 'clojure-mode)
-(add-hook 'cider-repl-mode-hook 'paredit-mode)
+
+;;(add-hook 'cider-repl-mode-hook 'paredit-mode)
 
 (add-hook 'cider-repl-mode-hook
           (lambda ()
@@ -382,3 +477,9 @@
 (add-to-list 'load-path "~/.emacs.d/find-file-in-repository")
 (require 'find-file-in-repository)
 (global-reset-key (kbd "C-x C-g") 'find-file-in-repository)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

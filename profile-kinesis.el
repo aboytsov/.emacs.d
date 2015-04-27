@@ -1,5 +1,3 @@
-(load-file "~/.emacs.d/utils.el")
-
 ;; Switch command and option keys
 (setq mac-option-key-is-meta nil)
 (setq mac-command-key-is-meta t)
@@ -8,6 +6,3 @@
 
 (global-set-key [end] 'move-end-of-line)
 (global-set-key [home] 'move-beginning-of-line)
-
-(setq init-ok t)
-(load-file "~/.emacs.d/init.el")
