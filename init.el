@@ -201,17 +201,6 @@
                                (compose-region (match-beginning 1)
                                                (match-end 1)
                                                ?λ))))))
-;; -- Paredit
-(add-to-list 'load-path "~/.emacs.d/paredit/")
-(require 'paredit)
-;;(dolist (hook ('clojure-mode-hook
-;;               emacs-lisp-mode-hook lisp-mode-hook
-;;               scheme-mode-hook lisp-interaction-mode-hook
-;;               ))
-;;(add-hook 'clojure-mode-hook 'paredit-mode)
-;;(add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-
-;;)
 
 ;; -- Smartparens
 (add-to-list 'load-path "~/.emacs.d/dash.el/")
