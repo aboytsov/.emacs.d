@@ -68,6 +68,9 @@ nil
 (def-decorator :name [arg1 arg2 argn])
 #(shortcut-lambda %1 %2)
 
+
+
+
 (>= 2 1)
 (<= 1 2)
 (= 4 5)
@@ -82,7 +85,8 @@ nil
 
 (| func1 func2)       ;; composition
 (& juxt1 juxt2)       ;; juxtaposition
-(=> func param)        ;; currying
+(*> func param)       ;; currying
+(*< func param)
 
 (apply sum 1 2 3)       ;; sum
 (count f)             ;; count
