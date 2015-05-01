@@ -22,9 +22,6 @@
 [submodule "multiple-cursors.el"]
 	path = multiple-cursors.el
 	url = https://github.com/magnars/multiple-cursors.el
-[submodule "paredit"]
-	path = paredit
-	url = https://github.com/emacsmirror/paredit
 [submodule "smooth-scrolling"]
 	path = smooth-scrolling
 	url = https://github.com/aspiers/smooth-scrolling
@@ -34,6 +31,7 @@
 [submodule "magit"]
 	path = magit
 	url = https://github.com/magit/magit
+
 [submodule "smartparens"]
 	path = smartparens
 	url = https://github.com/Fuco1/smartparens
