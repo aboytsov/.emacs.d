@@ -30,6 +30,9 @@
 (scroll-bar-mode -1)
 (delete-selection-mode t)
 
+;; just 'y'/'n' instead of 'yes'/'no'
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 ;; -- Clipboard and undo
 (setq x-select-enable-clipboard t)
 (global-reset-key (kbd "M-c") 'kill-ring-save)
@@ -394,7 +397,6 @@
                 (format "\\(%s\\)\\|\\(%s\\)"
                         vc-ignore-dir-regexp
                         tramp-file-name-regexp))
-
 ;; --- CIDER
 ;; TODO: add-to-list & require
 (add-to-list 'load-path "~/.emacs.d/queue/")
@@ -484,9 +486,3 @@
 (add-to-list 'load-path "~/.emacs.d/find-file-in-repository")
 (require 'find-file-in-repository)
 (global-reset-key (kbd "C-x C-g") 'find-file-in-repository)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
