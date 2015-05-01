@@ -149,8 +149,19 @@
                                          nil)))
      ("(\\(comp\\)[[:space:]]" (0 (progn (compose-region
                                           (match-beginning 1)
-                                          (match-end 1) "ο")
-                                         nil)) ))
+                                          (match-end 1) "∘")
+                                         nil)))
+     ;; TODO: as a keyword!
+     ("(\\(con>\\)[[:space:]]" (0 (progn (compose-region
+                                          (match-beginning 1)
+                                          (match-end 1) "⍄")
+                                         nil)))
+     ("(\\(con<\\)[[:space:]]" (0 (progn (compose-region
+                                          (match-beginning 1)
+                                          (match-end 1) "⍃")
+                                         nil)))
+
+      )
 
    )
   )
