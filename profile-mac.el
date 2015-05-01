@@ -6,3 +6,6 @@
 (global-set-key (kbd "A-<up>") 'beginning-of-buffer)
 
 (global-set-key (kbd "A-s") 'save-buffer)
+
+(global-set-key (kbd "A-x") 'kill-region)
+(global-set-key (kbd "A-a") 'mark-whole-buffer)

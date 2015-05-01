@@ -68,8 +68,12 @@
 ;; (global-set-key (kbd "<next>") 'sfp-page-down)
 ;; (global-set-key (kbd "<prior>") 'sfp-page-up)
 
+;; kill buffer in the current window
+(global-reset-key (kbd "C-w")
+  (lambda () (interactive) (kill-this-buffer)))
+;; kill buffer in the other window (for error messages, greps etc)
 (global-reset-key (kbd "C-q")
-  (lambda () (interactive) (kill-this-buffer) (other-window -1)))
+  (lambda () (interactive) (kill-buffer (window-buffer (previous-window)))))
 
 ;; -- Other key bindings
 ;; don't need isearch extended actions
@@ -370,6 +374,7 @@
 ;; -- Parenthesis highlighting
 ;; TODO: better colors, maybe slightly darker background or
 ;; symbols?
+;; TODO: red/different background for unbalanced ones?
 (add-to-list 'load-path "~/.emacs.d/highlight-parentheses.el/")
 (require 'highlight-parentheses)
 (add-hook 'clojure-mode-hook '(lambda () (highlight-parentheses-mode 1)))
@@ -408,6 +413,8 @@
 (setq cider-repl-use-clojure-font-lock t)
 (setq cider-interactive-eval-result-prefix "")
 (setq cider-repl-tab-command 'indent-for-tab-command)
+(setq cider-auto-select-error-buffer nil)
+
 (cider-repl-toggle-pretty-printing)
 
 (add-to-list 'load-path "~/.emacs.d/use-package/")
