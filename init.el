@@ -1,10 +1,24 @@
+;; -- Clear all hooks and font-locks for config reloading without r
+;; estarting Emacs
+(dolist (hook '(clojure-mode-hook
+                emacs-lisp-mode-hook
+                lisp-mode-hook
+                lisp-interaction-mode-hook
+                before-save-hook
+                smartparens-mode-hook
+                cider-mode-hook
+                cider-repl-mode-hook))
+  (setq hook nil))
+(setq font-lock-keywords-alist nil)
+
 (load-file "~/.emacs.d/utils.el")
 (load-file (concat "~/.emacs.d/profile-" (getenv "EMACS_PROFILE") ".el"))
 
 ;; -- Set window width/height
 (setq default-frame-alist (append (list
                                    '(width  . 80)
-                                   '(height . 54))
+                                   '(height . 55)
+                                   '(left . 840))
   default-frame-alist))
 
 ;; -- Various settings
@@ -52,6 +66,8 @@
 (set-face-background 'hl-line "#FFD")
 
 ;; -- Mac key bindings
+
+;; TODO
 (defun sfp-page-down (&optional arg)
   (interactive "^P")
 ;;  (setq this-command 'next-line)
@@ -59,6 +75,7 @@
    (- (window-text-height)
       next-screen-context-lines)))
 
+;; TODO
 (defun sfp-page-up (&optional arg)
   (interactive "^P")
 ;;  (setq this-command 'previous-line)
@@ -71,13 +88,6 @@
 ;; (global-set-key (kbd "<next>") 'sfp-page-down)
 ;; (global-set-key (kbd "<prior>") 'sfp-page-up)
 
-;; kill buffer in the current window
-(global-reset-key (kbd "C-w")
-  (lambda () (interactive) (kill-this-buffer)))
-;; kill buffer in the other window (for error messages, greps etc)
-(global-reset-key (kbd "C-q")
-  (lambda () (interactive) (kill-buffer (window-buffer (previous-window)))))
-
 ;; -- Other key bindings
 ;; don't need isearch extended actions
 (global-unset-key (kbd "M-s"))
@@ -87,6 +97,13 @@
 
 ;; previous window
 (global-set-key (kbd "C-x p") (lambda () (interactive) (other-window -1)))
+
+;; kill buffer in the current window
+(global-reset-key (kbd "C-w")
+  (lambda () (interactive) (kill-this-buffer)))
+;; kill buffer in the other window (for error messages, greps etc)
+(global-reset-key (kbd "C-q")
+  (lambda () (interactive) (kill-buffer (window-buffer (previous-window)))))
 
 ;; recording and replaying macros
 (global-set-key (kbd "C-,") 'kmacro-start-macro-or-insert-counter)
@@ -98,6 +115,14 @@
 (global-set-key (kbd "C->") 'next-error)      ;; Control + Shift + >
 (global-set-key (kbd "C-<") 'previous-error)  ;; Control + Shift + <
 
+;; quick mode toggling
+(global-reset-key (kbd "M-m") (make-sparse-keymap))
+(global-set-key (kbd "M-m c") 'clojure-mode)
+(global-set-key (kbd "M-m o") 'org-mode)
+(global-set-key (kbd "M-m t") 'text-mode)
+(global-set-key (kbd "M-m l") 'emacs-lisp-mode)
+
+;; search lines
 
 ;; -- Smooth scrolling
 (add-to-list 'load-path "~/.emacs.d/smooth-scrolling/")
@@ -122,7 +147,8 @@
 
 ;; syntax highlighting
 (defmacro defclojureface (name color desc &optional others)
-  `(defface ,name '((((class color)) (:foreground ,color ,@others))) ,desc :group 'faces))
+  `(defface ,name
+     '((((class color)) (:foreground ,color ,@others))) ,desc :group 'faces))
 
 (defclojureface clojure-parens       "#999999"   "Clojure parens")
 (defclojureface clojure-braces       "#49b2c7"   "Clojure braces")
@@ -170,11 +196,41 @@
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Properties.html
 ;; http://www.emacswiki.org/emacs/TextProperties#text_property
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Properties.html
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Multiline-Font-Lock.html#Multiline-Font-Lock
 
-(defun tweak-clojure-syntax ()
-  (font-lock-add-keywords
-     'clojure-mode
-     (mapcar (lambda (pair) `(,(first pair) . ,(replacement (second pair))))
+(defun list-overlays-at (&optional pos)
+  "Describe overlays at POS or point."
+  (interactive)
+  (setq pos (or pos (point)))
+  (let ((overlays (overlays-at pos))
+        (obuf (current-buffer))
+        (buf (get-buffer-create "*Overlays*"))
+        (props '(priority window category face mouse-face display
+                 help-echo modification-hooks insert-in-front-hooks
+                 insert-behind-hooks invisible intangible
+                 isearch-open-invisible isearch-open-invisible-temporary
+                 before-string after-string evaporate local-map keymap
+                 field))
+        start end text)
+    (if (not overlays)
+        (message "None.")
+      (set-buffer buf)
+      (erase-buffer)
+      (dolist (o overlays)
+        (setq start (overlay-start o)
+              end (overlay-end o)
+              text (with-current-buffer obuf
+                     (buffer-substring start end)))
+        (when (> (- end start) 13)
+          (setq text (concat (substring text 1 10) "...")))
+        (insert (format "From %d to %d: \"%s\":\n" start end text))
+        (dolist (p props)
+          (when (overlay-get o p)
+            (insert (format " %15S: %S\n" p (overlay-get o p))))))
+      (pop-to-buffer buf))))
+
+(setq clojure-font-locks
+  (mapcar (lambda (pair) `(,(first pair) . ,(replacement (second pair))))
              ;; TODO: instead of '(' need to detect if those symbols are
              ;; keywords
              '(("(\\(fn\\)[\[[:space:]]"          "ƒ")
@@ -182,7 +238,8 @@
                ("(\\(defn\\)[\[[:space:]]"
                 (concat
                  (propertize "⊐" 'face 'bold)
-                 (propertize "ƒ" 'face '(:foreground "red"))))
+                 (propertize "ƒ" 'face '(:foreground "green"))
+                 ))
                ;; ("(\\(defn\\+\\)[\[[:space:]]"     "⌝ƒ⁺")
                ;; ("(\\(defmacro\\)[\[[:space:]]"    "⌉Ƒ")
                ("(\\(defn\\+\\)[\[[:space:]]"     "⊐ƒ⁺")
@@ -194,7 +251,17 @@
                ("(\\(ns\\)("                      "§")
                ("(\\(comp\\)("                    "∘")
                ("(\\(\\|\\)("                     "∘")
-               ))))
+               )))
+;; TODO: reloding without restarting
+;; copy/paste/text-modes
+;; overlays vs text properties
+
+(font-lock-add-keywords 'clojure-mode clojure-font-locks)
+
+;;(add-hook 'clojure-mode-hook
+;;  (lambda ()
+ ;;   (font-lock-remove-keywords 'clojure-mode clojure-font-locks)
+  ;;  (font-lock-add-keywords 'clojure-mode clojure-font-locks)))
 
 ;; symbol
 ;;   into [] etc
@@ -232,9 +299,8 @@
 
 ;;             )))
 
-(add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
-
 ;; -- Lisp mode
+;; TODO: better
 (font-lock-add-keywords 'emacs-lisp-mode
     '(("(\\(lambda\\)\\>" (0 (prog1 ()
                                (compose-region (match-beginning 1)
@@ -319,7 +385,6 @@
 (dolist (hook '(clojure-mode-hook
                 emacs-lisp-mode-hook
                 lisp-mode-hook
-                scheme-mode-hook
                 lisp-interaction-mode-hook
                 cider-repl-mode-hook))
   (add-hook hook 'smartparens-mode))
@@ -410,14 +475,48 @@
 (setq tramp-default-method "ssh")
 (setq tramp-verbose 10)
 (require 'tramp)
-(setcdr (assoc 'tramp-remote-shell (assoc "ssh" tramp-methods)) '("/bin/bash"))
-(setcdr (assoc 'tramp-remote-shell (assoc "scp" tramp-methods)) '("/bin/bash"))
-(setcdr (assoc 'tramp-remote-shell (assoc "rsync" tramp-methods)) '("/bin/bash"))
-;; disable version control
-(setq vc-ignore-dir-regexp
-                (format "\\(%s\\)\\|\\(%s\\)"
-                        vc-ignore-dir-regexp
-                        tramp-file-name-regexp))
+(setcdr (assoc 'tramp-remote-shell (assoc "ssh" tramp-methods))
+        '("/bin/bash"))
+(setcdr (assoc 'tramp-remote-shell (assoc "scp" tramp-methods))
+        '("/bin/bash"))
+(setcdr (assoc 'tramp-remote-shell (assoc "rsync" tramp-methods))
+        '("/bin/bash"))
+
+;; disable version control (???)
+;; (setq vc-ignore-dir-regexp
+;;                 (format "\\(%s\\)\\|\\(%s\\)"
+;;                         vc-ignore-dir-regexp
+;;                         tramp-file-name-regexp))
+
+;; --- Emacs Lisp evaluation
+;; printing
+(global-set-key [remap eval-expression] 'pp-eval-expression)
+(global-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
+(defun eval-region-print ()
+  (interactive)
+  (if (use-region-p)
+    (eval-region (region-beginning) (region-end) t)
+    (message "No region")))
+
+;; key bindings are similar to CIDER
+(global-reset-key (kbd "C-c C-e") 'eval-last-sexp)
+(global-reset-key (kbd "C-c C-k") 'eval-buffer)
+(global-reset-key (kbd "C-c C-r") 'eval-region-print)
+
+;; reverting all buffers
+(defun revert-all-buffers ()
+  (interactive)
+  (let* ((list (buffer-list))
+         (buffer (car list)))
+    (while buffer
+      (when (and (buffer-file-name buffer)
+                 (not (buffer-modified-p buffer)))
+        (set-buffer buffer)
+        (revert-buffer t t t))
+      (setq list (cdr list))
+      (setq buffer (car list))))
+  (message "Reverted all buffers"))
+
 ;; --- CIDER
 ;; TODO: add-to-list & require
 (add-to-list 'load-path "~/.emacs.d/queue/")
@@ -479,6 +578,7 @@
 
 (require 'ido)
 (ido-mode t)
+(setq ido-default-buffer-method 'selected-window)
 
 (add-to-list 'load-path "~/.emacs.d/flx")
 (require 'flx-ido)

@@ -38,6 +38,8 @@ data#
 (def var-name data)
 (def+ var-name data)
 
+(defn xxoxoxox)
+(defn aa)
 (def a)
 (defn+ )
 (defmacro )
