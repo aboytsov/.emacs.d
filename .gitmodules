@@ -1,36 +1,36 @@
 [submodule "cider"]
-	path = cider
+	path = modules/cider
 	url = https://github.com/clojure-emacs/cider.git
 [submodule "clojure-mode"]
-	path = clojure-mode
+	path = modules/clojure-mode
 	url = https://github.com/clojure-emacs/clojure-mode
 [submodule "company-mode"]
-	path = company-mode
+	path = modules/company-mode
 	url = https://github.com/company-mode/company-mode
 [submodule "dash.el"]
-	path = dash.el
+	path = modules/dash.el
 	url = https://github.com/magnars/dash.el
 [submodule "find-file-in-repository"]
-	path = find-file-in-repository
+	path = modules/find-file-in-repository
 	url = https://github.com/hoffstaetter/find-file-in-repository
 [submodule "flx"]
-	path = flx
+	path = modules/flx
 	url = https://github.com/lewang/flx
 [submodule "highlight-parentheses.el"]
-	path = highlight-parentheses.el
+	path = modules/highlight-parentheses.el
 	url = https://github.com/tsdh/highlight-parentheses.el
 [submodule "multiple-cursors.el"]
-	path = multiple-cursors.el
+	path = modules/multiple-cursors.el
 	url = https://github.com/magnars/multiple-cursors.el
 [submodule "smooth-scrolling"]
-	path = smooth-scrolling
+	path = modules/smooth-scrolling
 	url = https://github.com/aspiers/smooth-scrolling
 [submodule "use-package"]
-	path = use-package
+	path = modules/use-package
 	url = https://github.com/jwiegley/use-package
 [submodule "magit"]
-	path = magit
+	path = modules/magit
 	url = https://github.com/magit/magit
 [submodule "smartparens"]
-	path = smartparens
+	path = modules/smartparens
 	url = https://github.com/Fuco1/smartparens

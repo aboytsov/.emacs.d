@@ -125,12 +125,13 @@
 ;; search lines
 
 ;; -- Smooth scrolling
-(add-to-list 'load-path "~/.emacs.d/smooth-scrolling/")
+(add-to-list 'load-path "~/.emacs.d/modules/smooth-scrolling/")
 (require 'smooth-scrolling)
 (setq smooth-scroll-margin 3)
 
 ;; -- Multiple cursors
-(add-to-list 'load-path "~/.emacs.d/multiple-cursors.el/")
+;; TODO: DRY
+(add-to-list 'load-path "~/.emacs.d/modules/multiple-cursors.el/")
 (require 'multiple-cursors)
 (global-unset-key (kbd "C-M-c"))
 (global-unset-key (kbd "C-M-."))
@@ -142,7 +143,7 @@
 
 ;; -- Clojure mode
 (global-prettify-symbols-mode +1)
-(add-to-list 'load-path "~/.emacs.d/clojure-mode/")
+(add-to-list 'load-path "~/.emacs.d/modules/clojure-mode/")
 (require 'clojure-mode)
 
 ;; syntax highlighting
@@ -308,7 +309,7 @@
                                                ?λ))))))
 
 ;; -- Smartparens
-(add-to-list 'load-path "~/.emacs.d/dash.el/")
+(add-to-list 'load-path "~/.emacs.d/modules/dash.el/")
 (require 'dash)
 ;; TODO: auto-format doc strings
 
@@ -375,7 +376,8 @@
         ("M-j" . sp-join-sexp)
         ))
 
-(add-to-list 'load-path "~/.emacs.d/smartparens")
+;; TODO: DRY
+(add-to-list 'load-path "~/.emacs.d/modules/smartparens")
 (require 'smartparens)
 (require 'smartparens-config)
 
@@ -464,7 +466,7 @@
 ;; TODO: better colors, maybe slightly darker background or
 ;; symbols?
 ;; TODO: red/different background for unbalanced ones?
-(add-to-list 'load-path "~/.emacs.d/highlight-parentheses.el/")
+(add-to-list 'load-path "~/.emacs.d/modules/highlight-parentheses.el/")
 (require 'highlight-parentheses)
 (add-hook 'clojure-mode-hook '(lambda () (highlight-parentheses-mode 1)))
 (setq hl-paren-colors
@@ -521,7 +523,7 @@
 ;; TODO: add-to-list & require
 (add-to-list 'load-path "~/.emacs.d/queue/")
 (require 'queue)
-(add-to-list 'load-path "~/.emacs.d/CIDER")
+(add-to-list 'load-path "~/.emacs.d/modules/cider")
 (require 'cider)
 (require 'cider-macroexpansion)
 
@@ -539,7 +541,7 @@
 
 (cider-repl-toggle-pretty-printing)
 
-(add-to-list 'load-path "~/.emacs.d/use-package/")
+(add-to-list 'load-path "~/.emacs.d/modules/use-package/")
 (require 'bind-key)
 
 (add-hook 'cider-mode-hook 'eldoc-mode)
@@ -580,7 +582,7 @@
 (ido-mode t)
 (setq ido-default-buffer-method 'selected-window)
 
-(add-to-list 'load-path "~/.emacs.d/flx")
+(add-to-list 'load-path "~/.emacs.d/modules/flx")
 (require 'flx-ido)
 
 (ido-mode 1)
@@ -592,7 +594,7 @@
 (setq ido-use-faces nil)
 
 ;; -- Symbol completion
-(add-to-list 'load-path "~/.emacs.d/company-mode")
+(add-to-list 'load-path "~/.emacs.d/modules/company-mode")
 (require 'company)
 (global-company-mode)
 (global-set-key (kbd "M-<return>") 'company-complete)
@@ -600,10 +602,10 @@
 ;; -- Git
 (setq magit-last-seen-setup-instructions "1.4.0")
 
-(add-to-list 'load-path "~/.emacs.d/magit")
+(add-to-list 'load-path "~/.emacs.d/modules/magit")
 (require 'magit)
 
 ;; -- Finding any file in the current git repository
-(add-to-list 'load-path "~/.emacs.d/find-file-in-repository")
+(add-to-list 'load-path "~/.emacs.d/modules/find-file-in-repository")
 (require 'find-file-in-repository)
 (global-reset-key (kbd "C-x C-g") 'find-file-in-repository)
