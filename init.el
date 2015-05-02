@@ -133,41 +133,68 @@
 (defclojureface clojure-special      "#4682b4"   "Clojure special")
 (defclojureface clojure-double-quote "#4682b4"   "Clojure double quote")
 
+(defun replacement (txt)
+  `(0 (progn
+        ;; (put-text-property (match-beginning 1)
+        ;;                         (match-end 1)
+        ;;                         'display
+        ;;                         ,txt)
+        ;;      (put-text-property (match-beginning 1)
+        ;;                         (match-end 1)
+        ;;                         'intangible
+        ;;                         t)
+        ;;      (add-face-text-property (match-beginning 1)
+        ;;                              (+ 1 (match-beginning 1))
+        ;;                              '(:foreground "red"))
+        ;;      (add-face-text-property (match-beginning 1)
+        ;;                              (+ 1 (match-beginning 1))
+        ;;                              'bold)
+        ;;      (add-face-text-property (match-beginning 1)
+        ;;                              (match-end 1)
+        ;;                              '(:raise 1))
+        ;; TODO: not 1!
+        (let ((overlay (make-overlay (match-beginning 1)
+                                     (match-end 1))))
+          (overlay-put overlay 'display ,txt)
+;;          (overlay-put overlay 'face '(:foreground "red"))
+          )
+        nil)))
+
+;; http://www.emacswiki.org/emacs/InPlaceAnnotations
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Overlay-Properties.html
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Fields.html#Fields
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Special-Properties.html#Special-Properties
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Other-Display-Specs.html
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Replacing-Specs.html#Replacing-Specs
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Display-Property.html
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Properties.html
+;; http://www.emacswiki.org/emacs/TextProperties#text_property
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Properties.html
+
 (defun tweak-clojure-syntax ()
   (font-lock-add-keywords
-   'clojure-mode
-   ;; remove progn?
-   '(("(\\(fn\\)[\[[:space:]]" (0 (progn (compose-region
-                                          (match-beginning 1)
-                                          (match-end 1) "λ")
-                                         nil))
-      )
-     ("\\(#\\)(" (0 (progn (compose-region
-                                          (match-beginning 1)
-                                          (match-end 1) "λ")
-                                         nil)))
-     ("(\\(partial\\)[[:space:]]" (0 (progn (compose-region
-                                          (match-beginning 1)
-                                          (match-end 1) "Ƥ")
-                                         nil)))
-     ("(\\(comp\\)[[:space:]]" (0 (progn (compose-region
-                                          (match-beginning 1)
-                                          (match-end 1) "∘")
-                                         nil)))
-     ;; TODO: as a keyword!
-     ("(\\(con>\\)[[:space:]]" (0 (progn (compose-region
-                                          (match-beginning 1)
-                                          (match-end 1) "⍄")
-                                         nil)))
-     ("(\\(con<\\)[[:space:]]" (0 (progn (compose-region
-                                          (match-beginning 1)
-                                          (match-end 1) "⍃")
-                                         nil)))
-
-      )
-
-   )
-  )
+     'clojure-mode
+     (mapcar (lambda (pair) `(,(first pair) . ,(replacement (second pair))))
+             ;; TODO: instead of '(' need to detect if those symbols are
+             ;; keywords
+             '(("(\\(fn\\)[\[[:space:]]"          "ƒ")
+               ("(\\(fn\\+\\)[\[[:space:]]"       "ƒ⁺")
+               ("(\\(defn\\)[\[[:space:]]"
+                (concat
+                 (propertize "⊐" 'face 'bold)
+                 (propertize "ƒ" 'face '(:foreground "red"))))
+               ;; ("(\\(defn\\+\\)[\[[:space:]]"     "⌝ƒ⁺")
+               ;; ("(\\(defmacro\\)[\[[:space:]]"    "⌉Ƒ")
+               ("(\\(defn\\+\\)[\[[:space:]]"     "⊐ƒ⁺")
+               ("(\\(defmacro\\)[\[[:space:]]"    "⊐Ƒ")
+               ("(\\(defmacro\\+\\)[\[[:space:]]" "⊐Ƒ⁺")
+               ("(\\(def\\)[\[[:space:]]"         "⊐")
+               ("(\\(def\\+\\)[\[[:space:]]"      "⊐⁺")
+               ("\\(#\\)("                        "λ")
+               ("(\\(ns\\)("                      "§")
+               ("(\\(comp\\)("                    "∘")
+               ("(\\(\\|\\)("                     "∘")
+               ))))
 
 ;; symbol
 ;;   into [] etc
@@ -185,12 +212,6 @@
 ;             (("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t))
 ;             (("^[^\n]\\{80\\}\\(.*\\)$" 1 font-lock-warning-face t))
 ;             ))
-
-; (font-lock-add-keywords
-;     'clojure-mode '(("(\\(fn\\)[\[[:space:]]" (0 (replacement-region "λ")))
-;                     ("\\(#\\)(" (0 (replacement-region "λ")))
-;                     ("(\\(partial\\)[[:space:]]" (0 (replacement-region "Ƥ")))
-;                     ("(\\(comp\\)[[:space:]]" (0 (replacement-region "ο")))))
 
 ;; (defun tweak-clojure-syntax ()
 ;;   (mapcar (lambda (x) (font-lock-add-keywords nil x))

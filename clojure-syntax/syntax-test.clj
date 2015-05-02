@@ -19,7 +19,7 @@
 true false nil    ;; specials
 :keyword1 :keyword2
 
-% %1 %2           ;; lambda params
+% %1 %2           ;; lambda params (TODO: prettify)
 @deref
 #'var
 
@@ -37,7 +37,11 @@ data#
 (let let-form)
 (def var-name data)
 (def+ var-name data)
-(defn func-name [arg1 arg2 & argn])
+
+(def a)
+(defn+ )
+(defmacro )
+(de func-name [arg1 arg2 & argn])
 (defmacro macro-name [arg1 arg2 & argn])
 (fn [arg1 arg2 & argn])
 (fn+ [arg1 arg2 argn])
