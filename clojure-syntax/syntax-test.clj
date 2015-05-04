@@ -39,8 +39,10 @@ data#
 (def+ var-name data)
 
 (defn xxoxoxox)
+
 (defn aa)
 (def a)
+
 (defn+ )
 (defmacro )
 (de func-name [arg1 arg2 & argn])
@@ -48,7 +50,7 @@ data#
 (fn [arg1 arg2 & argn])
 (fn+ [arg1 arg2 argn])
 (defn+ func-name [arg1 arg2 argn])
-(def-decorator :name [arg1 arg2 argn])
+(qweqw def-decorator ew :name [arg1 arg2 argn])
 
 ;; -- java
 JavaClass

@@ -180,11 +180,15 @@
         ;;                              (match-end 1)
         ;;                              '(:raise 1))
         ;; TODO: not 1!
-        (let ((overlay (make-overlay (match-beginning 1)
-                                     (match-end 1))))
-          (overlay-put overlay 'display ,txt)
+;;        (let ((overlay (make-overlay (match-beginning 1)
+  ;;                                   (match-end 1))))
+    ;;      (overlay-put overlay 'display ,txt)
 ;;          (overlay-put overlay 'face '(:foreground "red"))
-          )
+      ;;    )
+        (put-text-property (match-beginning 1)
+                           (match-end 1)
+                           'display ,txt
+                           )
         nil)))
 
 ;; http://www.emacswiki.org/emacs/InPlaceAnnotations
@@ -234,79 +238,56 @@
   (mapcar (lambda (pair) `(,(first pair) . ,(replacement (second pair))))
              ;; TODO: instead of '(' need to detect if those symbols are
              ;; keywords
-             '(("(\\(fn\\)[\[[:space:]]"          "ƒ")
-               ("(\\(fn\\+\\)[\[[:space:]]"       "ƒ⁺")
+             '(;;("(\\(fn\\)[\[[:space:]]"          "ƒ")
+               ;;("(\\(fn\\+\\)[\[[:space:]]"       "ƒ⁺")
                ("(\\(defn\\)[\[[:space:]]"
                 (concat
                  (propertize "⊐" 'face 'bold)
-                 (propertize "ƒ" 'face '(:foreground "green"))
+                 (propertize "ƒ" 'face '(:foreground "green")
+                                 'help-echo "help-text")
+                 ))
+               ("\\(def-decorator\\)[\[[:space:]]"
+                (concat
+;;                 (propertize "⊐" 'face 'bold 'intangible 'def-decorator)
+                 (propertize "q" 'face '(:foreground "green")
+                             'help-echo "help-text"
+                             'intangible 'def-decorator)
                  ))
                ;; ("(\\(defn\\+\\)[\[[:space:]]"     "⌝ƒ⁺")
-               ;; ("(\\(defmacro\\)[\[[:space:]]"    "⌉Ƒ")
-               ("(\\(defn\\+\\)[\[[:space:]]"     "⊐ƒ⁺")
-               ("(\\(defmacro\\)[\[[:space:]]"    "⊐Ƒ")
-               ("(\\(defmacro\\+\\)[\[[:space:]]" "⊐Ƒ⁺")
-               ("(\\(def\\)[\[[:space:]]"         "⊐")
-               ("(\\(def\\+\\)[\[[:space:]]"      "⊐⁺")
-               ("\\(#\\)("                        "λ")
-               ("(\\(ns\\)("                      "§")
-               ("(\\(comp\\)("                    "∘")
-               ("(\\(\\|\\)("                     "∘")
+               ;;;; ("(\\(defmacro\\)[\[[:space:]]"    "⌉Ƒ")
+               ;;("(\\(defn\\+\\)[\[[:space:]]"     "⊐ƒ⁺")
+               ;;("(\\(defmacro\\)[\[[:space:]]"    "⊐Ƒ")
+               ;;("(\\(defmacro\\+\\)[\[[:space:]]" "⊐Ƒ⁺")
+               ;;("(\\(def\\)[\[[:space:]]"         "⊐")
+               ;;("(\\(def\\+\\)[\[[:space:]]"      "⊐⁺")
+               ;;("\\(#\\)("                        "λ")
+               ;;("(\\(ns\\)("                      "§")
+               ;;("(\\(comp\\)("                    "∘")
+               ;;("(\\(\\|\\)("                     "∘")
                )))
 ;; TODO: reloding without restarting
 ;; copy/paste/text-modes
 ;; overlays vs text properties
 
-(font-lock-add-keywords 'clojure-mode clojure-font-locks)
+;;(font-lock-add-keywords 'clojure-mode clojure-font-locks)
 
-;;(add-hook 'clojure-mode-hook
-;;  (lambda ()
- ;;   (font-lock-remove-keywords 'clojure-mode clojure-font-locks)
-  ;;  (font-lock-add-keywords 'clojure-mode clojure-font-locks)))
+(add-hook 'text-mode-hook (lambda () (interactive) (remove-overlays)))
 
-;; symbol
-;;   into [] etc
-;; indentation
-;;   facts
+(defun reload-syntax-highlighting ()
+  (interactive)
+  (eval-buffer)
+  (other-window -1)
+  (text-mode)
+  (clojure-mode)
+  (other-window -1))
 
-  ; (mapcar (lambda (x) (font-lock-add-keywords nil x))
-;           '(
-;             (("@\\|%[1-9]?" . 'clojure-special))
-;             (("#?['`]*(\\|)"       . 'clojure-parens))
-;             (("#?\\^?{\\|}"        . 'clojure-brackets))
-;             (("\\[\\|\\]"          . 'clojure-braces))
-; ;;            ((":\\w+"              . 'clojure-keyword))
-;             (("#?\""               0 'clojure-double-quote prepend))
-;             (("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t))
-;             (("^[^\n]\\{80\\}\\(.*\\)$" 1 font-lock-warning-face t))
-;             ))
+(global-set-key (kbd "C-c s") 'reload-syntax-highlighting)
 
-;; (defun tweak-clojure-syntax ()
-;;   (mapcar (lambda (x) (font-lock-add-keywords nil x))
-;;           '((("#?['`]*(\\|)"       . 'clojure-parens))
-;;             (("#?\\^?{\\|}"        . 'clojure-brackets))
-;;             (("\\[\\|\\]"          . 'clojure-braces))
-;;             ((":\\w+"              . 'clojure-keyword))
-;;             (("#?\""               0 'clojure-double-quote prepend))
-;; ;;            (("\\btrue\\b\\|\\bfalse\\b\\|\\bnil\\b\\|@\\|%[1-9]?" . 'clojure-special))
-;;             (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1 'clojure-java-call))
-;;             (("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t))
-;;             (("^[^\n]\\{80\\}\\(.*\\)$" 1 font-lock-warning-face t))
-;;             ("(\\(fn\\)[\[[:space:]]" 0 (replacement-region "λ"))
-;;             ("\\(#\\)(" 0 (replacement-region "λ"))
-;;             ("(\\(partial\\)[[:space:]]" 0 (replacement-region "Ƥ"))
-;;             ("(\\(comp\\)[[:space:]]" 0 (replacement-region "ο"))
-;; TOOD: apply
+(add-hook 'clojure-mode-hook
+  (lambda ()
+    (font-lock-remove-keywords 'clojure-mode clojure-font-locks)
+    (font-lock-add-keywords 'clojure-mode clojure-font-locks)))
 
-;;             )))
-
-;; -- Lisp mode
-;; TODO: better
-(font-lock-add-keywords 'emacs-lisp-mode
-    '(("(\\(lambda\\)\\>" (0 (prog1 ()
-                               (compose-region (match-beginning 1)
-                                               (match-end 1)
-                                               ?λ))))))
 
 ;; -- Smartparens
 (add-to-list 'load-path "~/.emacs.d/modules/dash.el/")
@@ -506,18 +487,18 @@
 (global-reset-key (kbd "C-c C-r") 'eval-region-print)
 
 ;; reverting all buffers
-(defun revert-all-buffers ()
-  (interactive)
-  (let* ((list (buffer-list))
-         (buffer (car list)))
-    (while buffer
-      (when (and (buffer-file-name buffer)
-                 (not (buffer-modified-p buffer)))
-        (set-buffer buffer)
-        (revert-buffer t t t))
-      (setq list (cdr list))
-      (setq buffer (car list))))
-  (message "Reverted all buffers"))
+;; (defun revert-all-buffers ()
+;;   (interactive)
+;;   (let* ((list (buffer-list))
+;;          (buffer (car list)))
+;;     (while buffer
+;;       (when (and (buffer-file-name buffer)
+;;                  (not (buffer-modified-p buffer)))
+;;         (set-buffer buffer)
+;;         (revert-buffer t t t))
+;;       (setq list (cdr list))
+;;       (setq buffer (car list))))
+;;   (message "Reverted all buffers"))
 
 ;; --- CIDER
 ;; TODO: add-to-list & require
