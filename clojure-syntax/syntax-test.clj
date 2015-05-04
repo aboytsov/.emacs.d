@@ -43,11 +43,24 @@ data#
 (defn aa)
 (def a)
 
+#("q" 0 1
+  (face
+   (:foreground "green")
+   help-echo "help-text" intangible def-decorator))
+
+( sdfsdf)
+(def)
+(def  )
+(defnjkk    123)
+(defnsadfsaklfj)
+(defn 123)
+(fn 1)
+(defn 123)
+(fn [arg1 arg2 & argn])
 (defn+ )
 (defmacro )
 (de func-name [arg1 arg2 & argn])
 (defmacro macro-name [arg1 arg2 & argn])
-(fn [arg1 arg2 & argn])
 (fn+ [arg1 arg2 argn])
 (defn+ func-name [arg1 arg2 argn])
 (qweqw def-decorator ew :name [arg1 arg2 argn])

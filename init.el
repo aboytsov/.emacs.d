@@ -160,6 +160,9 @@
 (defclojureface clojure-special      "#4682b4"   "Clojure special")
 (defclojureface clojure-double-quote "#4682b4"   "Clojure double quote")
 
+(defun mf--on-modification (&rest unused)
+  (message "FUCK"))
+
 (defun replacement (txt)
   `(0 (progn
         ;; (put-text-property (match-beginning 1)
@@ -184,11 +187,41 @@
   ;;                                   (match-end 1))))
     ;;      (overlay-put overlay 'display ,txt)
 ;;          (overlay-put overlay 'face '(:foreground "red"))
-      ;;    )
+        ;;    )
+;;        (compose-region (match-beginning 1)
+  ;;                      (match-end 1)
+        ;;                    ,txt)
         (put-text-property (match-beginning 1)
                            (match-end 1)
-                           'display ,txt
+                           'display
+                           ,txt
                            )
+        ;; (put-text-property (match-beginning 1)
+        ;;                    (match-end 1)
+        ;;                    'display
+        ;;                    "???"
+        ;;                    )
+;;        (put-text-property (match-beginning 1)
+;;                           (match-end 1)
+;;                           'intangible
+;;                           12
+;;                           )
+;;        (put-text-property (match-beginning 1)
+;;                           (match-end 1)
+;;                           'fontified
+;;                           t
+;;                           )
+        ;; (put-text-property (match-beginning 1)
+        ;;                    (match-end 1)
+        ;;                    'insert-behind-hooks
+        ;;                    '(mf--on-modification)
+        ;;                    )
+        ;; (put-text-property (match-beginning 1)
+        ;;                    (match-end 1)
+        ;;                    'insert-in-front-hooks
+        ;;                    '(mf--on-modification)
+        ;;                    )
+        ;; TODO: help-echo
         nil)))
 
 ;; http://www.emacswiki.org/emacs/InPlaceAnnotations
@@ -240,19 +273,25 @@
              ;; keywords
              '(;;("(\\(fn\\)[\[[:space:]]"          "ƒ")
                ;;("(\\(fn\\+\\)[\[[:space:]]"       "ƒ⁺")
-               ("(\\(defn\\)[\[[:space:]]"
+               ("\\b\\(defn\\)\\b"
                 (concat
                  (propertize "⊐" 'face 'bold)
                  (propertize "ƒ" 'face '(:foreground "green")
                                  'help-echo "help-text")
-                 ))
-               ("\\(def-decorator\\)[\[[:space:]]"
+                 )
+                )
+               ("\\b\\(def\\)\\b"
                 (concat
-;;                 (propertize "⊐" 'face 'bold 'intangible 'def-decorator)
-                 (propertize "q" 'face '(:foreground "green")
-                             'help-echo "help-text"
-                             'intangible 'def-decorator)
-                 ))
+                 (propertize "⊐" 'face 'bold)
+                 )
+                )
+;;                ("\\(def-decorator\\)[\[[:space:]]"
+;;                 (concat
+;; ;;                 (propertize "⊐" 'face 'bold 'intangible 'def-decorator)
+;;                  (propertize "q" 'face '(:foreground "green")
+;;                              'help-echo "help-text"
+;;                              'intangible 'def-decorator)
+;;                  ))
                ;; ("(\\(defn\\+\\)[\[[:space:]]"     "⌝ƒ⁺")
                ;;;; ("(\\(defmacro\\)[\[[:space:]]"    "⌉Ƒ")
                ;;("(\\(defn\\+\\)[\[[:space:]]"     "⊐ƒ⁺")
@@ -271,7 +310,12 @@
 
 ;;(font-lock-add-keywords 'clojure-mode clojure-font-locks)
 
-(add-hook 'text-mode-hook (lambda () (interactive) (remove-overlays)))
+;; clear all text properties and overlays on entering text mode
+(add-hook 'text-mode-hook
+          (lambda ()
+            (interactive)
+            (set-text-properties 1 (buffer-size) nil)
+            (remove-overlays)))
 
 (defun reload-syntax-highlighting ()
   (interactive)
@@ -285,6 +329,7 @@
 
 (add-hook 'clojure-mode-hook
   (lambda ()
+    (setq font-lock-extra-managed-props '(composition display))
     (font-lock-remove-keywords 'clojure-mode clojure-font-locks)
     (font-lock-add-keywords 'clojure-mode clojure-font-locks)))
 
