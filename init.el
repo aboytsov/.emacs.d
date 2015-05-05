@@ -273,18 +273,18 @@
              ;; keywords
              '(;;("(\\(fn\\)[\[[:space:]]"          "ƒ")
                ;;("(\\(fn\\+\\)[\[[:space:]]"       "ƒ⁺")
-               ("\\b\\(defn\\)\\b"
-                (concat
-                 (propertize "⊐" 'face 'bold)
-                 (propertize "ƒ" 'face '(:foreground "green")
-                                 'help-echo "help-text")
-                 )
-                )
-               ("\\b\\(def\\)\\b"
-                (concat
-                 (propertize "⊐" 'face 'bold)
-                 )
-                )
+               ;; ("\\b\\(defn\\)\\b"
+               ;;  (concat
+               ;;   (propertize "⊐" 'face 'bold)
+               ;;   (propertize "ƒ" 'face '(:foreground "green")
+               ;;                   'help-echo "help-text")
+               ;;   )
+               ;;  )
+               ;; ("\\b\\(def\\)\\b"
+               ;;  (concat
+               ;;   (propertize "⊐" 'face 'bold)
+               ;;   )
+               ;;  )
 ;;                ("\\(def-decorator\\)[\[[:space:]]"
 ;;                 (concat
 ;; ;;                 (propertize "⊐" 'face 'bold 'intangible 'def-decorator)
