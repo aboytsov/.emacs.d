@@ -60,8 +60,8 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; -- Set font and the current line highlighting
-(set-face-attribute 'default nil :family "Menlo" :weight 'normal :height 120)
-;;(set-face-attribute 'default nil :family "ProofInconsolata" :weight 'normal :height 120)
+(set-face-attribute 'default nil :family "MenloClojure"
+                    :weight 'normal :height 120)
 (global-hl-line-mode 1)
 (set-face-background 'hl-line "#FFD")
 
@@ -271,20 +271,77 @@
   (mapcar (lambda (pair) `(,(first pair) . ,(replacement (second pair))))
              ;; TODO: instead of '(' need to detect if those symbols are
              ;; keywords
-             '(;;("(\\(fn\\)[\[[:space:]]"          "ƒ")
-               ;;("(\\(fn\\+\\)[\[[:space:]]"       "ƒ⁺")
-               ;; ("\\b\\(defn\\)\\b"
-               ;;  (concat
-               ;;   (propertize "⊐" 'face 'bold)
-               ;;   (propertize "ƒ" 'face '(:foreground "green")
-               ;;                   'help-echo "help-text")
-               ;;   )
-               ;;  )
-               ;; ("\\b\\(def\\)\\b"
-               ;;  (concat
-               ;;   (propertize "⊐" 'face 'bold)
-               ;;   )
-               ;;  )
+             '(("(\\(fn\\)[\[[:space:]]"          "ƒ")
+               ("(\\(fn\\+\\)[\[[:space:]]"       "ƒ⁺")
+                ("\\b\\(defn\\)\\b"
+                 (concat
+                  (propertize "∎" 'face 'bold)
+                  (propertize "ƒ" 'help-echo "help-text")
+                  )
+                 )
+                ("\\b\\(defmacro\\)\\b"
+                 (concat
+                  (propertize "∎" 'face 'bold)
+                  (propertize "Ƒ" 'help-echo "help-text")
+                  )
+                 )
+                ("\\b\\(def\\)\\b"
+                 (concat
+                  (propertize "∎" 'face 'bold)
+                  )
+                 )
+                ("\\b\\(complement\\)\\b"
+                 (concat
+                  (propertize "∁")
+                  )
+                 )
+                ("\\(|\\)"
+                 (concat
+                  (propertize "∘")
+                  )
+                 )
+               ("\\b\\(nil\\)\\b"
+                "∅"
+                )
+               ("\\b\\(nil\\?\\)\\b"
+                "∄"
+                )
+               ("\\b\\(some\\?\\)\\b"
+                "∃"
+                )
+               ("\\b\\(con>\\)\\b"
+                "☰"
+                )
+               ("\\b\\(con<\\)\\b"
+                "☱"
+                )
+               ("\\b\\(concat<\\)\\b"
+                "☲"
+                )
+               ("\\b\\(\\*>\\)\\b"
+                "λ…"
+                )
+               ("\\b\\(\\*<\\)\\b"
+                "…λ"
+                )
+               ("\\b\\(let\\)\\b"
+                "∎"
+                )
+               ("\\b\\(ns\\)\\b"
+                "§"
+                )
+               ("\\b\\(map\\)\\b"
+                "↦"
+                )
+               ("\\b\\(last\\)\\b"
+                "↩"
+                )
+               ("\\b\\(first\\)\\b"
+                "↪"
+                )
+               ("\\b\\(for\\)\\b"
+                "∀"
+                )
 ;;                ("\\(def-decorator\\)[\[[:space:]]"
 ;;                 (concat
 ;; ;;                 (propertize "⊐" 'face 'bold 'intangible 'def-decorator)

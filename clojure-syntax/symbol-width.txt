@@ -16,6 +16,7 @@
 ;; find/search
 ;; identity
 
+;; fallback font: Cambria Math
 
 ;; ----------------------------
 ;; complete font character list
@@ -125,30 +126,6 @@
 (y a b) ;; y (0x0079)
 (z a b) ;; z (0x007A)
 
-;; -- less common punctuation
-(§ a b) ;; section (0x00A7)
-(¶ a b) ;; paragraph (0x00B6)
-(¡ a b) ;; exclamdown (0x00A1)
-(¿ a b) ;; questiondown (0x00BF)
-(‼ a b) ;; exclamdbl (0x203C)
-(⁇ a b) ;; double question marj (0x2047)
-(⁈ a b) ;; question mark + exclamation (0x2048)
-(⁉ a b) ;; exclamation + question mark (0x2049)
-(‗ a b) ;; underscoredbl (0x2017)
-(¯ a b) ;; macron (0x00AF)
-(° a b) ;; degree (0x00B0)
-(¨ a b) ;; dieresis (0x00A8)
-(´ a b) ;; acute (0x00B4)        ??????????????????? kill
-(· a b) ;; periodcentered (0x00B7)
-(… a b) ;; ellipsis (0x2026)
-(⋯ a b) ;; midline ellipsis (0x22ef)
-(′ a b) ;; minute (0x2032)
-(″ a b) ;; second (0x2033)
-(‴ a b) ;; millisecon (0x2034)
-(™ a b) ;; trademark (0x2122)
-(¦ a b) ;; brokenbar (0x00A6)
-(ǁ a b) ;; double pipe (0x01C1)
-
 ;; -- superscript
 ;; - numbers
 (⁰ a b)  ;; superscript 0 (0x2070)
@@ -179,6 +156,7 @@
 (ᴿ a b)  ;; superscript R (0x1D3F)
 (ᵀ a b)  ;; superscript T (0x1D40)
 (ᵁ a b)  ;; superscript U (0x1D41)
+(ⱽ a b)  ;; superscript V (0x2C7D)
 (ᵂ a b)  ;; superscript W (0x1D42)
 ;; - lower-case
 (ᵃ a b)  ;; superscript a (0x1D43)
@@ -189,7 +167,7 @@
 (ᶠ a b)  ;; superscript f (0x1DA0)
 (ᵍ a b)  ;; superscript g (0x1D4D)
 (ʰ a b)  ;; superscript h (0x02B0)
-(ⁱ a b)  ;; superscript i (0x2071)
+(ꜞ a b)  ;; superscript i (0xA71E)
 (ʲ a b)  ;; superscript j (0x02B2)
 (ᵏ a b)  ;; superscript k (0x1D4F)
 (ᶥ a b)  ;; superscript l (0x1DA5)
@@ -208,11 +186,13 @@
 (ᴲ a b)  ;; superscript reverse E (0x1D32)
 (˙ a b)  ;; superscript dot (0x02D9)
 (˚ a b)  ;; superscript ring (0x02DA)
-(⁺ a b)  ;; superscript + (0x207A)
+(⁺ a b)  ;; superscript + (0x207A)        ;; decorate? larger
 (⁻ a b)  ;; superscript - (0x207B)
-(⁼ a b)  ;; superscript = (0x207C)
 (⁽ a b)  ;; superscript ( (0x207D)
 (⁾ a b)  ;; superscript ) (0x207E)
+(ꜛ a b)  ;; superscript up arrow (0xA71B)
+(ꜜ a b)  ;; superscript down arrow (0xA71B)
+(ꜝ a b)  ;; superscript exclamation (0xA71D)
 
 ;; -- subscript
 ;; - numbers
@@ -229,91 +209,20 @@
 ;; - lower-case
 (ₐ a b)  ;; subscript a (0x2090)
 (ₑ a b)  ;; subscript e (0x2091)
-(ᵢ a b)  ;; subscript i (0x1D62)
+(ꜟ a b)  ;; subscript i (0xA71F)
+(ⱼ a b)  ;; subscript j (0x2C7C)
 (ₒ a b)  ;; subscript o (0x2092)
 (ᵣ a b)  ;; subscript r (0x1D63)
 (ᵤ a b)  ;; subscript u (0x1D64)
 (ᵥ a b)  ;; subscript v (0x1D65)
 (ₓ a b)  ;; subscript x (0x2093)
 ;; - punctuation + other
-(˳ a b)    ;; subscript ring (0x02F3)
+(˳ a b)  ;; subscript ring (0x02F3)
 (₊ a b)  ;; subscript + (0x208A)
 (₋ a b)  ;; subscript - (0x208B)
-(₌ a b)  ;; subscript = (0x208C)
+(꞊ a b)  ;; subscript = (0xA78A)
 (₍ a b)  ;; subscript ( (0x208D)
 (₎ a b)  ;; subscript ) (0x208E)
-
-;; -- greek
-;; - upper-case
-(Α a b) ;; Alpha (0x0391)
-(Β a b) ;; Beta (0x0392)
-(Γ a b) ;; Gamma (0x0393)
-(Ε a b) ;; Epsilon (0x0395)
-(Ζ a b) ;; Zeta (0x0396)
-(Η a b) ;; Eta (0x0397)
-(Θ a b) ;; Theta (0x0398)
-(Ι a b) ;; Iota (0x0399)
-(Κ a b) ;; Kappa (0x039A)
-(Λ a b) ;; Lambda (0x039B)
-(Μ a b) ;; Mu (0x039C)
-(Ν a b) ;; Nu (0x039D)
-(Ξ a b) ;; Xi (0x039E)
-(Ο a b) ;; Omicron (0x039F)
-(Π a b) ;; Pi (0x03A0)
-(Ρ a b) ;; Rho (0x03A1)
-(Σ a b) ;; Sigma (0x03A3)
-(Τ a b) ;; Tau (0x03A4)
-(Υ a b) ;; Upsilon (0x03A5)
-(Φ a b) ;; Phi (0x03A6)
-(Χ a b) ;; Chi (0x03A7)
-(Ψ a b) ;; Psi (0x03A8)
-(Ω a b) ;; Omega (0x03A9)
-;; - lower-case
-(α a b) ;; alpha (0x03B1)
-(β a b) ;; beta (0x03B2)
-(γ a b) ;; gamma (0x03B3)
-(δ a b) ;; delta (0x03B4)
-(ε a b) ;; epsilon (0x03B5)
-(ζ a b) ;; zeta (0x03B6)
-(η a b) ;; eta (0x03B7)
-(θ a b) ;; theta (0x03B8)
-(ι a b) ;; iota (0x03B9)
-(κ a b) ;; kappa (0x03BA)
-(λ a b) ;; lambda (0x03BB)
-(ν a b) ;; nu (0x03BD)
-(ξ a b) ;; xi (0x03BE)
-(ο a b) ;; omicron (0x03BF)
-(π a b) ;; pi (0x03C0)
-(ρ a b) ;; rho (0x03C1)
-(ς a b) ;; sigma1 (0x03C2)
-(σ a b) ;; sigma (0x03C3)
-(τ a b) ;; tau (0x03C4)
-(υ a b) ;; upsilon (0x03C5)
-(φ a b) ;; phi (0x03C6)
-(χ a b) ;; chi (0x03C7)
-(ψ a b) ;; psi (0x03C8)
-(ω a b) ;; omega (0x03C9)
-
-;; -- tilde
-;; - upper-case
-(Ã a b) ;; Atilde
-(Ẽ a b) ;; Etilde
-(Ĩ a b) ;; Itilde
-(Ñ a b) ;; Ntilde
-(Õ a b) ;; Otilde
-(Ũ a b) ;; Utilde
-(Ṽ a b) ;; Btilde
-(Ỹ a b) ;; Ytilde
-;; - lower-case
-(ã a b) ;; atilde
-(ẽ a b) ;; etilde
-(ĩ a b) ;; itilde
-(ῖ a b) ;; ltilde
-(ñ a b) ;; ntilde
-(õ a b) ;; otilde
-(ũ a b) ;; utilde
-(ṽ a b) ;; vtilde
-(ỹ a b) ;; ytilde
 
 ;; -- single dot
 ;; - upper-case
@@ -408,6 +317,116 @@
 (ŵ a b) ;; wcircumflex
 (ŷ a b) ;; ycircumflex
 
+;; double-lined
+(ℂ a b) ;; C
+(ℍ a b) ;; H
+(ℕ a b) ;; N
+(ℙ a b) ;; P
+(ℚ a b) ;; Q
+(ℝ a b) ;; R
+(ℤ a b) ;; Z
+
+;; -- hooks and horns
+(Ơ a b) ;; Ohorn (0x01A0)
+(ơ a b) ;; ohorn (0x01A1)
+(Ƥ a b) ;; Phook (0x01A4)
+(ƥ a b) ;; phook (0x01A5)
+
+;; -- reverse and turned
+(Ƨ a b) ;; reverse S (0x01A7)
+(ƨ a b) ;; reverse s (0x01A8)
+(Ɔ a b) ;; reverse C (0x0186)
+(ɔ a b) ;; reverse c (0x0254)
+(Ʌ a b) ;; turned V (0x0245)
+(ǝ a b) ;; turned e (0x01DD)
+
+;; -- greek
+;; - upper-case
+(Α a b) ;; Alpha (0x0391)
+(Β a b) ;; Beta (0x0392)
+(Γ a b) ;; Gamma (0x0393)
+(Ε a b) ;; Epsilon (0x0395)
+(Ζ a b) ;; Zeta (0x0396)
+(Η a b) ;; Eta (0x0397)
+(Θ a b) ;; Theta (0x0398)
+(Ι a b) ;; Iota (0x0399)
+(Κ a b) ;; Kappa (0x039A)
+(Λ a b) ;; Lambda (0x039B)
+(Μ a b) ;; Mu (0x039C)
+(Ν a b) ;; Nu (0x039D)
+(Ξ a b) ;; Xi (0x039E)
+(Ο a b) ;; Omicron (0x039F)
+(Π a b) ;; Pi (0x03A0)
+(Ρ a b) ;; Rho (0x03A1)
+(Σ a b) ;; Sigma (0x03A3)
+(Τ a b) ;; Tau (0x03A4)
+(Υ a b) ;; Upsilon (0x03A5)
+(Φ a b) ;; Phi (0x03A6)
+(Χ a b) ;; Chi (0x03A7)
+(Ψ a b) ;; Psi (0x03A8)
+(Ω a b) ;; Omega (0x03A9)
+;; - lower-case
+(α a b) ;; alpha (0x03B1)
+(β a b) ;; beta (0x03B2)
+(γ a b) ;; gamma (0x03B3)
+(δ a b) ;; delta (0x03B4)
+(ε a b) ;; epsilon (0x03B5)
+(ζ a b) ;; zeta (0x03B6)
+(η a b) ;; eta (0x03B7)
+(θ a b) ;; theta (0x03B8)
+(ι a b) ;; iota (0x03B9)
+(κ a b) ;; kappa (0x03BA)
+(λ a b) ;; lambda (0x03BB)                 ;; lambda
+(µ a b) ;; mu (0x00B5)
+(ν a b) ;; nu (0x03BD)
+(ξ a b) ;; xi (0x03BE)
+(ο a b) ;; omicron (0x03BF)
+(π a b) ;; pi (0x03C0)
+(ρ a b) ;; rho (0x03C1)
+(ς a b) ;; sigma1 (0x03C2)
+(σ a b) ;; sigma (0x03C3)
+(τ a b) ;; tau (0x03C4)
+(υ a b) ;; upsilon (0x03C5)
+(φ a b) ;; phi (0x03C6)
+(χ a b) ;; chi (0x03C7)
+(ψ a b) ;; psi (0x03C8)
+(ω a b) ;; omega (0x03C9)
+
+;; -- less common punctuation
+;; - text formatting
+(§ a b) ;; section (0x00A7)
+(¶ a b) ;; paragraph (0x00B6)
+(␣ a b) ;; open box (0x2423)
+;; - exclamation and question marks
+(¡ a b) ;; exclamdown (0x00A1)
+(¿ a b) ;; questiondown (0x00BF)
+(⸮ a b) ;; reverse question mark (0x2E2E)
+(‼ a b) ;; exclamdbl (0x203C)
+(⁇ a b) ;; double question marj (0x2047)
+(⁈ a b) ;; question mark + exclamation (0x2048)
+(⁉ a b) ;; exclamation + question mark (0x2049)
+;; - under/overscores
+(‗ a b) ;; underscoredbl (0x2017)
+(⚋ a b) ;; dotted underscore (0x268B)
+(¯ a b) ;; macron (0x00AF)
+;; - bars
+(¦ a b) ;; brokenbar (0x00A6)
+(ǁ a b) ;; double pipe (0x01C1)
+;; - minutes/seconds
+(′ a b) ;; minute (0x2032)
+(″ a b) ;; second (0x2033)
+(‴ a b) ;; milliseconds (0x2034)
+;; - currency
+(¤ a b) ;; currency (0x00A4)
+(¢ a b) ;; cent (0x00A2)
+(£ a b) ;; sterling (0x00A3)
+(¥ a b) ;; yen (0x00A5)
+(€ a b) ;; Euro (0x20AC)
+;; - other
+(° a b) ;; degree (0x00B0)
+(¨ a b) ;; dieresis (0x00A8)
+(· a b) ;; periodcentered (0x00B7)
+
 ;; -- quotes
 (« a b) ;; guillemotleft (0x00AB)
 (» a b) ;; guillemotright (0x00BB)
@@ -418,248 +437,71 @@
 („ a b) ;; quotedblbase (0x201E)
 (‟ a b) ;; double high reversed (0x201F)
 
-;; -- symbols
-(† a b) ;; dagger (0x2020)
-(‡ a b) ;; daggerdbl (0x2021)
-(• a b) ;; bullet (0x2022)
-(‣ a b) ;; triangular bullet (0x2023)
+;; -- brackets and parenthesis
+❨a b❩
+❬a b❭
+❮a b❯
+❰a b❱
 
-;; -- currency
-(¢ a b) ;; cent (0x00A2)
-(£ a b) ;; sterling (0x00A3)
-(¤ a b) ;; currency (0x00A4)
-(¥ a b) ;; yen (0x00A5)
-(€ a b) ;; Euro (0x20AC)
-
-;; -- logic
-(¬ a b) ;; logicalnot (0x00AC)
-
-;; -- sets
-
-;; -- math
-(± a b) ;; plusminus (0x00B1)
-(× a b) ;; multiply (0x00D7)
-(÷ a b) ;; divide (0x00F7)
+;; -- ellipsis and multi-dashes
+(… a b) ;; ellipsis (0x2026)
+(⋯ a b) ;; midline ellipsis (0x22ef)
+(╌ a b) ;; double dash horizontal (0x254C)
+(╍ a b) ;; heavy double dash horizontal (0x254D)
+(┄ a b) ;; tripple dash horizontal (0x2504)
+(┅ a b) ;; heavy tripple dash horizontal (0x2505)
+(┈ a b) ;; quadruple dash horizontal (0x2508)
+(┉ a b) ;; heavy quadruple dash horizontal (0x2509)
 
 ;; -- function
 (Ƒ a b) ;; capital florin (0x0191)
 (ƒ a b) ;; florin (0x0192)
-(ƛ a b) ;; crossed lambda (0x019B
 (ϝ a b) ;; digamma (0x03DD)
+(ƛ a b) ;; crossed lambda (0x019B
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-???????
-
-(µ a b) ;; mu (0x00B5)
-
-
-
-
-
-
-
-(Ơ a b) ;; Ohorn (0x01A0)
-(ơ a b) ;; ohorn (0x01A1)
-(Ƥ a b) ;; Phook (0x01A4)
-(ƥ a b) ;; phook (0x01A5)
-(Ƨ a b) ;; reverse S (0x01A7)
-(ƨ a b) ;; reverse s (0x01A8)
-(Ʃ a b) ;; sum (0x01A9)
-
-(Ɔ a b) ;; reverse C (0x0186)
-(ɔ a b) ;; reverse c (0x0254)
-(Ǝ a b) ;; reverse E (there exists) (0x018E)
-
-
-(Ʌ a b) ;; turned V (0x0245)
-(ǝ a b) ;; turned e (0x01DD)
-
-
-
-(ϵ a b) ;; lunate epsilon (0x03F5)
-(϶ a b) ;; reverse lunate epsilon (0x03F6)
-(Ͼ a b) ;; capital dotted lunate sigma (0x03FE)
-(Ͽ a b) ;; reverse capital dotted lunate sigma (0x03FF)
-
-(჻ a b) ;; georgean paragraph separator (0x10FB)
-(ᴖ a b) ;; latin small letter top half o (0x1D16)
-(ᴗ a b) ;; latin small letter bottom half o (0x1D17)
-(⌒ a b) ;; arc (0x2312)
-(⌓ a b) ;; segment (0x2312)
-
-
-;; double-what???
-(ℂ a b) ;; C
-(ℍ a b) ;; H
-(ℕ a b) ;; N
-(ℙ a b) ;; P
-(ℚ a b) ;; Q
-(ℝ a b) ;; R
-(ℤ a b) ;; Z
-
-
-;; arrows
-(← a b) ;; arrowleft (0x2190)
-(↑ a b) ;; arrowup (0x2191)
-(→ a b) ;; arrowright (0x2192)
-(↓ a b) ;; arrowdown (0x2193)
-;; --
-(↔ a b) ;; arrowboth (0x2194)
-(↕ a b) ;; arrowupdn (0x2195)
-;; --
-(↖ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↗ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↘ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↙ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(↢ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↣ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(↤ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↥ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↦ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↧ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(↩ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↪ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(↯ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(↰ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↱ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↲ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↳ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↴ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↵ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(↶ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↷ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↺ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↻ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(↹ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(↼ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↽ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↾ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↿ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇀ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇁ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇂ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇃ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(⇄ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇆ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇅ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇵ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇇ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇈ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇉ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇊ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇋ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇌ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(⇜ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇝ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(⇤ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇥ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(⇦ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇧ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇨ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇩ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇳ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(⇱ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇲ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(⇶ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(⇷ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⇸ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(⇽ a b)  0x21FD
-(⇾ a b)  0x21FE
-(⇿ a b)  0x21FF
-;; --
-(⌁ a b) ;; electric arrow (0x2301)
-(ϟ a b) ;; koppa (0x03DF)
-
-;; math symbols
-(∀ a b) ;; universal (0x2200)
-(∁ a b) ;; complement (0x2201)
+;; -- math symbols
+(± a b) ;; plusminus (0x00B1)
+(∓ a b) ;; minus or plus (0x2213)
+(× a b) ;; multiply (0x00D7)
+(÷ a b) ;; divide (0x00F7)
+(∀ a b) ;; universal (0x2200)             ;; for?
+(∁ a b) ;; complement (0x2201)            ;; complement
 (∂ a b) ;; partialdiff (0x2202)
-(∃ a b) ;; existential (0x2203)
-(∄ a b) ;; doesn't exist (0x2204)
-(∅ a b) ;; emptyset (0x2205)
+(∃ a b) ;; existential (0x2203)           ;; some?
+(∎ a b) ;; let (0x220E)                   ;; def/let
+(∄ a b) ;; doesn't exist (0x2204)         ;; nil?
 (∆ a b) ;; Delta (0x2206)
 (∇ a b) ;; gradient (0x2207)
-(∈ a b) ;; element (0x2208)
-(∉ a b) ;; notelement (0x2209)
+(∏ a b) ;; product (0x220F)
+(Ʃ a b) ;; sum (0x01A9)                   ;; sum
+(∘ a b) ;; ring operator (0x2218)         ;; function composition
+(∙ a b) ;; bullet operator (0x2219)
+(√ a b) ;; square root (0x221A)           ;; sqrt
+(∞ a b) ;; infinity (0x221E)
+(∟ a b) ;; orthogonal (0x221F)
+(∠ a b) ;; angle (0x2220)
+(∫ a b) ;; integral (0x222B)
+(∸ a b) ;; dot minus (0x2238)
+(∹ a b) ;; excess (0x2239)            ;; if?
+(꜒ a b) ;; max (0xA712)               ;; max
+(꜖ a b) ;; max (0xA716)               ;; min
+
+;; -- logic
+(¬ a b) ;; logicalnot (0x00AC)              ;; not
+(∧ a b) ;; logicaland (0x2227)              ;; TODO: disambguate
+(∨ a b) ;; logicalor (0x2228)               ;; TODO: disambguate
+
+;; -- sets
+(∅ a b) ;; emptyset (0x2205)                ;; nil
+(∩ a b) ;; intersection (0x2229)            ;; intersect
+(∪ a b) ;; union (0x222A)                   ;; union
+;; --
+(∈ a b) ;; element of (0x2208)              ;; has, contains etc.
+(∉ a b) ;; not element of (0x2208)
 (∊ a b) ;; small element of (0x220A)
 (∋ a b) ;; contains as member (0x220B)
 (∌ a b) ;; doesn't contain (0x220C)
 (∍ a b) ;; small contains as member (0x220A)
-(∏ a b) ;; product (0x220F)
-(∑ a b) ;; summation (0x2211)
-(∓ a b) ;; minus or plus (0x2213)
-(∘ a b) ;; ring operator (0x2218)
-(∙ a b) ;; bullet operator (0x2219)
-(√ a b) ;; radical (0x221A)
-(∞ a b) ;; infinity (0x221E)
-(∟ a b) ;; orthogonal (0x221F)
-(∠ a b) ;; angle (0x2220)
-(∧ a b) ;; logicaland (0x2227)
-(∨ a b) ;; logicalor (0x2228)
-(∩ a b) ;; intersection (0x2229)
-(∪ a b) ;; union (0x222A)
-(∫ a b) ;; integral (0x222B)
-(∸ a b) ;; dot minus (0x2238)
-(∹ a b) ;; excess (0x2239)
-
-;; equality and comparisons
-(≠ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|      ;; not=
-(≟ a b) ;; questioned equal to (0x225F)
-(≁ a b) ;; excess (0x2239)
-(≈ a b) ;; approxequal (0x2248)
-(≠ a b) ;; notequal (0x2260)
-(≍ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(≭ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(≗ a b) ;; ring equal to (0x2257)
-;; --
-(≡ a b) ;; equivalence (0x2261)
-(≢ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(≣ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(≐ a b) ;; approaches the limit (0x2250)
-(≑ a b) ;; geometrically equal to (0x2251)
-(≒ a b) ;; approximately equal to or the image of (0x2252)
-(≓ a b) ;; image of or approximately equal to (0x2253)
-;; --
-(≤ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|      ;; <=
-(≥ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|      ;; >=
-;; --
-(≺ a b) preceeds
-(≻ a b) succeeds
-(≼ a b) preceeds or equal to
-(≽ a b) succeeds or equal to
-(≾ a b) preceeds or equivalent to
-(≿ a b) succeeds or equivalent to
 ;; --
 (⊂ a b) ;; propersubset (0x2282)
 (⊃ a b) ;; propersuperset (0x2283)
@@ -667,34 +509,286 @@
 (⊅ a b) ;; notsuperset (0x2285)
 (⊆ a b) ;; reflexsubset (0x2286)
 (⊇ a b) ;; reflexsuperset (0x2287)
-(⊏ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⊐ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⊑ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⊒ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
+(⊏ a b) ;; square image of
+(⊐ a b) ;; square original of
+(⊑ a b) ;; square image of or equal to
+(⊒ a b) ;; square original of or equal to
 
-;; -- circled
-(⊙ a b) ;; circled dot (0x2299)
+;; -- equality and comparisons
+(≤ a b) ;; <=
+(≥ a b) ;; >=
+(≠ a b) ;; not=
+;; -
+(≟ a b) ;; questioned equal to (0x225F)
+(≁ a b) ;; excess (0x2239)
+(≈ a b) ;; approxequal (0x2248)
+(≠ a b) ;; notequal (0x2260)
+(≗ a b) ;; ring equal to (0x2257)
+;; -
+(≡ a b) ;; equivalence (0x2261)
+(≢ a b) ;; not identical to
+(≣ a b) ;; strictly equivalent to
+;; -
+(≐ a b) ;; approaches the limit (0x2250)
+(≑ a b) ;; geometrically equal to (0x2251)
+(≒ a b) ;; approximately equal to or the image of (0x2252)
+(≓ a b) ;; image of or approximately equal to (0x2253)
+;; -
+(≺ a b) preceeds
+(≻ a b) succeeds
+(≼ a b) preceeds or equal to
+(≽ a b) succeeds or equal to
+(≾ a b) preceeds or equivalent to
+(≿ a b) succeeds or equivalent to
 
-;; -- squared
+;; -- arrows
+(← a b) ;; arrowleft (0x2190)       ;; conversions?
+(↑ a b) ;; arrowup (0x2191)
+(→ a b) ;; arrowright (0x2192)      ;; threading?
+(↓ a b) ;; arrowdown (0x2193)
+;; - both
+(↔ a b) ;; arrowboth (0x2194)
+(↕ a b) ;; arrowupdn (0x2195)
+;; - diagonal
+(↖ a b)
+(↗ a b)
+(↘ a b)
+(↙ a b)
+;; - two ends
+(↢ a b)
+(↣ a b)
+;; - stop-end
+(↤ a b)
+(↥ a b)
+(↦ a b)                      ;; map?
+(↧ a b)
+(⇤ a b)
+(⇥ a b)
+;; - angled/curved
+(↩ a b)                      ;; last?
+(↪ a b)                      ;; first?
+;; - angled/straight
+(↰ a b)
+(↱ a b)
+(↲ a b)
+(↳ a b)
+(↴ a b)
+(↵ a b)                        ;; newline?
+;; - arched
+(↶ a b)
+(↷ a b)
+(↺ a b)
+(↻ a b)
+;; - one-side
+(↼ a b)
+(↽ a b)
+(↾ a b)
+(↿ a b)
+(⇀ a b)
+(⇁ a b)
+(⇂ a b)
+(⇃ a b)
+;; - double
+(⇄ a b)
+(⇆ a b)
+(⇅ a b)
+(⇵ a b)
+(⇇ a b)
+(⇈ a b)
+(⇉ a b)
+(⇊ a b)
+(⇋ a b)
+(⇌ a b)
+(↹ a b)
+;; - triple
+(⇶ a b)
+;; - fat white
+(⇦ a b)
+(⇧ a b)
+(⇨ a b)
+(⇩ a b)
+(⇳ a b)
+;; - into corner
+(⇱ a b)
+(⇲ a b)
+;; - crossed
+(⇷ a b)
+(⇸ a b)
+;; - electricity
+(↯ a b)
+(⚡ a b) ;; electricity (0x26A1)
+
+;; -- circles
+(● a b) ;; black circle (0x25CF)
+(○ a b) ;; white circle (0x25CB)
+(◌ a b) ;; dotted circle (0x25CC)
+(◍ a b) ;; mesh circle (0x25CD)
+;; - black segments
+(◐ a b)
+(◑ a b)
+(◒ a b)
+(◓ a b)
+(◔ a b)
+(◕ a b)
+(◖ a b)
+(◗ a b)
+;; - white segments
+(◴ a b)
+(◵ a b)
+(◶ a b)
+(◷ a b)
+;; - inside
+(☉ a b) ;; circled dot (sun, 0x2609)
+
+;; -- squares
+(▢ a b) ;; rounded white square (0x25A1)
+(□ a b) ;; white square (0x25A1)
+(⬚ a b) ;; dotted square (0x2B1A)
+(▤ a b) ;; mesh filled square (0x25A4)
+(■ a b) ;; filledbox (0x25A0)
+;; --
+(▪ a b) ;; small black square (0x25AA)
+(▫ a b) ;; small white square (0x25AB)
+;; - halves
+(◫ a b)
+(◧ a b)
+(◨ a b)
+(⬒ a b)
+(⬓ a b)
+(◩ a b)
+(◪ a b)
+(⬔ a b)
+(⬕ a b)
+;; - segments
+(◰ a b)
+(◱ a b)
+(◲ a b)
+(◳ a b)
+;; - inside
 (⊞ a b) ;; squared plus (0x229E)
 (⊟ a b) ;; squared minus (0x229F)
 (⊠ a b) ;; squared times (0x22A0)
 (⊡ a b) ;; squared dot (0x22A1)
 
+;; -- rectangles
+(▬ a b) ;; black horizontal rectangle (0x25AC)
+(▭ a b) ;; white horizontal rectangle (0x25AD)
+(▮ a b) ;; black vertical rectangle (0x25AE)
+(▯ a b) ;; white vertical rectangle (0x25AF)
+
+;; -- triangles
+;; - large black
+(▶ a b)
+(◀ a b)
+(▲ a b)
+(▼ a b)
+;; - large white
+(▷ a b)
+(◁ a b)
+(△ a b)
+(▽ a b)
+;; - small black
+(▸ a b)
+(◂ a b)
+(▴ a b)
+(▾ a b)
+;; - small white
+(▹ a b)
+(◃ a b)
+(▵ a b)
+(▿ a b)
+;; - pointed black
+(► a b)
+(◄ a b)
+;; - pointed white
+(▻ a b)
+(◅ a b)
+;; - corners black
+(◤ a b)
+(◥ a b)
+(◢ a b)
+(◣ a b)
+;; - corners white
+(◸ a b)
+(◹ a b)
+(◿ a b)
+(◺ a b)
+
+;; -- diamonds
+(◆ a b) ;; black diamond (0x25C6)
+(◇ a b) ;; white diamond (0x25C7)
+;; - halves
+(⬖ a b)
+(⬗ a b)
+(⬘ a b)
+(⬙ a b)
+
+;; -- stars
 (⋆ a b) ;; star operator (0x22c6)
+(★ a b) ;; black star
+(☆ a b) ;; white star
 
-(⌂ a b) ;; house (0x2302)
-(⌄ a b) ;; down arrowhead (0x2304)
+;; -- arcs
+(◜ a b)
+(◝ a b)
+(◟ a b)
+(◞ a b)
+(◠ a b)               ;; concatenation?
+(☰ a b)
+(☱ a b)
+(☲ a b)
+(☳ a b)
+(☴ a b)
+(◡ a b)
 
-(⌘ a b) ;; mac command (0x2318)
+;; -- checks, checkmarks and flags
+(✓ a b) ;; check mark
+(✔ a b) ;; heavy checkmark
+(✗ a b) ;; ballot x
+(✘ a b) ;; heavy ballot x
+;; - flags
+(⚐ a b) ;; white flag
+(⚑ a b) ;; black flag
 
+;; -- blocks
+(▀ a b) ;; upblock (0x2580)
+;; - vertical
+(▁ a b)
+(▂ a b)
+(▃ a b)
+(▄ a b)
+(▅ a b)
+(▆ a b)
+(▇ a b)
+(█ a b)
+;; - horizontal
+(▉ a b)
+(▊ a b)
+(▋ a b)
+(▌ a b)
+(▍ a b)
+(▎ a b)
+(▏ a b)
 ;; --
-(⌜ a b) ;; top left corner            ;; max? probably not
-(⌝ a b) ;; top right corner
-(⌞ a b) ;; bottom left corner            ;; min? probably not
-(⌟ a b) ;; bottom right corner
+(▐ a b) ;; right half-block
+;; --
+(░ a b)
+(▒ a b)
+(▓ a b)
+;; --
+(▖ a b)
+(▗ a b)
+(▘ a b)
+(▙ a b)
+(▚ a b)
+(▛ a b)
+(▜ a b)
+(▝ a b)
+(▞ a b)
+(▟ a b)
 
-;; rectangled OR APL??
+;; APL
+(⎕ a b) ;; APL quad                    ;; empty vector?
 (⌷ a b) ;; APL squish quad             ;; empty vector?
 (⌸ a b) ;; APL quad equal
 (⍯ a b) ;; APL quad not equal
@@ -709,7 +803,6 @@
 (⍓ a b) ;; APL quad up caret
 (⍞ a b) ;; APL quad quote
 (⍠ a b) ;; APL quad colon
-;; TODO
 (⌽ a b) ;; APL circle stile
 (⍚ a b) ;; APL diamond underbar
 (⍛ a b) ;; APL jot underbar
@@ -717,685 +810,24 @@
 (⍥ a b) ;; APL circle diaresis
 (⍨ a b) ;; APL tilde diaresis
 
-
-
-
-(─ a b) ;; SF100000 (0x2500)
-(│ a b) ;; SF110000 (0x2502)
-(▀ a b) ;; upblock (0x2580)
-(▄ a b) ;; dnblock (0x2584)
-(█ a b) ;; block (0x2588)
-(▌ a b) ;; lfblock (0x258C)
-(▐ a b) ;; rtblock (0x2590)
-(░ a b) ;; ltshade (0x2591)
-(▒ a b) ;; shade (0x2592)
-(▓ a b) ;; dkshade (0x2593)
-(■ a b) ;; filledbox (0x25A0)
-(□ a b) ;; H22073 (0x25A1)
-(▪ a b) ;; H18543 (0x25AA)
-(▫ a b) ;; H18551 (0x25AB)
-(▬ a b) ;; filledrect (0x25AC)
-(▲ a b) ;; triagup (0x25B2)
-(► a b) ;; triagrt (0x25BA)
-(▼ a b) ;; triagdn (0x25BC)
-(◄ a b) ;; triaglf (0x25C4)
-(◊ a b) ;; lozenge (0x25CA)
-(○ a b) ;; circle (0x25CB)
-(● a b) ;; H18533 (0x25CF)
-(◘ a b) ;; invbullet (0x25D8)
-(◙ a b) ;; invcircle (0x25D9)
-(◦ a b) ;; openbullet (0x25E6)
-(ﬁ a b) ;; fi (0xFB01)
-(ﬂ a b) ;; fl (0xFB02)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;; known
-(™ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; crosses
-(† a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(‡ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; circles
-(• a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(∘ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|    ;; function composition
-;; --
-(● a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(○ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◌ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◍ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◎ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(◴ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◵ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◶ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◷ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(◐ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◑ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◒ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◓ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◔ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◕ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(◖ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◗ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; squares
-(◻ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◼ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◽ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◾ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(◫ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◧ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|      ;; concatentation?
-(◨ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|      ;; concatentation?
-(◩ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◪ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-;; --
-(◰ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◱ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◲ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◳ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; arcs
-(◜ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◝ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◞ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◟ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◠ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|   ;; concatentation of lists
-(⁐ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|   ;; string concatenation (str)
-(◡ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; dotted
-
-;; arrows
-;; --??
-(➔ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(➙ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(➝ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(➜ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(➞ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(➟ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(➡ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-?
-;; -- better? look up
-(➚ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(➘ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(↔ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(↕ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; triangles
-(▶ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◀ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▲ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▼ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(▸ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◂ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▴ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▾ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(▹ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◃ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▵ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▿ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(▷ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◁ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(△ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▽ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(◤ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◥ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◢ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◣ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(◸ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◹ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◿ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◺ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(∆ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(∇ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(► a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◄ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(▻ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◅ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(◭ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◮ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(◬ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; stars
-(★ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(☆ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; checkmarks
-(✓ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✔ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✕ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✖ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✗ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✘ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; brackets and parenthesis
-(❨ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❩ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❪ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❫ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❬ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❭ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❮ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❯ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❰ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❱ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❲ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❳ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❴ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❵ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; ellipses
-(… a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⋯ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(┄ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(┅ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(┈ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(┉ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; dashes
-(╌ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(╍ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; blocks
-(▁ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▂ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▃ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▄ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▅ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▆ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▇ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(▏ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▎ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▍ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▌ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▋ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▊ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▉ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(▚ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▞ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(░ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▒ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▓ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; quotes
-(ʻ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ˮ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(¨ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(« a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(» a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(‘ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(’ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(‚ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(“ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(” a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(„ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(‟ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(′ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(″ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(‴ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(‹ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(› a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❛ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❜ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❝ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❞ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; question marks and exclamation points
-(¿ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(‼ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁇ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; asterisks
-(⁕ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁜ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✱ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✲ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✳ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✴ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✵ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✶ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✷ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✸ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✹ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✺ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✻ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✼ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(✽ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❃ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❉ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❊ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(❋ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; dots
-(· a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; when?
-(⁖ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; if? when?
-
-;; functions
-(f a b) (def a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|  ;; ascii
-(ƒ a b) (⌝ƒ a b)  ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|   ;; function
-(ϝ a b)
-(Ƒ a b) (⌝ a b)  ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|   ;; macro
-(⨕ a b) (┐ a b)  ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|   ;; traced function  TODO:
-(⨖ a b) (┐⨖ a b)  ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|   ;; backup
-(⨘ a b) (┐⨘ a b)  ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|   ;; backup
-(⨎ a b) (┐⨎ a b)  ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|   ;; backup
-(⨏ a b) (┐⨏ a b)  ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|   ;; backup
-(⨙ a b) (┐⨙ a b)  ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|   ;; backup
-(⨚ a b) (┐⨚ a b)  ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|   ;; backup
-
-;; superscript
-(⁺ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; decorate? can we do better?
-(⁻ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁼ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁽ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁾ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁰ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(¹ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(² a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(³ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁴ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁵ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁶ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁷ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁸ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⁹ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ⁱ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ⁿ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; subscript
-(₊ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₋ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₌ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₍ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₎ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₀ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₁ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₂ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₃ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₄ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₅ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₆ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₇ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₈ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(₉ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ᵢ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ⱼ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ᵣ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ᵤ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ᵥ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ₐ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ₑ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ₓ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ₔ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; math
-(× a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(÷ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(∀ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; for
-(∁ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; complement
-(∂ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(∃ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; exists (= some?)
-(∄ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; doesn't exist = nil?
-(∑ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; sum
-(√ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; sqrt
-(∞ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(∫ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(± a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(∓ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; sets
-(∩ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; intersection
-(∪ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; union
-(∅ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; nil
-(∈ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; contains? which ones?
-(∉ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; doesn't contain?
-(∊ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(∋ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; which one?
-(∌ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(∍ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; logic?
-(¬ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(∧ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(∨ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|           ;; too much like v
-
-;; underlined
-(⍘ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; overlined
-(¯ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; symbols?
-(∹ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|            ;; if? other similar?
-(⋎ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|            ;; or (height problems)
-(⋏ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|            ;; and (height problems)
-;; --
-(⌈ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|            ;; max?
-(⌉ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⌊ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|            ;; min?
-(⌋ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; --
-(∟ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|         ;; right angle (unused)
-
-
-;; greek
-;; -- upper case
-(Α a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Β a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Γ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Δ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Ε a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Ζ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Η a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Θ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Ι a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Κ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Λ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Μ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Ν a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Ξ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Ο a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Π a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Ρ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Σ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Τ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Υ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Φ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Χ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Ψ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Ω a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; -- lower case
-(α a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(β a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(γ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(δ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|                ;; delta (symbol name)
-(ε a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|                ;; empty string
-(ζ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(η a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(θ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ι a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(κ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(λ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(μ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|                ;; mean
-(ν a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ξ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ο a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(π a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|                 ;; pi
-(ρ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ς a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(σ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(τ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(υ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(φ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(χ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ψ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ω a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ϑ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ϕ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ϖ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ϝ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ϰ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ϱ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ϴ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ϵ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; greek bold
-;; -- upper case
-(𝚪 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝚬 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝝣 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝝬 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝝪 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝚭 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝚵 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝚺 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; -- lower case
-(𝛃 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛄 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛅 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛉 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛋 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛌 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝝻 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛐 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛒 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛖 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛛 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝞋 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛞 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛠 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; greek italic
-;; -- upper case
-(𝛤 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛥 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛧 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛯 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛴 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛵 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛻 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; -- lower case
-(𝛼 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝛽 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝜃 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝜋 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝜌 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝜎 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝜒 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝜗 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝜘 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; greek bold italic
-;; upper case
-(𝞔 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝜩 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝞤 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; lower case
-(𝜸 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝜹 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝜼 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝞱 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝜿 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝝀 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝝂 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝝄 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝝊 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝝏 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝝔 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝟀 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; latin double-lined
-;; -- upper case
-(ℂ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝔽 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ℍ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝕃 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ℕ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ℙ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ℚ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ℝ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝕊 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ℤ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; -- lower case
-(𝕒 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝕖 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝕘 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝕠 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝕧 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝕩 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝕪 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; latin bold
-;; -- upper case
-(𝐂 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐄 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐅 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐋 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐘 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐙 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; -- lower case
-(𝐛 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐝 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐡 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐤 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐨 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐩 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐪 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐮 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; -- numbers
-(𝟎 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝟏 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝟐 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝟑 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝟒 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝟓 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝟔 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝟕 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝟖 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝟗 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; latin italic
-;; -- upper case
-(𝐶 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝐹 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝑇 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝑌 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝑍 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; -- lower case
-(𝑑 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝑔 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝑛 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝑢 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝑦 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; latin bold italic
-;; -- upper case
-(𝑳 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝑺 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; -- lower case
-(𝒃 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝒇 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝒌 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝒐 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝒒 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝒗 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝒙 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝒚 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; latin script
-;; -- upper case
-(𝒞 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝒢 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝒮 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; -- lower case
-(𝒻 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝓍 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-;; latin bold script
-;; -- upper case
-(𝓔 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝓢 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-;; -- lower case
-(𝓯 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝓵 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(𝓼 a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-
-
-
-
-
-
-
-
-
-
-;; PROCESS!!! FINISHED HERE
-(⍬ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⍭ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⍳ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⍴ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⍵ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⍺ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⎕ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|            ;; empty vector?
-(␣ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▀ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▐ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▔ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(■ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(□ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▢ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▤ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▥ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▦ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▧ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▨ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▩ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▪ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▫ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▬ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▭ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▮ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(▯ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◆ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◇ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◉ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(◦ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(➛ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(➤ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(➲ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⟨ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⟩ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⥾ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|        ;; true?
-(⥿ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|        ;; false?
-(⨯ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⩆ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⩉ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⩓ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|        ;; and?
-(⩔ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|        ;; or?
-(⩙ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⩚ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|        ;; and?
-(⩛ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|        ;; or?
-(⩜ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⩝ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⩞ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⩟ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⩣ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⫲ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(⫳ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(Ꞌ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
-(ꞌ a b) ▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉▉|
+;; -- random symbols
+(⌘ a b) ;; mac command (0x2318)
+(⌂ a b) ;; house (0x2302)
+(⌄ a b) ;; down arrowhead (0x2304)
+(† a b) ;; dagger (0x2020)
+(‡ a b) ;; daggerdbl (0x2021)
+(⧺ a b) ;; double plus (0x29FA)
+(⧻ a b) ;; triple plus (0x29FB)
+(Ͼ a b) ;; capital dotted lunate sigma (0x03FE)
+(Ͽ a b) ;; reverse capital dotted lunate sigma (0x03FF)
+;; -
+(⌜ a b) ;; top left corner
+(⌝ a b) ;; top right corner
+(⌞ a b) ;; bottom left corner
+(⌟ a b) ;; bottom right corner
+
+;; TODO: circled numbers ① ② ③ ➀ ➁ ➂
+;; TODO: circled letters Ⓐ Ⓑ Ⓒ
+;; TODO: true/false ⊤ ⊥
+;; reference: larger arc ⁀
+;; reference: better symbols ⤆ ⤇ ⤾ ⤿  ⤺ ⤻ ⤺ ⤻
