@@ -28,7 +28,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(blink-cursor-interval nil)
- '(clojure-mode-use-backtracking-indent t)
  '(column-number-mode t)
  '(company-idle-delay 0.3)
  '(company-minimum-prefix-length 2)
@@ -189,6 +188,34 @@
 (add-to-list 'load-path "~/.emacs.d/modules/clojure-mode/")
 (require 'clojure-mode)
 
+;; indentation
+(setq clojure-defun-indents
+      '(if-let if-not-let when-let when-not-let
+        if-nil if-not-nil when-nil when-not-nil
+        if-nil-let if-not-nil-let when-nil-let when-not-nil-let
+        if-empty if-not-empty when-empty when-not-empty
+        if-empty-let if-not-empty-let when-empty-let when-not-empty-let
+        if-coll if-not-coll when-coll when-not-coll
+        if-coll-let if-not-coll-let when-coll-let when-not-coll-let
+        if-string if-not-string when-string when-not-string
+        if-string-let if-not-string-let when-string-let when-not-string-let))
+;; (mapcar (lambda (x) (put-clojure-indent x 1))
+;;         '(if-let if-not-let when-let when-not-let
+;;           if-nil if-not-nil when-nil when-not-nil
+;;           if-nil-let if-not-nil-let when-nil-let when-not-nil-let
+;;           if-empty if-not-empty when-empty when-not-empty
+;;           if-empty-let if-not-empty-let when-empty-let when-not-empty-let
+;;           if-coll if-not-coll when-coll when-not-coll
+;;           if-coll-let if-not-coll-let when-coll-let when-not-coll-let
+;;           if-string if-not-string when-string when-not-string
+;;           if-string-let if-not-string-let when-string-let when-not-string-let))
+(put 'my-func 'clojure-indent-function 0)
+(put 'func2 'clojure-indent-function 0)
+(put 'while-not 'clojure-indent-function 1)
+(put 'ignore-errors 'clojure-indent-function 'defun)
+(put 'macrolet 'clojure-indent-function 'defun)
+(setq clojure-use-backtracking-indent nil)
+
 ;; syntax highlighting
 (defmacro defclojureface (name color desc &optional others)
   `(defface ,name
@@ -202,9 +229,6 @@
 (defclojureface clojure-java-call    "#4bcf68"   "Clojure Java calls")
 (defclojureface clojure-special      "#4682b4"   "Clojure special")
 (defclojureface clojure-double-quote "#4682b4"   "Clojure double quote")
-
-(defun mf--on-modification (&rest unused)
-  (message "FUCK"))
 
 (defun replacement (txt)
   `(0 (progn

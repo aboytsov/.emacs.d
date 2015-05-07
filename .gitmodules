@@ -1,9 +1,6 @@
 [submodule "cider"]
 	path = modules/cider
 	url = https://github.com/clojure-emacs/cider.git
-[submodule "clojure-mode"]
-	path = modules/clojure-mode
-	url = https://github.com/clojure-emacs/clojure-mode
 [submodule "company-mode"]
 	path = modules/company-mode
 	url = https://github.com/company-mode/company-mode
