@@ -1,0 +1,3 @@
+#!/usr/local/bin/fontforge -lang=ff
+Open("Menlo-Clojure.sfd")
+Generate(GetEnv("HOME") + "/Library/Fonts/Menlo-Clojure.ttf")

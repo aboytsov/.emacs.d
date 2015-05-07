@@ -15,6 +15,7 @@
 ;; count
 ;; find/search
 ;; identity
+;; first/last + rest/butlast
 
 ;; fallback font: Cambria Math
 

@@ -115,12 +115,55 @@
 (global-set-key (kbd "C->") 'next-error)      ;; Control + Shift + >
 (global-set-key (kbd "C-<") 'previous-error)  ;; Control + Shift + <
 
-;; quick mode toggling
+;; quick mode toggling and text properties
+(defun list-text-properties-at (&optional pos)
+  (interactive)
+  (setq pos (or pos (point)))
+  (let ((properties (text-properties-at pos))
+      (buf (get-buffer-create "*Text properties*")))
+    (set-buffer buf)
+    (erase-buffer)
+    (insert (format "%s" properties))
+    (pop-to-buffer buf)))
+
+(defun list-text-overlays-at (&optional pos)
+  "Describe overlays at POS or point."
+  (interactive)
+  (setq pos (or pos (point)))
+  (let ((overlays (overlays-at pos))
+        (obuf (current-buffer))
+        (buf (get-buffer-create "*Overlays*"))
+        (props '(priority window category face mouse-face display
+                 help-echo modification-hooks insert-in-front-hooks
+                 insert-behind-hooks invisible intangible
+                 isearch-open-invisible isearch-open-invisible-temporary
+                 before-string after-string evaporate local-map keymap
+                 field))
+        start end text)
+    (if (not overlays)
+        (message "None.")
+      (set-buffer buf)
+      (erase-buffer)
+      (dolist (o overlays)
+        (setq start (overlay-start o)
+              end (overlay-end o)
+              text (with-current-buffer obuf
+                     (buffer-substring start end)))
+        (when (> (- end start) 13)
+          (setq text (concat (substring text 1 10) "...")))
+        (insert (format "From %d to %d: \"%s\":\n" start end text))
+        (dolist (p props)
+          (when (overlay-get o p)
+            (insert (format " %15S: %S\n" p (overlay-get o p))))))
+      (pop-to-buffer buf))))
+
 (global-reset-key (kbd "M-m") (make-sparse-keymap))
 (global-set-key (kbd "M-m c") 'clojure-mode)
 (global-set-key (kbd "M-m o") 'org-mode)
 (global-set-key (kbd "M-m t") 'text-mode)
 (global-set-key (kbd "M-m l") 'emacs-lisp-mode)
+(global-set-key (kbd "M-m p") 'list-text-properties-at)
+(global-set-key (kbd "M-m o") 'list-text-overlays-at)
 
 ;; search lines
 
@@ -191,36 +234,21 @@
 ;;        (compose-region (match-beginning 1)
   ;;                      (match-end 1)
         ;;                    ,txt)
-        (put-text-property (match-beginning 1)
-                           (match-end 1)
-                           'display
-                           ,txt
-                           )
-        ;; (put-text-property (match-beginning 1)
-        ;;                    (match-end 1)
-        ;;                    'display
-        ;;                    "???"
-        ;;                    )
+        (when (not (member (get-text-property (match-beginning 1) 'face)
+                           '(font-lock-comment-face
+                             font-lock-string-face
+                             font-lock-doc-face)
+                       ))
+            (put-text-property (match-beginning 1)
+                               (match-end 1)
+                               'display
+                               ,txt
+                               ))
 ;;        (put-text-property (match-beginning 1)
 ;;                           (match-end 1)
 ;;                           'intangible
 ;;                           12
 ;;                           )
-;;        (put-text-property (match-beginning 1)
-;;                           (match-end 1)
-;;                           'fontified
-;;                           t
-;;                           )
-        ;; (put-text-property (match-beginning 1)
-        ;;                    (match-end 1)
-        ;;                    'insert-behind-hooks
-        ;;                    '(mf--on-modification)
-        ;;                    )
-        ;; (put-text-property (match-beginning 1)
-        ;;                    (match-end 1)
-        ;;                    'insert-in-front-hooks
-        ;;                    '(mf--on-modification)
-        ;;                    )
         ;; TODO: help-echo
         nil)))
 
@@ -235,37 +263,6 @@
 ;; http://www.emacswiki.org/emacs/TextProperties#text_property
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Properties.html
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Multiline-Font-Lock.html#Multiline-Font-Lock
-
-(defun list-overlays-at (&optional pos)
-  "Describe overlays at POS or point."
-  (interactive)
-  (setq pos (or pos (point)))
-  (let ((overlays (overlays-at pos))
-        (obuf (current-buffer))
-        (buf (get-buffer-create "*Overlays*"))
-        (props '(priority window category face mouse-face display
-                 help-echo modification-hooks insert-in-front-hooks
-                 insert-behind-hooks invisible intangible
-                 isearch-open-invisible isearch-open-invisible-temporary
-                 before-string after-string evaporate local-map keymap
-                 field))
-        start end text)
-    (if (not overlays)
-        (message "None.")
-      (set-buffer buf)
-      (erase-buffer)
-      (dolist (o overlays)
-        (setq start (overlay-start o)
-              end (overlay-end o)
-              text (with-current-buffer obuf
-                     (buffer-substring start end)))
-        (when (> (- end start) 13)
-          (setq text (concat (substring text 1 10) "...")))
-        (insert (format "From %d to %d: \"%s\":\n" start end text))
-        (dolist (p props)
-          (when (overlay-get o p)
-            (insert (format " %15S: %S\n" p (overlay-get o p))))))
-      (pop-to-buffer buf))))
 
 (setq clojure-font-locks
   (mapcar (lambda (pair) `(,(first pair) . ,(replacement (second pair))))
@@ -623,6 +620,9 @@
 (setq cider-auto-select-error-buffer nil)
 
 (cider-repl-toggle-pretty-printing)
+
+(setq cider-test-infer-test-ns
+      (lambda (ns) (replace-regexp-in-string "stuph\\." "stuph.test." ns)))
 
 (add-to-list 'load-path "~/.emacs.d/modules/use-package/")
 (require 'bind-key)
