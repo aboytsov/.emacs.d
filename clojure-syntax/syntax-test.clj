@@ -117,32 +117,147 @@ nil
 (comp 1 2)
 
 ;; -- indentation
-(defn f [x y p]
-  (command))
-
-(fn f [param1 :a
-      param2 :b]
-  (command))
-
-#(lambda-shortcut %1 %2)
-(fn[x y] (can-it-be-confused-with-fn?))
-
-(when-not-let-empty [x f]
-  (command))
-
-(when-not-let-empty [x f
-                     y g]
-  (command))
-
-(function-call
- long-argument-list1 long-argument-list1 long-argument-list1)
-
+;; TODO: indentation in let and in maps as below
 (let [variable-name
-        (very-log-value)]
+      (very-log-value)]
   {:key-1
      (a-very-long-function-call arg1 arg2)
    :key-1
      (a-very-long-function-call arg1 arg2)})
+
+(just-some-function f
+                    d
+                    [a b
+                     c d
+                     e]
+                    (fn-in-fn-call
+                      f a
+                      e g h j))
+
+(arguments-on-next-line
+  1 2 3
+  4 5)
+
+(nil 1
+   2
+   3)
+
+(nil
+  1
+  2
+  3)
+
+(nil [1 2
+    3 4]
+   5)
+
+(nil f [1 2
+      3 4]
+   5)
+
+(func1 (func2
+         [1 2 3]))
+
+(nil (func2
+     [1 2 3]))
+
+(nil (nil
+     [1 2 3]
+     1
+     2))
+
+(nil (nil 4
+      [1 2 3]
+      1
+      2))
+
+(nil a (nil
+       [1 2 3]
+       1
+       2))
+
+(nil a (nil b
+        [1 2 3]
+        1
+        2))
+
+(nil (func
+     [1 2 3]
+     1
+     2))
+
+(func (nil
+        [1
+         2 3
+         (nil (nil {:a 2
+                :b 3
+                :c (nil
+                     1
+                     2)}))]
+        1
+        2))
+
+(nil [a
+    b]
+   4)
+
+(fn [a
+    b]
+  code)
+
+(defn name [a
+          b]
+  (code)
+  (code))
+
+(nil (defn name
+     [1 2 3]
+     1
+     2))
+
+(display-call-inside f
+                     d
+                     [a b
+                      c d
+                      e]
+                     (nil 1
+                        2
+                        3))
+
+(defn [d e
+     f g]
+  code
+  code)
+
+(defn [d e f g]
+  code
+  code)
+
+(if [a b]
+  one
+  two)
+
+(if-empty-let [a b]
+  one
+  two)
+
+(if
+    (very-long-expression)
+  one
+  two)
+
+(if (nil 1
+       2
+       3)
+  one
+  two)
+
+(if
+    (nil 1
+       2
+       3)
+  one
+  two)
 
 ;; namespaces here!
 (defmacro yop

@@ -184,9 +184,11 @@
 (global-set-key (kbd "A-m a") 'mc/mark-all-like-this)
 
 ;; -- Clojure mode
-(global-prettify-symbols-mode +1)
-(add-to-list 'load-path "~/.emacs.d/modules/clojure-mode/")
+(add-to-list 'load-path "~/.emacs.d/clojure-mode/")
 (require 'clojure-mode)
+
+(setq open-paren-in-column-0-is-defun-start t)
+(setq clojure--prettify-symbols-alist nil)
 
 ;; indentation
 (setq clojure-defun-indents
@@ -211,9 +213,6 @@
 ;;           if-string-let if-not-string-let when-string-let when-not-string-let))
 (put 'my-func 'clojure-indent-function 0)
 (put 'func2 'clojure-indent-function 0)
-(put 'while-not 'clojure-indent-function 1)
-(put 'ignore-errors 'clojure-indent-function 'defun)
-(put 'macrolet 'clojure-indent-function 'defun)
 (setq clojure-use-backtracking-indent nil)
 
 ;; syntax highlighting
@@ -323,6 +322,9 @@
                  )
                ("\\b\\(nil\\)\\b"
                 "∅"
+                )
+               ("\\b\\(if-nil\\)\\b"
+                "if-∅"
                 )
                ("\\b\\(nil\\?\\)\\b"
                 "∄"
@@ -594,8 +596,10 @@
 ;;                         vc-ignore-dir-regexp
 ;;                         tramp-file-name-regexp))
 
-;; --- Emacs Lisp evaluation
-;; printing
+;; --- Emacs Lisp
+(global-prettify-symbols-mode +1)
+
+;; printing and evaluation
 (global-set-key [remap eval-expression] 'pp-eval-expression)
 (global-set-key [remap eval-last-sexp] 'pp-eval-last-sexp)
 (defun eval-region-print ()
