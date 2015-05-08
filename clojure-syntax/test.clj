@@ -23,7 +23,7 @@ true false nil    ;; specials
 @deref
 #'var
 
-;; TODO: comments including
+;; TODO: comments including this one
 (comment
   (defn
     (code)
@@ -31,11 +31,14 @@ true false nil    ;; specials
 
 ;; -- macro-writing
 ~data
+~(data)
 'data
 `data
 '~data
 ~'data
 `~data
+~@data
+~@(map identity data)
 data#
 (eval data)
 
@@ -45,14 +48,11 @@ data#
 (let [n 1 n 2] a)
 (let [name1 1
     name2 2
-    hello
+    hello (func-call 1)
     {:keys [a b] :as f} destructured]
   code)
 (def var-name data)
 (def+ var-name data)
-
-(defn xxoxoxox)
-
 (defn aa)
 (def a)
 
@@ -102,9 +102,6 @@ nil
 (def-decorator :name [arg1 arg2 argn])
 #(shortcut-lambda %1 %2)
 
-
-
-
 (>= 2 1)
 (<= 1 2)
 (= 4 5)
@@ -128,6 +125,11 @@ nil
 ;; should not be prettified
 (partial 1 2)
 (comp 1 2)
+
+(first a)
+(last a)
+(rest a)
+(butlast a)
 
 ;; -- indentation
 ;; TODO: indentation in let and in maps as below

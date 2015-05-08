@@ -287,38 +287,37 @@
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Properties.html
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Multiline-Font-Lock.html#Multiline-Font-Lock
 
-(setq font-lock-multiline t)
+;;(setq font-lock-multiline t)
 
-(define-derived-mode test-mode html-mode "Test"
-  "Major mode for highlighting JavaScript and CSS blocks."
+(define-derived-mode let-mode clojure-mode "Test"
   ;; Basic font lock
   (set (make-local-variable 'font-lock-defaults)
-       '(test-font-lock-keywords))
-  ;; Multiline font lock
+       '(let-font-lock-keywords))
   (set (make-local-variable 'font-lock-multiline) t)
   (add-hook 'font-lock-extend-region-functions
-            'test-font-lock-extend-region))
+            'let-font-lock-extend-region))
 
-
-(defun test-font-lock-extend-region ()
+(defun let-font-lock-extend-region ()
   "Extend the search region to include an entire block of text."
   ;; Avoid compiler warnings about these global variables from font-lock.el.
   ;; See the documentation for variable `font-lock-extend-region-functions'.
   (eval-when-compile (defvar font-lock-beg) (defvar font-lock-end))
-  (save-excursion
-    (goto-char font-lock-beg)
-    (let ((found (or (re-search-backward "\n\n" nil t) (point-min))))
-      (goto-char font-lock-end)
-      (when (re-search-forward "\n\n" nil t)
-        (beginning-of-line)
-        (setq font-lock-end (point)))
-      (setq font-lock-beg found))))
+  (message "point: %d" (point))
+  (let ((sexp-beg (nth 1 (syntax-ppss))))
+    (message "sexp-beg: %d" sexp-beg)
+    (if (= ?[ (char-after sexp-beg))
+           ;; NEED TO SET END?
+           (progn
+             (setq font-lock-beg sexp-beg)
+             (setq font-lock-end (+ 20 sexp-beg)))
+           )
+    ))
 
-(defconst test-style-block-regexp
+(defconst let-style-block-regexp
   "<style>\\(.\\|\n\\)*</style>"
   "Regular expression for matching inline CSS blocks.")
 
-(defun test-match-script-blocks (last)
+(defun len-match-script-blocks (last)
   "Match JavaScript blocks from the point to LAST."
   (cond ((search-forward "<script" last t)
          (let ((beg (match-beginning 0)))
@@ -328,10 +327,10 @@
                  (t nil))))
      (t nil)))
 
-(defvar test-font-lock-keywords
+(defvar let-font-lock-keywords
   (list
-   (cons test-style-block-regexp 'font-lock-string-face)
-   (cons 'test-match-script-blocks '((0 font-lock-keyword-face)))
+   (cons let-style-block-regexp 'font-lock-string-face)
+   (cons 'let-match-script-blocks '((0 font-lock-keyword-face)))
    )
   "Font lock keywords for inline JavaScript and CSS blocks.")
 
@@ -625,7 +624,8 @@
 ;;                  )))
 
 ;; -- Parenthesis highlighting
-;; TODO: better colors, maybe slightly darker background or
+;; TODO: better colors, maybe slightly darker background or symbols
+;; like )1 )2 )3 etc - this is probably even better
 ;; symbols?
 ;; TODO: red/different background for unbalanced ones?
 (add-to-list 'load-path "~/.emacs.d/modules/highlight-parentheses.el/")
