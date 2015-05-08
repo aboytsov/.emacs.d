@@ -295,7 +295,6 @@ nil
   one
   two)
 
-<<<<<<< HEAD:clojure-syntax/test.clj
 (if
     (nil (complement a)
        2
@@ -310,17 +309,6 @@ nil
 
 (do (complement string)
     (func-2))
-=======
-(defmacro def+
-  "def which binds like let, e.g.:
-  (def-let [{:keys [a b d]} {:a 1 :b 2 :d 3}])"      ;; WRONG
-  [bindings]
-  (let [let-expr (macroexpand `(let ~bindings))
-    vars (filter #(not (.contains (str %) "__"))
-                 (map first (partition 2 (second let-expr))))
-    def-vars (map (fn [v] `(def ~v ~v)) vars)]
-    (concat let-expr def-vars)))
->>>>>>> 46cbbc45adbb1ad1f20d6f8297b17681778bdc1e:clojure-syntax/syntax-test.clj
 
 ;; namespaces here!
 (defmacro yop
