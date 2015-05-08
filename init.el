@@ -1,5 +1,5 @@
-;; -- Clear all hooks and font-locks for config reloading without r
-;; estarting Emacs
+;; -- Clear all hooks and font-locks for config reloading without
+;; restarting Emacs
 (dolist (hook '(clojure-mode-hook
                 emacs-lisp-mode-hook
                 lisp-mode-hook
@@ -287,161 +287,317 @@
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Properties.html
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Multiline-Font-Lock.html#Multiline-Font-Lock
 
-;;(setq font-lock-multiline t)
-
-(define-derived-mode let-mode clojure-mode "Test"
-  ;; Basic font lock
-  (set (make-local-variable 'font-lock-defaults)
-       '(let-font-lock-keywords))
-  (set (make-local-variable 'font-lock-multiline) t)
-  (add-hook 'font-lock-extend-region-functions
-            'let-font-lock-extend-region))
+;; (defun let-font-lock-extend-region1 ()
+;;   "Extend the search region to include an entire block of text."
+;;   ;; Avoid compiler warnings about these global variables from font-lock.el.
+;;   ;; See the documentation for variable `font-lock-extend-region-functions'.
+;;   (message "%s" "yay")
+;;   (eval-when-compile (defvar font-lock-beg) (defvar font-lock-end))
+;;   (message "point: %d" (point))
+;;   (let ((sexp-beg (nth 1 (syntax-ppss))))
+;;     (message "sexp-beg: %d" sexp-beg)
+;;     (if (= ?[ (char-after sexp-beg))
+;;            ;; NEED TO SET END?
+;;            (progn
+;;              (setq font-lock-beg sexp-beg)
+;;              (setq font-lock-end (+ 20 sexp-beg)))
+;;            )
+;;         )
+;;     )
+;;   )
 
 (defun let-font-lock-extend-region ()
-  "Extend the search region to include an entire block of text."
-  ;; Avoid compiler warnings about these global variables from font-lock.el.
-  ;; See the documentation for variable `font-lock-extend-region-functions'.
-  (eval-when-compile (defvar font-lock-beg) (defvar font-lock-end))
-  (message "point: %d" (point))
-  (let ((sexp-beg (nth 1 (syntax-ppss))))
-    (message "sexp-beg: %d" sexp-beg)
-    (if (= ?[ (char-after sexp-beg))
-           ;; NEED TO SET END?
-           (progn
-             (setq font-lock-beg sexp-beg)
-             (setq font-lock-end (+ 20 sexp-beg)))
-           )
-    ))
+;;  (message "extend point %d" (point))
+  (if (<= (point) 300)
+      (progn (setq font-lock-beg (point))
+             (setq font-lock-end (+ (point) 10)))
+    nil)
+  ;; return t!
+  )
 
-(defconst let-style-block-regexp
-  "<style>\\(.\\|\n\\)*</style>"
-  "Regular expression for matching inline CSS blocks.")
+;; (defun let-font-lock-match-blocks1 (last)
+;;   (message "%s" "blocks now")
+;;   (set-match-data (list (+ point 2)
+;;                         (+ point 4)
+;;                         )
+;;                   )
+;;   )
 
-(defun len-match-script-blocks (last)
-  "Match JavaScript blocks from the point to LAST."
-  (cond ((search-forward "<script" last t)
-         (let ((beg (match-beginning 0)))
-           (cond ((search-forward-regexp "</script>" last t)
-                  (set-match-data (list beg (point)))
-                  t)
-                 (t nil))))
-     (t nil)))
-
-(defvar let-font-lock-keywords
-  (list
-   (cons let-style-block-regexp 'font-lock-string-face)
-   (cons 'let-match-script-blocks '((0 font-lock-keyword-face)))
-   )
-  "Font lock keywords for inline JavaScript and CSS blocks.")
+;; TODO: extra font-locking in clojure mode
 
 
-(font-lock-add-keywords
- 'clojure-mode
- '(("\\[\\(\\(a\\) b \\)+\\]"
-    2 font-lock-function-name-face)
-   ("(let[[:space:]]*\\[\\(\\([n]+\\)[[:space:]]+[12]+[[:space:]]*\\)+\\]"
-    1 font-lock-function-name-face)))
+(defun step (last)
+  (message "-- point %d last %d" (point) last)
+  (let ((result nil))
+    (let ((syntax (syntax-ppss)))
+      (message "syntax: %s" syntax)
+      ;; skip comments
+      (if (nth 4 syntax)
+          (sp-next-sexp)
+        ;; skip newlines and spaces
+        (skip-syntax-forward " >")
+        (let ((old-point (point)))
+            ;; it needs to be at least 2 levels deep
+            (if (< (nth 0 syntax) 2)
+                (progn
+                  (message "not enough depth")
+                  (sp-down-sexp)
+                  ;; if we didn't move there are no deeper children,
+                  ;; so we can leave this sp-get-expression
+                  (when (<= (point) old-point)
+                    (sp-up-sexp)))
+              ;; TODO: make sure lets are []
+
+              ;; ok, we're inside an s-expression at least 2 levels deep
+              ;; let's look at the 2nd inner level and make sure that
+              ;; the keyword is one that we support
+              ;; TODO: for doseq etc
+              ;; TODO: what about fn?
+              (let ((sexp-beg (second (reverse (nth 9 syntax)))))
+                (message "old-point: %d" old-point)
+                (if (not (member (save-excursion
+                                   (goto-char sexp-beg)
+                                   (sp-down-sexp)
+                                   (skip-syntax-forward " >")
+                                   (thing-at-point 'symbol))
+                                 '("let")))
+                    ;; nope, it wasn't, now we can either look deeper or go
+                    ;; to the next one
+                    (progn
+                      (message "not a member")
+                      (sp-down-sexp)
+                      ;; if we did not advance or moved forward it means
+                      ;; there were no deeper sexprs ahead of us, we can
+                      ;; now safely exit this level up
+                      (if (<= (point) old-point)
+                          (sp-up-sexp)))
+                  ;; ok, we're in let - let's see how many arguments we'd need
+                  ;; to skip in the argument list to get to where we were
+                  ;; and determine if it's an odd or an even arg
+                  (message "in let, point: %d" (point))
+                  ;; TODO: DRY
+                  (goto-char (first (reverse (nth 9 syntax))))
+                  (sp-down-sexp)
+                  (message "reset, point: %d" (point))
+                  (let ((last-sexp (sp-forward-sexp)))
+                    (let ((even t))
+                      (message "before loop, point: %d" (point))
+                      (while (< (point) old-point)
+                        (message "looping... %d" (point))
+                        (setq even (not even))
+                        (setq last-sexp (sp-next-sexp)))
+                      ;; if it's an odd one, try to mark the one after it
+                      (when (not even)
+                        (setq last-sexp (sp-next-sexp))
+                        (when (<= (point) old-point)
+                          ;; it doesn't exist
+                          (message "reached the end of let")
+                          (setq last-sexp nil)
+                          (sp-up-sexp))))
+                    (if last-sexp
+                        (setq result (list (sp-get last-sexp :beg)
+                                           (sp-get last-sexp :end))))
+                    (sp-next-sexp)))
+                )))))
+    (message "-> %s" result)
+    (if result
+        (progn (set-match-data result) t)
+      nil)))
+
+
+(defun let-font-lock-match-blocks1 (last)
+  (message "-- point %d last %d" (point) last)
+  (let ((result nil))
+    (while (and (not result)
+                (<= (point) (min 300 last)))
+      (let ((syntax (syntax-ppss)))
+        (message "syntax: %s" syntax)
+        ;; skip comments
+        (if (nth 4 syntax)
+            (sp-next-sexp)
+          ;; skip newlines and spaces
+          (skip-syntax-forward " >")
+          ;; it needs to be at least 2 levels deep
+          (if (< (nth 0 syntax) 2)
+              (sp-down-sexp)
+            ;; ok, we're inside an s-expression at least 2 levels deep
+            ;; let's look at the 2nd inner level and make sure that
+            ;; the keyword is one that we support
+            ;; TODO: for doseq etc
+            ;; TODO: what about fn?
+            (let ((old-point (point))
+                  (sexp-beg (second (reverse (nth 9 syntax)))))
+              (message "old-point: %d" old-point)
+              (if (not (member (save-excursion
+                                 (goto-char sexp-beg)
+                                 (sp-down-sexp)
+                                 (skip-syntax-forward " >")
+                                 (thing-at-point 'symbol))
+                               '("let")))
+                  ;; nope, it wasn't, now we can either look deeper or go
+                  ;; to the next one
+                  (progn
+                    (message "not a member")
+                    (sp-down-sexp)
+                    ;; if we did not advance or moved forward it means
+                    ;; there were no deeper sexprs ahead of us, we can
+                    ;; now safely exit this level up
+                    (if (<= (point) old-point)
+                        (sp-up-sexp)))
+                ;; ok, we're in let - let's see how many arguments we'd need
+                ;; to skip in the argument list to get to where we were
+                ;; and determine if it's an odd or an even arg
+                (let ((even t)
+                      (last-sexp nil))
+                  ;; TODO: DRY
+                  (save-excursion
+                    (goto-char (first (reverse (nth 9 syntax))))
+                    (sp-down-sexp)
+                    (skip-syntax-forward " >")
+                    (while (< (point) old-point)
+                      (setq even (not even))
+                      (setq last-sexp (sp-next-sexp))))
+                  ;; mark either the one we found or the one after it
+                  (if (not even)
+                    (setq last-sexp (sp-next-sexp))
+                    (when (<= (point) old-point)
+                      ;; it doesn't exist
+                      (setq last-sexp nil)
+                      (sp-up-sexp)))
+                  (if last-sexp
+                      (setq result (list (sp-get last-sexp :beg)
+                                         (sp-get last-sexp :end))))
+                  (sp-next-sexp)))
+              )))))
+    (message "-> %s" result)
+    (if result
+        (progn (set-match-data result) t)
+      nil)))
 
 (setq clojure-font-locks
-  (mapcar (lambda (pair) `(,(first pair) . ,(replacement (second pair))))
-             ;; TODO: instead of '(' need to detect if those symbols are
-             ;; keywords
-             '(("(\\(fn\\)[\[[:space:]]"          "ƒ")
-               ("(\\(fn\\+\\)[\[[:space:]]"       "ƒ⁺")
-                ("\\b\\(defn\\)\\b"
-                 (concat
-                  (propertize "∎" 'face 'bold)
-                  (propertize "ƒ" 'help-echo "help-text")
+      ;;       '(("data" 0 font-lock-keyword-face))
+      ;;       '(let-font-lock-match-blocks . font-lock-keyword-face)
+      (nconc
+       '((let-font-lock-match-blocks 0 font-lock-keyword-face))
+       (mapcar (lambda (pair) `(,(first pair) . ,(replacement (second pair))))
+               ;; TODO: instead of '(' need to detect if those symbols are
+               ;; keywords
+               '(("(\\(fn\\)[\[[:space:]]"          "ƒ")
+                 ("(\\(fn\\+\\)[\[[:space:]]"       "ƒ⁺")
+                 ("\\b\\(defn\\)\\b"
+                  (concat
+                   (propertize "∎" 'face 'bold)
+                   (propertize "ƒ" 'help-echo "help-text")
+                   )
                   )
-                 )
-                ("\\b\\(defmacro\\)\\b"
-                 (concat
-                  (propertize "∎" 'face 'bold)
-                  (propertize "Ƒ" 'help-echo "help-text")
+                 ("\\b\\(defmacro\\)\\b"
+                  (concat
+                   (propertize "∎" 'face 'bold)
+                   (propertize "Ƒ" 'help-echo "help-text")
+                   )
                   )
-                 )
-                ("\\b\\(def\\)\\b"
-                 (concat
-                  (propertize "∎" 'face 'bold)
+                 ("\\b\\(def\\)\\b"
+                  (concat
+                   (propertize "∎" 'face 'bold)
+                   )
                   )
-                 )
-                ("\\b\\(complement\\)\\b"
-                 (concat
-                  (propertize "∁")
+                 ("\\b\\(complement\\)\\b"
+                  (concat
+                   (propertize "∁")
+                   )
                   )
-                 )
-                ("\\(|\\)"
-                 (concat
-                  (propertize "∘")
+                 ("\\(|\\)"
+                  (concat
+                   (propertize "∘")
+                   )
                   )
-                 )
-               ("\\b\\(nil\\)\\b"
-                "∅"
-                )
-               ("\\b\\(if-nil\\)\\b"
-                "if-∅"
-                )
-               ("\\b\\(nil\\?\\)\\b"
-                "∄"
-                )
-               ("\\b\\(some\\?\\)\\b"
-                "∃"
-                )
-               ("\\b\\(con>\\)\\b"
-                "☰"
-                )
-               ("\\b\\(con<\\)\\b"
-                "☱"
-                )
-               ("\\b\\(concat<\\)\\b"
-                "☲"
-                )
-               ("\\b\\(\\*>\\)\\b"
-                "λ…"
-                )
-               ("\\b\\(\\*<\\)\\b"
-                "…λ"
-                )
-               ("\\b\\(let\\)\\b"
-                "∎"
-                )
-               ("\\b\\(ns\\)\\b"
-                "§"
-                )
-               ("\\b\\(map\\)\\b"
-                "↦"
-                )
-               ("\\b\\(last\\)\\b"
-                "↩"
-                )
-               ("\\b\\(first\\)\\b"
-                "↪"
-                )
-               ("\\b\\(for\\)\\b"
-                "∀"
-                )
-;;                ("\\(def-decorator\\)[\[[:space:]]"
-;;                 (concat
-;; ;;                 (propertize "⊐" 'face 'bold 'intangible 'def-decorator)
-;;                  (propertize "q" 'face '(:foreground "green")
-;;                              'help-echo "help-text"
-;;                              'intangible 'def-decorator)
-;;                  ))
-               ;; ("(\\(defn\\+\\)[\[[:space:]]"     "⌝ƒ⁺")
+                 ("\\b\\(nil\\)\\b"
+                  "∅"
+                  )
+                 ("\\b\\(if-nil\\)\\b"
+                  "if-∅"
+                  )
+                 ("\\b\\(nil\\?\\)\\b"
+                  "∄"
+                  )
+                 ("\\b\\(some\\?\\)\\b"
+                  "∃"
+                  )
+                 ("\\b\\(con>\\)\\b"
+                  "☰"
+                  )
+                 ("\\b\\(con<\\)\\b"
+                  "☱"
+                  )
+                 ("\\b\\(concat<\\)\\b"
+                  "☲"
+                  )
+                 ("\\b\\(\\*>\\)\\b"
+                  "λ…"
+                  )
+                 ("\\b\\(\\*<\\)\\b"
+                  "…λ"
+                  )
+                 ("\\b\\(let\\)\\b"
+                  "∎"
+                  )
+                 ("\\b\\(ns\\)\\b"
+                  "§"
+                  )
+                 ("\\b\\(map\\)\\b"
+                  "↦"
+                  )
+                 ("\\b\\(last\\)\\b"
+                  "↩"
+                  )
+                 ("\\b\\(first\\)\\b"
+                  "↪"
+                  )
+                 ("\\b\\(for\\)\\b"
+                  "∀"
+                  )
+                 ;;                ("\\(def-decorator\\)[\[[:space:]]"
+                 ;;                 (concat
+                 ;; ;;                 (propertize "⊐" 'face 'bold 'intangible 'def-decorator)
+                 ;;                  (propertize "q" 'face '(:foreground "green")
+                 ;;                              'help-echo "help-text"
+                 ;;                              'intangible 'def-decorator)
+                 ;;                  ))
+                 ;; ("(\\(defn\\+\\)[\[[:space:]]"     "⌝ƒ⁺")
                ;;;; ("(\\(defmacro\\)[\[[:space:]]"    "⌉Ƒ")
-               ;;("(\\(defn\\+\\)[\[[:space:]]"     "⊐ƒ⁺")
-               ;;("(\\(defmacro\\)[\[[:space:]]"    "⊐Ƒ")
-               ;;("(\\(defmacro\\+\\)[\[[:space:]]" "⊐Ƒ⁺")
-               ;;("(\\(def\\)[\[[:space:]]"         "⊐")
-               ;;("(\\(def\\+\\)[\[[:space:]]"      "⊐⁺")
-               ;;("\\(#\\)("                        "λ")
-               ;;("(\\(ns\\)("                      "§")
-               ;;("(\\(comp\\)("                    "∘")
-               ;;("(\\(\\|\\)("                     "∘")
-               )))
+                 ;;("(\\(defn\\+\\)[\[[:space:]]"     "⊐ƒ⁺")
+                 ;;("(\\(defmacro\\)[\[[:space:]]"    "⊐Ƒ")
+                 ;;("(\\(defmacro\\+\\)[\[[:space:]]" "⊐Ƒ⁺")
+                 ;;("(\\(def\\)[\[[:space:]]"         "⊐")
+                 ;;("(\\(def\\+\\)[\[[:space:]]"      "⊐⁺")
+                 ;;("\\(#\\)("                        "λ")
+                 ;;("(\\(ns\\)("                      "§")
+                 ;;("(\\(comp\\)("                    "∘")
+                 ;;("(\\(\\|\\)("                     "∘")
+                 ))))
 ;; TODO: reloding without restarting
 ;; copy/paste/text-modes
 ;; overlays vs text properties
+
+
+;; TODO: TODO, FIXME and BUG
+;; also:
+;; (defvar font-lock-format-specifier-face
+;;   'font-lock-format-specifier-face
+;;   "Face name to use for format specifiers.")
+
+;; (defface font-lock-format-specifier-face
+;;   '((t (:foreground "OrangeRed1")))
+;;   "Font Lock mode face used to highlight format specifiers."
+;;   :group 'font-lock-faces)
+
+;; (add-hook 'c-mode-common-hook
+;; 	  (lambda ()
+;; 	    (font-lock-add-keywords nil
+;; 				    '(("[^%]\\(%\\([[:digit:]]+\\$\\)?[-+' #0*]*\\([[:digit:]]*\\|\\*\\|\\*[[:digit:]]+\\$\\)\\(\\.\\([[:digit:]]*\\|\\*\\|\\*[[:digit:]]+\\$\\)\\)?\\([hlLjzt]\\|ll\\|hh\\)?\\([aAbdiuoxXDOUfFeEgGcCsSpn]\\|\\[\\^?.[^]]*\\]\\)\\)"
+;; 				       1 font-lock-format-specifier-face t)
+;; 				      ("\\(%%\\)"
+;; 				       1 font-lock-format-specifier-face t)) )))
 
 ;;(font-lock-add-keywords 'clojure-mode clojure-font-locks)
 
@@ -462,12 +618,21 @@
 
 (global-set-key (kbd "C-c s") 'reload-syntax-highlighting)
 
-(add-hook 'clojure-mode-hook
-  (lambda ()
-    (setq font-lock-extra-managed-props '(composition display))
-    (font-lock-remove-keywords 'clojure-mode clojure-font-locks)
-    (font-lock-add-keywords 'clojure-mode clojure-font-locks)))
+(setq font-lock-multiline t)
 
+(add-hook 'clojure-mode-hook
+          (lambda ()
+            ;; cleanup
+            (font-lock-remove-keywords 'clojure-mode clojure-font-locks)
+;;            (remove-hook 'font-lock-extend-region-functions
+  ;;                       'let-font-lock-extend-region)
+            ;; setup
+            (setq font-lock-extra-managed-props '(composition display))
+            (set (make-local-variable 'font-lock-multiline) t)
+;;            (add-hook 'font-lock-extend-region-functions
+  ;;                    'let-font-lock-extend-region)
+            (font-lock-add-keywords 'clojure-mode clojure-font-locks)
+            ))
 
 ;; -- Smartparens
 (add-to-list 'load-path "~/.emacs.d/modules/dash.el/")
