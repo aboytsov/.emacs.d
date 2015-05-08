@@ -187,7 +187,7 @@
 (add-to-list 'load-path "~/.emacs.d/clojure-mode/")
 (require 'clojure-mode)
 
-(setq open-paren-in-column-0-is-defun-start t)
+(setq open-paren-in-column-0-is-defun-start nil)
 (setq clojure--prettify-symbols-alist nil)
 
 ;; indentation

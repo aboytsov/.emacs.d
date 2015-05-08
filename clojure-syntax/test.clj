@@ -142,6 +142,10 @@ nil
    2
    3)
 
+(nil (nil 1
+      2
+      3))
+
 (nil
   1
   2
@@ -201,19 +205,38 @@ nil
     b]
    4)
 
+(first-argument-is-symbol nil
+                          1 2)
+
+(first-argument-is-symbol nil
+                          nil nil)
+
+(first-argument-is-symbol [nil
+                           1 2
+                           nil]
+                          [nil
+                           1 2 [1
+                                nil
+                                [nil
+                                 2]]])
+
 (fn [a
     b]
-  code)
+  (code))
 
 (defn name [a
           b]
   (code)
   (code))
 
+(defn name [nil nil nil b]
+  (code)
+  (code))
+
 (nil (defn name
-     [1 2 3]
-     1
-     2))
+     [a b c]
+     (code)
+     (code)))
 
 (display-call-inside f
                      d
@@ -226,12 +249,12 @@ nil
 
 (defn [d e
      f g]
-  code
-  code)
+  (code)
+  (code))
 
 (defn [d e f g]
-  code
-  code)
+  (code)
+  (code))
 
 (if [a b]
   one
@@ -258,6 +281,21 @@ nil
        3)
   one
   two)
+
+(if
+    (nil (complement a)
+       2
+       [3
+        (complement b)
+        4])
+  one
+  two)
+
+(do (func-1)
+    (func-2))
+
+(do (complement string)
+    (func-2))
 
 ;; namespaces here!
 (defmacro yop
