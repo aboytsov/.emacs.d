@@ -23,6 +23,12 @@ true false nil    ;; specials
 @deref
 #'var
 
+;; TODO: comments including
+(comment
+  (defn
+    (code)
+    (code)))
+
 ;; -- macro-writing
 ~data
 'data
@@ -35,6 +41,13 @@ data#
 
 ;; -- definitions
 (let let-form)
+[a b a b a b ]
+(let [n 1 n 2] a)
+(let [name1 1
+    name2 2
+    hello
+    {:keys [a b] :as f} destructured]
+  code)
 (def var-name data)
 (def+ var-name data)
 
@@ -258,6 +271,16 @@ nil
        3)
   one
   two)
+
+(defmacro def+
+  "def which binds like let, e.g.:
+  (def-let [{:keys [a b d]} {:a 1 :b 2 :d 3}])"      ;; WRONG
+  [bindings]
+  (let [let-expr (macroexpand `(let ~bindings))
+    vars (filter #(not (.contains (str %) "__"))
+                 (map first (partition 2 (second let-expr))))
+    def-vars (map (fn [v] `(def ~v ~v)) vars)]
+    (concat let-expr def-vars)))
 
 ;; namespaces here!
 (defmacro yop

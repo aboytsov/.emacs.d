@@ -287,6 +287,62 @@
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Properties.html
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Multiline-Font-Lock.html#Multiline-Font-Lock
 
+(setq font-lock-multiline t)
+
+(define-derived-mode test-mode html-mode "Test"
+  "Major mode for highlighting JavaScript and CSS blocks."
+  ;; Basic font lock
+  (set (make-local-variable 'font-lock-defaults)
+       '(test-font-lock-keywords))
+  ;; Multiline font lock
+  (set (make-local-variable 'font-lock-multiline) t)
+  (add-hook 'font-lock-extend-region-functions
+            'test-font-lock-extend-region))
+
+
+(defun test-font-lock-extend-region ()
+  "Extend the search region to include an entire block of text."
+  ;; Avoid compiler warnings about these global variables from font-lock.el.
+  ;; See the documentation for variable `font-lock-extend-region-functions'.
+  (eval-when-compile (defvar font-lock-beg) (defvar font-lock-end))
+  (save-excursion
+    (goto-char font-lock-beg)
+    (let ((found (or (re-search-backward "\n\n" nil t) (point-min))))
+      (goto-char font-lock-end)
+      (when (re-search-forward "\n\n" nil t)
+        (beginning-of-line)
+        (setq font-lock-end (point)))
+      (setq font-lock-beg found))))
+
+(defconst test-style-block-regexp
+  "<style>\\(.\\|\n\\)*</style>"
+  "Regular expression for matching inline CSS blocks.")
+
+(defun test-match-script-blocks (last)
+  "Match JavaScript blocks from the point to LAST."
+  (cond ((search-forward "<script" last t)
+         (let ((beg (match-beginning 0)))
+           (cond ((search-forward-regexp "</script>" last t)
+                  (set-match-data (list beg (point)))
+                  t)
+                 (t nil))))
+     (t nil)))
+
+(defvar test-font-lock-keywords
+  (list
+   (cons test-style-block-regexp 'font-lock-string-face)
+   (cons 'test-match-script-blocks '((0 font-lock-keyword-face)))
+   )
+  "Font lock keywords for inline JavaScript and CSS blocks.")
+
+
+(font-lock-add-keywords
+ 'clojure-mode
+ '(("\\[\\(\\(a\\) b \\)+\\]"
+    2 font-lock-function-name-face)
+   ("(let[[:space:]]*\\[\\(\\([n]+\\)[[:space:]]+[12]+[[:space:]]*\\)+\\]"
+    1 font-lock-function-name-face)))
+
 (setq clojure-font-locks
   (mapcar (lambda (pair) `(,(first pair) . ,(replacement (second pair))))
              ;; TODO: instead of '(' need to detect if those symbols are
