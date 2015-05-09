@@ -90,6 +90,9 @@
 ;; -- Other key bindings
 ;; don't need isearch extended actions
 (global-unset-key (kbd "M-s"))
+;; but occur mode is handy
+(global-reset-key (kbd "C-o") 'occur)
+(global-reset-key (kbd "C-c C-o") 'multi-occur-in-matching-buffers)
 
 ;; auto-complete on Ctrl-Enter
 (global-reset-key (kbd "C-<return>") 'dabbrev-expand)
@@ -163,8 +166,6 @@
 (global-set-key (kbd "M-m l") 'emacs-lisp-mode)
 (global-set-key (kbd "M-m p") 'list-text-properties-at)
 (global-set-key (kbd "M-m o") 'list-text-overlays-at)
-
-;; search lines
 
 ;; -- Smooth scrolling
 (add-to-list 'load-path "~/.emacs.d/modules/smooth-scrolling/")
@@ -326,11 +327,13 @@
 ;; TODO: extra font-locking in clojure mode
 
 
-(defun step (last)
-  (message "-- point %d last %d" (point) last)
+(defun clojure-match-pairs-step ()
+  ;; TODO: doc
+  (setq m nil)
+;;  (message "-- point %d" (point))
   (let ((result nil))
     (let ((syntax (syntax-ppss)))
-      (message "syntax: %s" syntax)
+;;      (message "syntax: %s" syntax)
       ;; skip comments
       (if (nth 4 syntax)
           (sp-next-sexp)
@@ -340,7 +343,7 @@
             ;; it needs to be at least 2 levels deep
             (if (< (nth 0 syntax) 2)
                 (progn
-                  (message "not enough depth")
+;;                  (message "not enough depth")
                   (sp-down-sexp)
                   ;; if we didn't move there are no deeper children,
                   ;; so we can leave this sp-get-expression
@@ -354,7 +357,7 @@
               ;; TODO: for doseq etc
               ;; TODO: what about fn?
               (let ((sexp-beg (second (reverse (nth 9 syntax)))))
-                (message "old-point: %d" old-point)
+;;                (message "old-point: %d" old-point)
                 (if (not (member (save-excursion
                                    (goto-char sexp-beg)
                                    (sp-down-sexp)
@@ -364,7 +367,7 @@
                     ;; nope, it wasn't, now we can either look deeper or go
                     ;; to the next one
                     (progn
-                      (message "not a member")
+;;                      (message "not a member")
                       (sp-down-sexp)
                       ;; if we did not advance or moved forward it means
                       ;; there were no deeper sexprs ahead of us, we can
@@ -374,16 +377,16 @@
                   ;; ok, we're in let - let's see how many arguments we'd need
                   ;; to skip in the argument list to get to where we were
                   ;; and determine if it's an odd or an even arg
-                  (message "in let, point: %d" (point))
+;;                  (message "in let, point: %d" (point))
                   ;; TODO: DRY
                   (goto-char (first (reverse (nth 9 syntax))))
                   (sp-down-sexp)
-                  (message "reset, point: %d" (point))
+;;                  (message "reset, point: %d" (point))
                   (let ((last-sexp (sp-forward-sexp)))
                     (let ((even t))
-                      (message "before loop, point: %d" (point))
+;;                      (message "before loop, point: %d" (point))
                       (while (< (point) old-point)
-                        (message "looping... %d" (point))
+;;                        (message "looping... %d" (point))
                         (setq even (not even))
                         (setq last-sexp (sp-next-sexp)))
                       ;; if it's an odd one, try to mark the one after it
@@ -391,7 +394,7 @@
                         (setq last-sexp (sp-next-sexp))
                         (when (<= (point) old-point)
                           ;; it doesn't exist
-                          (message "reached the end of let")
+;;                          (message "reached the end of let")
                           (setq last-sexp nil)
                           (sp-up-sexp))))
                     (if last-sexp
@@ -399,80 +402,28 @@
                                            (sp-get last-sexp :end))))
                     (sp-next-sexp)))
                 )))))
-    (message "-> %s" result)
+;;    (message "-> %s" result)
     (if result
         (progn (set-match-data result) t)
       nil)))
 
 
-(defun let-font-lock-match-blocks1 (last)
-  (message "-- point %d last %d" (point) last)
+;; TODO: rename
+(defun perf (last)
+  (message "-- let-font-lock-match-blocks %d last %d" (point) last)
   (let ((result nil))
-    (while (and (not result)
-                (<= (point) (min 300 last)))
-      (let ((syntax (syntax-ppss)))
-        (message "syntax: %s" syntax)
-        ;; skip comments
-        (if (nth 4 syntax)
-            (sp-next-sexp)
-          ;; skip newlines and spaces
-          (skip-syntax-forward " >")
-          ;; it needs to be at least 2 levels deep
-          (if (< (nth 0 syntax) 2)
-              (sp-down-sexp)
-            ;; ok, we're inside an s-expression at least 2 levels deep
-            ;; let's look at the 2nd inner level and make sure that
-            ;; the keyword is one that we support
-            ;; TODO: for doseq etc
-            ;; TODO: what about fn?
-            (let ((old-point (point))
-                  (sexp-beg (second (reverse (nth 9 syntax)))))
-              (message "old-point: %d" old-point)
-              (if (not (member (save-excursion
-                                 (goto-char sexp-beg)
-                                 (sp-down-sexp)
-                                 (skip-syntax-forward " >")
-                                 (thing-at-point 'symbol))
-                               '("let")))
-                  ;; nope, it wasn't, now we can either look deeper or go
-                  ;; to the next one
-                  (progn
-                    (message "not a member")
-                    (sp-down-sexp)
-                    ;; if we did not advance or moved forward it means
-                    ;; there were no deeper sexprs ahead of us, we can
-                    ;; now safely exit this level up
-                    (if (<= (point) old-point)
-                        (sp-up-sexp)))
-                ;; ok, we're in let - let's see how many arguments we'd need
-                ;; to skip in the argument list to get to where we were
-                ;; and determine if it's an odd or an even arg
-                (let ((even t)
-                      (last-sexp nil))
-                  ;; TODO: DRY
-                  (save-excursion
-                    (goto-char (first (reverse (nth 9 syntax))))
-                    (sp-down-sexp)
-                    (skip-syntax-forward " >")
-                    (while (< (point) old-point)
-                      (setq even (not even))
-                      (setq last-sexp (sp-next-sexp))))
-                  ;; mark either the one we found or the one after it
-                  (if (not even)
-                    (setq last-sexp (sp-next-sexp))
-                    (when (<= (point) old-point)
-                      ;; it doesn't exist
-                      (setq last-sexp nil)
-                      (sp-up-sexp)))
-                  (if last-sexp
-                      (setq result (list (sp-get last-sexp :beg)
-                                         (sp-get last-sexp :end))))
-                  (sp-next-sexp)))
-              )))))
-    (message "-> %s" result)
-    (if result
-        (progn (set-match-data result) t)
-      nil)))
+    (while (and (not result) (<= (point) last))
+      (setq result (clojure-match-pairs-step)))
+    result))
+
+(defun pp ()
+  (while (< (point) (buffer-size))
+    (message "pp point = %d" (point))
+    (perf (1+ (buffer-size)))))
+
+(defun let-font-lock-match-blocks (last)
+;;  (message "-- let-font-lock-match-blocks %d last %d" (point) last)
+  nil)
 
 (setq clojure-font-locks
       ;;       '(("data" 0 font-lock-keyword-face))
