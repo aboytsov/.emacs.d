@@ -93,7 +93,6 @@ data#
 (fn+ [arg1 arg2 argn])
 (defn+ func-name [arg1 arg2 argn])
 (qweqw def-decorator ew :name [arg1 arg2 argn])
-
 ;; -- java
 JavaClass
 (.methodCall "param")
