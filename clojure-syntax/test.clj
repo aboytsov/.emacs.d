@@ -335,8 +335,9 @@ nil
 ;; new
 ;;; font locking
 (ns clojure-mode.demo
-  (:require [clojure.something]
-            [something.s]))
+  (:require
+    [clojure.something]
+    [something.s]))
 
 (comment ;; for indentation
   (with-hi heya
@@ -361,6 +362,13 @@ nil
 (some.package.FooBar/baz)
 
 ;; cljx
+(  let [ ;; agfadg
+     ;; adgfafg
+      buf +clj (StringBuilder.) +cljs (gstring/StringBuffer.) a
+
+    ])
+
+
 (defn x-to-string
   [x]
   (let [buf #+clj (StringBuilder.) #+cljs (gstring/StringBuffer.)]

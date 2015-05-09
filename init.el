@@ -87,13 +87,36 @@
 ;; (global-set-key (kbd "<next>") 'sfp-page-down)
 ;; (global-set-key (kbd "<prior>") 'sfp-page-up)
 
-;; -- Other key bindings
+;; -- Search
+(add-to-list 'load-path "~/.emacs.d/color-occur/")
+(require 'color-occur)
+
 ;; don't need isearch extended actions
 (global-unset-key (kbd "M-s"))
 ;; but occur mode is handy
 (global-reset-key (kbd "C-o") 'occur)
-(global-reset-key (kbd "C-c C-o") 'multi-occur-in-matching-buffers)
 
+;; multi-occur will search all buffers in the current mode
+
+(defun get-buffers-matching-mode (mode)
+  "Returns a list of buffers where their major-mode is equal to MODE"
+  (let ((buffer-mode-matches '()))
+   (dolist (buf (buffer-list))
+     (with-current-buffer buf
+       (if (eq mode major-mode)
+           (add-to-list 'buffer-mode-matches buf))))
+   buffer-mode-matches))
+
+(defun multi-occur-in-this-mode ()
+  "Show all lines matching REGEXP in buffers with this major mode."
+  (interactive)
+  (multi-occur
+   (get-buffers-matching-mode major-mode)
+   (car (occur-read-primary-args))))
+
+(global-reset-key (kbd "C-c C-o") 'multi-occur-in-this-mode)
+
+;; -- Other key bindings
 ;; auto-complete on Ctrl-Enter
 (global-reset-key (kbd "C-<return>") 'dabbrev-expand)
 
@@ -192,29 +215,20 @@
 (setq clojure--prettify-symbols-alist nil)
 
 ;; indentation
-(setq clojure-defun-indents
-      '(if-let if-not-let when-let when-not-let
-        if-nil if-not-nil when-nil when-not-nil
-        if-nil-let if-not-nil-let when-nil-let when-not-nil-let
-        if-empty if-not-empty when-empty when-not-empty
-        if-empty-let if-not-empty-let when-empty-let when-not-empty-let
-        if-coll if-not-coll when-coll when-not-coll
-        if-coll-let if-not-coll-let when-coll-let when-not-coll-let
-        if-string if-not-string when-string when-not-string
-        if-string-let if-not-string-let when-string-let when-not-string-let))
-;; (mapcar (lambda (x) (put-clojure-indent x 1))
-;;         '(if-let if-not-let when-let when-not-let
-;;           if-nil if-not-nil when-nil when-not-nil
-;;           if-nil-let if-not-nil-let when-nil-let when-not-nil-let
-;;           if-empty if-not-empty when-empty when-not-empty
-;;           if-empty-let if-not-empty-let when-empty-let when-not-empty-let
-;;           if-coll if-not-coll when-coll when-not-coll
-;;           if-coll-let if-not-coll-let when-coll-let when-not-coll-let
-;;           if-string if-not-string when-string when-not-string
-;;           if-string-let if-not-string-let when-string-let when-not-string-let))
-(put 'my-func 'clojure-indent-function 0)
-(put 'func2 'clojure-indent-function 0)
 (setq clojure-use-backtracking-indent nil)
+
+(global-set-key (kbd "<backtab>") 'sp-indent-defun)
+
+(mapcar (lambda (x) (put-clojure-indent x 1))
+        '(if-let if-not-let when-let when-not-let
+          if-nil if-not-nil when-nil when-not-nil
+          if-nil-let if-not-nil-let when-nil-let when-not-nil-let
+          if-empty if-not-empty when-empty when-not-empty
+          if-empty-let if-not-empty-let when-empty-let when-not-empty-let
+          if-coll if-not-coll when-coll when-not-coll
+          if-coll-let if-not-coll-let when-coll-let when-not-coll-let
+          if-string if-not-string when-string when-not-string
+          if-string-let if-not-string-let when-string-let when-not-string-let))
 
 ;; syntax highlighting
 (defmacro defclojureface (name color desc &optional others)
@@ -327,99 +341,108 @@
 ;; TODO: extra font-locking in clojure mode
 
 
-(defun clojure-match-pairs-step ()
-  ;; TODO: doc
-  (setq m nil)
-;;  (message "-- point %d" (point))
-  (let ((result nil))
-    (let ((syntax (syntax-ppss)))
-;;      (message "syntax: %s" syntax)
-      ;; skip comments
-      (if (nth 4 syntax)
-          (sp-next-sexp)
-        ;; skip newlines and spaces
-        (skip-syntax-forward " >")
-        (let ((old-point (point)))
-            ;; it needs to be at least 2 levels deep
-            (if (< (nth 0 syntax) 2)
-                (progn
-;;                  (message "not enough depth")
-                  (sp-down-sexp)
-                  ;; if we didn't move there are no deeper children,
-                  ;; so we can leave this sp-get-expression
-                  (when (<= (point) old-point)
-                    (sp-up-sexp)))
-              ;; TODO: make sure lets are []
+(defun down-or-out-sexp ()
+  "Moves the point deeper into the s-expression tree, if there are no
+  levels deeper moves it forward and out of the current s-expression."
+  (let ((pos (point)))
+    (sp-down-sexp)
+    (if (<= (point) pos)
+        (sp-up-sexp))))
 
-              ;; ok, we're inside an s-expression at least 2 levels deep
-              ;; let's look at the 2nd inner level and make sure that
-              ;; the keyword is one that we support
-              ;; TODO: for doseq etc
-              ;; TODO: what about fn?
-              (let ((sexp-beg (second (reverse (nth 9 syntax)))))
-;;                (message "old-point: %d" old-point)
-                (if (not (member (save-excursion
-                                   (goto-char sexp-beg)
-                                   (sp-down-sexp)
-                                   (skip-syntax-forward " >")
-                                   (thing-at-point 'symbol))
-                                 '("let")))
-                    ;; nope, it wasn't, now we can either look deeper or go
-                    ;; to the next one
-                    (progn
-;;                      (message "not a member")
-                      (sp-down-sexp)
-                      ;; if we did not advance or moved forward it means
-                      ;; there were no deeper sexprs ahead of us, we can
-                      ;; now safely exit this level up
-                      (if (<= (point) old-point)
-                          (sp-up-sexp)))
-                  ;; ok, we're in let - let's see how many arguments we'd need
-                  ;; to skip in the argument list to get to where we were
-                  ;; and determine if it's an odd or an even arg
-;;                  (message "in let, point: %d" (point))
-                  ;; TODO: DRY
-                  (goto-char (first (reverse (nth 9 syntax))))
-                  (sp-down-sexp)
-;;                  (message "reset, point: %d" (point))
-                  (let ((last-sexp (sp-forward-sexp)))
-                    (let ((even t))
-;;                      (message "before loop, point: %d" (point))
-                      (while (< (point) old-point)
-;;                        (message "looping... %d" (point))
-                        (setq even (not even))
-                        (setq last-sexp (sp-next-sexp)))
-                      ;; if it's an odd one, try to mark the one after it
-                      (when (not even)
-                        (setq last-sexp (sp-next-sexp))
-                        (when (<= (point) old-point)
-                          ;; it doesn't exist
-;;                          (message "reached the end of let")
-                          (setq last-sexp nil)
-                          (sp-up-sexp))))
-                    (if last-sexp
-                        (setq result (list (sp-get last-sexp :beg)
-                                           (sp-get last-sexp :end))))
-                    (sp-next-sexp)))
-                )))))
-;;    (message "-> %s" result)
+;; if-not-string-let etc.
+;; TODO: for doseq etc
+(setq let-symbols '("let" "if-let"))
+
+(defun clojure-match-pairs-step (last)
+  ;; TODO: doc
+  (setq m t)
+  (if m (message "-- point %d" (point)))
+  (let ((pos (point))
+        (syntax (syntax-ppss))
+        (result nil))
+    (if m (message "pos: %d, syntax: %s" pos syntax))
+    ;; skip comments
+    (if (nth 4 syntax)
+        (sp-up-sexp)
+      ;; let is at least 2 levels deep
+      (if (< (nth 0 syntax) 2)
+          (progn
+            (if m (message "not enough depth"))
+            (down-or-out-sexp))
+        ;; ok, we're inside an s-expression at least 2 levels deep
+        ;; let's look at the 2nd inner level and make sure that
+        ;; the symbol is one that we support (let, if-let etc.)
+        (let ((sexps-stack (reverse (nth 9 syntax))))
+          (let ((sexp-beg (second sexps-stack)))
+            (if (not (member (save-excursion
+                               (goto-char sexp-beg)
+                               (forward-char)
+                               (forward-sexp)
+                               (thing-at-point 'symbol))
+                             let-symbols))
+                ;; nope, it wasn't, now we can either look deeper or go
+                ;; to the next one
+                (progn
+                  (if m (message "not a member of let family"))
+                  (down-or-out-sexp))
+              ;; ok, we're in let - let's see how many arguments we'd need
+              ;; to skip in the argument list to get to where we were
+              ;; and determine if it's an odd or an even arg
+              (if m (message "in let, point: %d" (point)))
+              (goto-char (first sexps-stack))
+              (forward-char)
+              (let ((end-of-let (save-excursion
+                                  (sp-end-of-sexp)
+                                  (point))))
+                (if m (message "let form: (%d %d)" (1- (point)) end-of-let))
+                (let ((last-sexp (sp-forward-sexp)))
+                  (let ((even t))
+                    (if m (message "after the first one, point: %d"
+                                   (point)))
+                    (while (< (point) pos)
+                      (if m (message "looping... %d" (point)))
+                      (setq even (not even))
+                      (setq last-sexp (sp-forward-sexp)))
+                    (when m
+                      (message "last-sexp: %s" last-sexp)
+                      (message "even: %s" even))
+                    ;; if it's an odd one, try to mark the one after it
+                    (when (not even)
+                      (setq last-sexp (sp-forward-sexp))
+                      (if m (message "last-sexp reset to: %s" last-sexp)))
+                    ;; if we ran out of let by this point, there's
+                    ;; nothing to report
+                    (when (>= (point) end-of-let)
+                      ;; it doesn't exist
+                      (if m (message "reached the end of let"))
+                      (setq last-sexp nil)))
+                  (if last-sexp
+                      (setq result (list (sp-get last-sexp :beg)
+                                         (sp-get last-sexp :end))))
+                  (forward-sexp))))))))
+    (if m (message "-> %s \"%s\""
+                   result (if result
+                              (apply 'buffer-substring result)
+                            "")))
+    ;; if the point didn't advance we're done searching, so move it manually
+    (if (= (point) pos)
+        (goto-char (1+ last)))
     (if result
         (progn (set-match-data result) t)
       nil)))
 
-
 ;; TODO: rename
 (defun perf (last)
-  (message "-- let-font-lock-match-blocks %d last %d" (point) last)
+;;  (message "-- let-font-lock-match-blocks %d last %d" (point) last)
   (let ((result nil))
     (while (and (not result) (<= (point) last))
-      (setq result (clojure-match-pairs-step)))
+      (setq result (clojure-match-pairs-step last)))
     result))
 
-(defun pp ()
-  (while (< (point) (buffer-size))
-    (message "pp point = %d" (point))
-    (perf (1+ (buffer-size)))))
+(defun pperf (last)
+  (while (< (point) last)
+;;    (message "pp point = %d" (point))
+    (perf (buffer-size))))
 
 (defun let-font-lock-match-blocks (last)
 ;;  (message "-- let-font-lock-match-blocks %d last %d" (point) last)
@@ -892,3 +915,4 @@
 (add-to-list 'load-path "~/.emacs.d/modules/find-file-in-repository")
 (require 'find-file-in-repository)
 (global-reset-key (kbd "C-x C-g") 'find-file-in-repository)
+(put 'narrow-to-region 'disabled nil)

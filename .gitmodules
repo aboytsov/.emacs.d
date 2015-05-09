@@ -34,3 +34,6 @@
 [submodule "clojure-mode"]
 	path = clojure-mode
 	url = https://github.com/aboytsov/clojure-mode.git
+[submodule "color-occur"]
+	path = color-occur
+	url = https://github.com/aboytsov/color-occur.git

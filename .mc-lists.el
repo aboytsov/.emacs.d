@@ -3,9 +3,12 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        color-occur-next
+        color-occur-prev
         kill-region
         sp-backward-delete-char
         sp-delete-char
+        undo
         ))
 
 (setq mc/cmds-to-run-once
