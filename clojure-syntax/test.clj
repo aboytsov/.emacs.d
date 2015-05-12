@@ -1,4 +1,7 @@
 (let [a b c d e f g h])
+
+;; TODO: cond condp etc
+
 ;; -- general
 ;; 80 character warning sign ---------------------------------------------- hereOVER LIMIT
 ;; Comment
@@ -154,6 +157,36 @@ nil
      (a-very-long-function-call arg1 arg2)
    :key-1
      (a-very-long-function-call arg1 arg2)})
+;; TODO: wrong
+(future-with-alert
+  (let [users-to-notify (-> comment
+                          edn/read-string
+                        parser/edn->user-mentions
+                        (->> (map :user-id))
+                        ;; exclude user who commented
+                        set
+                        (disj user-id))]
+    (doseq [user-to-notify users-to-notify]
+      (schedule-email user-to-notify "message-mention")
+      (db-notifications/user-comment-mention user-to-notify comment-id))))
+;; TODO: wrong
+(defn log-exception
+  "Logs the exception and returns a string which can be used for diagnostic
+  purposes."
+  [{:keys [type message data stack-trace]}]
+  (let [s (format "Exception: %s\nType: %s\n%s%s"
+                message
+                type
+                (if data (format "Data: %s\n" data) "")
+                stack-trace))]
+  (error s))
+;; TODO: wrong
+(def multiple (fn+ [] ([x] (inc x))
+              ([x y] (+ x y))))
+;; TODO: wrong
+(facts "about function arguments in decorators"
+       (add-out-str (decorated-print-args {:a 1} 8 {:c 2})) =>
+       [11 "1[{:a 1} 8 {:c 2}]2"])
 
 (just-some-function f
                     d

@@ -219,6 +219,7 @@
 
 (global-set-key (kbd "<backtab>") 'sp-indent-defun)
 
+;; TODO: consolidate
 (mapcar (lambda (x) (put-clojure-indent x 1))
         '(if-let if-not-let when-let when-not-let
           if-nil if-not-nil when-nil when-not-nil
@@ -229,6 +230,8 @@
           if-coll-let if-not-coll-let when-coll-let when-not-coll-let
           if-string if-not-string when-string when-not-string
           if-string-let if-not-string-let when-string-let when-not-string-let))
+(mapcar (lambda (x) (put-clojure-indent x 'defun))
+        '(defn+ fn+ facts))
 
 ;; syntax highlighting
 (defmacro defclojureface (name color desc &optional others)
@@ -452,16 +455,26 @@
       ;;       '(("data" 0 font-lock-keyword-face))
       ;;       '(let-font-lock-match-blocks . font-lock-keyword-face)
       (nconc
-       '((let-font-lock-match-blocks 0 font-lock-keyword-face))
+       ;;       '((let-font-lock-match-blocks 0 font-lock-keyword-face))
+       ;; what is <?
+       `(("\\<\\(FIXME\\|TODO\\|BUG\\|CODEQUALITY\\):"
+          1 font-lock-warning-face t))
        (mapcar (lambda (pair) `(,(first pair) . ,(replacement (second pair))))
                ;; TODO: instead of '(' need to detect if those symbols are
                ;; keywords
                '(("(\\(fn\\)[\[[:space:]]"          "ƒ")
+                 ;; TODO: bigger plus
                  ("(\\(fn\\+\\)[\[[:space:]]"       "ƒ⁺")
                  ("\\b\\(defn\\)\\b"
                   (concat
                    (propertize "∎" 'face 'bold)
                    (propertize "ƒ" 'help-echo "help-text")
+                   )
+                  )
+                 ("\\b\\(defn\\+\\)\\b"
+                  (concat
+                   (propertize "∎" 'face 'bold)
+                   (propertize "ƒ⁺" 'help-echo "help-text")
                    )
                   )
                  ("\\b\\(defmacro\\)\\b"
@@ -475,16 +488,27 @@
                    (propertize "∎" 'face 'bold)
                    )
                   )
-                 ("\\b\\(complement\\)\\b"
+                 ("\\b\\(complement\\|!\\)\\b"
                   (concat
                    (propertize "∁")
                    )
                   )
-                 ("\\(|\\)"
+                 ("\\b\\(comp\\||\\)\\b"
                   (concat
                    (propertize "∘")
                    )
                   )
+                 ("\\b\\(not\\)\\b"
+                  "¬"
+                  )
+                 ("\\b\\(min\\)\\b"
+                  "꜖"
+                  )
+                 ("\\b\\(max\\)\\b"
+                  "꜒"
+                  )
+                 ;; TODO: vector versions
+                 ;; TODO: ++ and -- as one symbol
                  ("\\b\\(nil\\)\\b"
                   "∅"
                   )
@@ -503,9 +527,12 @@
                  ("\\b\\(con<\\)\\b"
                   "☱"
                   )
-                 ("\\b\\(concat<\\)\\b"
+                 ("\\b\\(concat\\)\\b"
                   "☲"
                   )
+                 ;; TODO: parens with indexes for highlights?
+                 ;; TODO: reverse and reverse-args
+                 ;; TODO: loop/recur
                  ("\\b\\(\\*>\\)\\b"
                   "λ…"
                   )
@@ -529,6 +556,15 @@
                   )
                  ("\\b\\(for\\)\\b"
                   "∀"
+                  )
+                 ("\\b\\(not=\\)\\b"
+                  "≠"
+                  )
+                 ("\\b\\(<=\\)\\b"
+                  "≤"
+                  )
+                 ("\\b\\(>=\\)\\b"
+                  "≥"
                   )
                  ;;                ("\\(def-decorator\\)[\[[:space:]]"
                  ;;                 (concat
@@ -574,6 +610,8 @@
 ;; 				       1 font-lock-format-specifier-face t)) )))
 
 ;;(font-lock-add-keywords 'clojure-mode clojure-font-locks)
+
+;; TODO: needs to be highlighted: throw+, try+
 
 ;; clear all text properties and overlays on entering text mode
 (add-hook 'text-mode-hook
