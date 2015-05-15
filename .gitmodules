@@ -37,3 +37,6 @@
 [submodule "color-occur"]
 	path = color-occur
 	url = https://github.com/aboytsov/color-occur.git
+[submodule "modules/midje-mode"]
+	path = modules/midje-mode
+	url = https://github.com/dnaumov/midje-mode.git

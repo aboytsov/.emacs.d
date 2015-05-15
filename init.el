@@ -231,7 +231,7 @@
           if-string if-not-string when-string when-not-string
           if-string-let if-not-string-let when-string-let when-not-string-let))
 (mapcar (lambda (x) (put-clojure-indent x 'defun))
-        '(defn+ fn+ facts))
+        '(defn+ fn+ facts fact original-ns ns-no-defaults))
 
 ;; syntax highlighting
 (defmacro defclojureface (name color desc &optional others)
@@ -912,11 +912,17 @@
 
 (defun cider-local ()
   (interactive)
-  (cider "127.0.0.1" 12121))
+  (cider-connect "127.0.0.1" 12121))
 
 (global-reset-key (kbd "C-c C-l") 'cider-local)
 (global-reset-key (kbd "M-g f") 'find-tag)
 (global-reset-key (kbd "M-g r") 'cider-switch-to-repl-buffer)
+
+;; -- Midje
+(add-to-list 'load-path "~/.emacs.d/modules/midje-mode/")
+(require 'midje-mode)
+(provide 'clojure-test-mode)     ;; fake package to fool clojure-jump-to-file
+(require 'clojure-jump-to-file)
 
 ;; -- Autocomplete (in mini-buffer)
 (require 'icomplete)
