@@ -922,6 +922,7 @@
 (global-reset-key (kbd "M-g r") 'cider-switch-to-repl-buffer)
 
 ;; -- Midje
+(provide 'clojure-test-mode)      ;; fool midje-test-mode.el
 (add-to-list 'load-path "~/.emacs.d/modules/midje-test-mode/")
 (require 'midje-test-mode)
 
