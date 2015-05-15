@@ -919,10 +919,8 @@
 (global-reset-key (kbd "M-g r") 'cider-switch-to-repl-buffer)
 
 ;; -- Midje
-(add-to-list 'load-path "~/.emacs.d/modules/midje-mode/")
-(require 'midje-mode)
-(provide 'clojure-test-mode)     ;; fake package to fool clojure-jump-to-file
-(require 'clojure-jump-to-file)
+(add-to-list 'load-path "~/.emacs.d/modules/midje-test-mode/")
+(require 'midje-test-mode)
 
 ;; -- Autocomplete (in mini-buffer)
 (require 'icomplete)
