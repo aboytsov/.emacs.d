@@ -884,6 +884,7 @@
 
 (setq cider-test-infer-test-ns
       (lambda (ns) (replace-regexp-in-string "stuph\\." "stuph.test." ns)))
+(add-hook 'clojure-mode-hook 'midje-test-mode)
 
 (add-to-list 'load-path "~/.emacs.d/modules/use-package/")
 (require 'bind-key)
