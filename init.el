@@ -952,10 +952,11 @@
 (global-set-key (kbd "M-<return>") 'company-complete)
 
 ;; -- Git
-(setq magit-last-seen-setup-instructions "1.4.0")
+;; TODO: finish
+;;(setq magit-last-seen-setup-instructions "1.4.0")
 
-(add-to-list 'load-path "~/.emacs.d/modules/magit")
-(require 'magit)
+;;(add-to-list 'load-path "~/.emacs.d/modules/magit")
+;;(require 'magit)
 
 ;; -- Finding any file in the current git repository
 (add-to-list 'load-path "~/.emacs.d/modules/find-file-in-repository")
