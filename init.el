@@ -493,7 +493,9 @@
                    (propertize "∁")
                    )
                   )
-                 ("\\b\\(comp\\||\\)\\b"
+                 ;; TODO: doesn't work because of \b
+                 ;; may work with (\b|\s-)
+                 ("\\b\\(comp\\|[|]\\)\\b"
                   (concat
                    (propertize "∘")
                    )
