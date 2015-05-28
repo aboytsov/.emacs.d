@@ -231,7 +231,7 @@
           if-string if-not-string when-string when-not-string
           if-string-let if-not-string-let when-string-let when-not-string-let))
 (mapcar (lambda (x) (put-clojure-indent x 'defun))
-        '(defn+ fn+ facts fact original-ns ns-no-defaults))
+        '(defn+ fn+ facts fact decorate))
 
 ;; syntax highlighting
 (defmacro defclojureface (name color desc &optional others)
@@ -457,7 +457,8 @@
       (nconc
        ;;       '((let-font-lock-match-blocks 0 font-lock-keyword-face))
        ;; what is <?
-       `(("\\<\\(FIXME\\|TODO\\|BUG\\|CODEQUALITY\\):"
+       ;; TODO: different font face for doc?
+       `(("\\<\\(DOC\\|FIX\\|FIXME\\|TODO\\|BUG\\|CODEQUALITY\\):"
           1 font-lock-warning-face t))
        (mapcar (lambda (pair) `(,(first pair) . ,(replacement (second pair))))
                ;; TODO: instead of '(' need to detect if those symbols are
