@@ -47,6 +47,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; -- Clipboard and undo
+(setq undo-limit 5000)
 (setq x-select-enable-clipboard t)
 (global-reset-key (kbd "M-c") 'kill-ring-save)
 (global-reset-key (kbd "A-c") 'kill-ring-save)
