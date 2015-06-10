@@ -230,7 +230,8 @@
           if-coll if-not-coll when-coll when-not-coll
           if-coll-let if-not-coll-let when-coll-let when-not-coll-let
           if-string if-not-string when-string when-not-string
-          if-string-let if-not-string-let when-string-let when-not-string-let))
+          if-string-let if-not-string-let when-string-let when-not-string-let
+          match))
 (mapcar (lambda (x) (put-clojure-indent x 'defun))
         '(defn+ fn+ facts fact decorate))
 
@@ -495,9 +496,7 @@
                    (propertize "∁")
                    )
                   )
-                 ;; TODO: doesn't work because of \b
-                 ;; may work with (\b|\s-)
-                 ("\\b\\(comp\\|[|]\\)\\b"
+                 ("\\(comp\\|[|]\\)\\(\\b\\| \\)"
                   (concat
                    (propertize "∘")
                    )

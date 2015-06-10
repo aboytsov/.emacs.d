@@ -5,9 +5,11 @@
       '(
         color-occur-next
         color-occur-prev
+        dabbrev-expand
         kill-region
         sp-backward-delete-char
         sp-delete-char
+        sp-forward-slurp-sexp
         undo
         ))
 
