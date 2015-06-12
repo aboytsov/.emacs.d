@@ -232,7 +232,7 @@
           if-string-let if-not-string-let when-string-let when-not-string-let
           match))
 (mapcar (lambda (x) (put-clojure-indent x 'defun))
-        '(defn+ fn+ facts fact decorate))
+        '(defn+ fn+ facts fact tabular decorate))
 
 ;; syntax highlighting
 (defmacro defclojureface (name color desc &optional others)
