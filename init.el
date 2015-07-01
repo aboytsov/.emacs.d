@@ -47,7 +47,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; -- Clipboard and undo
-(setq undo-limit 5000)
+(setq undo-limit 100000)
 (setq x-select-enable-clipboard t)
 (global-reset-key (kbd "M-c") 'kill-ring-save)
 (global-reset-key (kbd "A-c") 'kill-ring-save)
@@ -229,6 +229,10 @@
           if-empty-let if-not-empty-let when-empty-let when-not-empty-let
           if-coll if-not-coll when-coll when-not-coll
           if-coll-let if-not-coll-let when-coll-let when-not-coll-let
+          if-list if-not-list when-list when-not-list
+          if-list-let if-not-list-let when-list-let when-not-list-let
+          if-vector if-not-vector when-vector when-not-vector
+          if-vector-let if-not-vector-let when-vector-let when-not-vector-let
           if-string if-not-string when-string when-not-string
           if-string-let if-not-string-let when-string-let when-not-string-let
           match))

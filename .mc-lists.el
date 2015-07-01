@@ -8,6 +8,7 @@
         dabbrev-expand
         kill-region
         sp-backward-delete-char
+        sp-backward-unwrap-sexp
         sp-delete-char
         sp-forward-slurp-sexp
         undo
