@@ -237,7 +237,7 @@
           if-string-let if-not-string-let when-string-let when-not-string-let
           match))
 (mapcar (lambda (x) (put-clojure-indent x 'defun))
-        '(defn+ fn+ facts fact tabular decorate))
+        '(defn+ fn+ facts fact tabular decorate catch-all catch+ update-error))
 
 ;; syntax highlighting
 (defmacro defclojureface (name color desc &optional others)
