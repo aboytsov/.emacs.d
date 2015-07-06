@@ -235,7 +235,7 @@
           if-vector-let if-not-vector-let when-vector-let when-not-vector-let
           if-string if-not-string when-string when-not-string
           if-string-let if-not-string-let when-string-let when-not-string-let
-          match))
+          match match-fn))
 (mapcar (lambda (x) (put-clojure-indent x 'defun))
         '(defn+ fn+ facts fact tabular decorate catch-all catch+ update-error))
 
