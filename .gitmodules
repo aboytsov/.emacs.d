@@ -49,3 +49,6 @@
 [submodule "modules/color-identifiers-mode"]
 	path = modules/color-identifiers-mode
 	url = https://github.com/ankurdave/color-identifiers-mode.git
+[submodule "color-identifiers-mode"]
+	path = color-identifiers-mode
+	url = git@github.com:aboytsov/color-identifiers-mode.git
