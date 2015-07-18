@@ -63,6 +63,16 @@
 ;; save here instead of littering current directory with emacs backup files
 (setq backup-directory-alist `(("." . "~/.saves")))
 
+;; --- Org mode
+;; Emacs comes with org-mode, but ours is hacked so need to load locally
+;(add-to-list 'load-path "~/.emacs.d/org-mode/")
+                                        ;(require 'org-table)
+;;(require 'org-mode)
+(load-file "~/.emacs.d/org-mode/lisp/org-table.el")
+;; -- Orgtbl-mode for table editing (useful for Midje tests)
+;;(add-hook 'clojure-mode-hook 'orgtbl-mode)
+
+
 ;; -- Clipboard and undo
 (setq undo-limit 100000)
 (setq x-select-enable-clipboard t)
@@ -104,12 +114,6 @@
 ;; TODO
 ;; (global-set-key (kbd "<next>") 'sfp-page-down)
 ;; (global-set-key (kbd "<prior>") 'sfp-page-up)
-
-;; --- Org mode
-;; Emacs comes with org-mode, but ours is hacked so need to load locally
-;(add-to-list 'load-path "~/.emacs.d/org-mode/")
-                                        ;(require 'org-table)
-(load-file "~/.emacs.d/org-mode/lisp/org-table.el")
 
 ;; -- Search
 (add-to-list 'load-path "~/.emacs.d/color-occur/")
@@ -700,6 +704,7 @@
 ;;            (add-hook 'font-lock-extend-region-functions
   ;;                    'let-font-lock-extend-region)
             (font-lock-add-keywords 'clojure-mode clojure-font-locks)
+            (orgtbl-mode)
             ))
 
 ;; -- Smartparens
@@ -863,22 +868,6 @@
 (add-hook 'clojure-mode-hook '(lambda () (highlight-parentheses-mode 1)))
 (setq hl-paren-colors
       '("#ff0000" "#0000ff" "#00ff00" "#ff00ff" "#ffff00" "#00ffff"))
-
-;; -- Orgtbl-mode for table editing (useful for Midje tests)
-(add-hook 'clojure-mode-hook 'orgtbl-mode)
-
-;; -- MMM mode
-;; (multiple major mode in one buffer to allow editing Midje tabular tests
-;; in CSV mode and possibly other goodies)
-(add-to-list 'load-path "~/.emacs.d/modules/mmm-mode//")
-(require 'mmm-auto)
-
-(mmm-add-classes
- '((markdown-midje
-    :submode csv-mode
-    :face mmm-declaration-submode-face
-    :front "tabular"
-    :back ",,")))
 
 ;; -- Tramp
 ;; TODO: is scp faster? which one is the fastest one?
