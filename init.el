@@ -29,6 +29,8 @@
  ;; If there is more than one, they won't work right.
  '(blink-cursor-interval nil)
  '(column-number-mode t)
+ '(company-auto-complete t)
+ '(company-auto-complete-chars (quote (32 40 46)))
  '(company-idle-delay 0.3)
  '(company-minimum-prefix-length 2)
  '(default-tab-width 2 t)
@@ -49,6 +51,15 @@
 
 ;; just 'y'/'n' instead of 'yes'/'no'
 (defalias 'yes-or-no-p 'y-or-n-p)
+
+;; revert files when they change
+(global-auto-revert-mode t)
+
+;; disable autosaving (e.g. no #filename#)
+(setq auto-save-default nil)
+
+;; save here instead of littering current directory with emacs backup files
+(setq backup-directory-alist `(("." . "~/.saves")))
 
 ;; -- Clipboard and undo
 (setq undo-limit 100000)
@@ -122,6 +133,12 @@
 (global-reset-key (kbd "C-c C-o") 'multi-occur-in-this-mode)
 
 ;; -- Other key bindings
+;; switch esc and ctrl+g and use only one escape instead of 3
+;;(global-set-key (kbd "<escape>") 'keyboard-quit)
+(global-set-key (kbd "<escape>")
+                (lambda () (interactive) (keyboard-escape-quit) (keyboard-quit)))
+;;(global-set-key (kbd "C-g") 'keyboard-escape-quit)
+
 ;; auto-complete on Ctrl-Enter
 (global-reset-key (kbd "C-<return>") 'dabbrev-expand)
 
@@ -212,12 +229,19 @@
 (global-set-key (kbd "A-,") 'mc/mark-previous-like-this)
 (global-set-key (kbd "A-m a") 'mc/mark-all-like-this)
 
+;; -- Autofill (very useful for writing comments)
+(setq default-fill-column 80)
+(add-hook 'clojure-mode-hook 'auto-fill-mode)
+
 ;; -- Clojure mode
 (add-to-list 'load-path "~/.emacs.d/clojure-mode/")
 (require 'clojure-mode)
 
 (setq open-paren-in-column-0-is-defun-start nil)
 (setq clojure--prettify-symbols-alist nil)
+
+(setq clojure-docstring-fill-column 80)
+(setq clojure-docstring-fill-prefix-width 3)
 
 ;; indentation
 (setq clojure-use-backtracking-indent nil)
@@ -742,7 +766,6 @@
 (require 'smartparens-config)
 
 (add-hook 'smartparens-mode-hook 'smartparens-strict-mode)
-
 
 (dolist (hook '(clojure-mode-hook
                 emacs-lisp-mode-hook

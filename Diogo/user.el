@@ -3,34 +3,6 @@
 ;; ################ Global Settings ###################
 ;; Some of these may belong to packages (not sure)
 
-;; Themes
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(add-to-list 'load-path "~/.emacs.d/themes")
-(load-theme 'tomorrow-night-bright t)
-
-;; revert files when they change
-(global-auto-revert-mode t)
-
-;; disable autosaving (e.g. no #filename#)
-(setq auto-save-default nil)
-
-;; Save here instead of littering current directory with emacs backup files
-(setq backup-directory-alist `(("." . "~/.saves")))
-
-;; Increase number of undo
-(setq undo-limit 100000)
-
-;; Mouse scrolling settings
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
-(setq mouse-wheel-progressive-speed t)
-
-;; start emacs server so that emacsclient opens windows with existing emacs
-(require 'server)
-(or (server-running-p)
-    (server-start))
-
-;; ?????
-(global-visual-line-mode)
 
 ;; fill column indicator (show a line at a given character number)
 ;; by default, fci mode uses the fill-column
