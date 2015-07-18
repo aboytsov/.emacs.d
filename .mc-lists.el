@@ -7,6 +7,7 @@
         color-occur-prev
         dabbrev-expand
         kill-region
+        next-error
         sp-backward-delete-char
         sp-backward-unwrap-sexp
         sp-delete-char

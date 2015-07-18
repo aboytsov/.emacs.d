@@ -40,3 +40,15 @@
 [submodule "modules/midje-test-mode"]
 	path = modules/midje-test-mode
 	url = https://github.com/bpoweski/midje-test-mode.git
+[submodule "rainbow-mode"]
+	path = rainbow-mode
+	url = https://github.com/emacsmirror/rainbow-mode.git
+[submodule "modules/rainbow-mode"]
+	path = modules/rainbow-mode
+	url = https://github.com/emacsmirror/rainbow-mode.git
+[submodule "modules/rainbow-identifiers"]
+	path = modules/rainbow-identifiers
+	url = https://github.com/Fanael/rainbow-identifiers.git
+[submodule "modules/color-identifiers-mode"]
+	path = modules/color-identifiers-mode
+	url = https://github.com/ankurdave/color-identifiers-mode.git

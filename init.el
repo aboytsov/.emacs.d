@@ -38,6 +38,10 @@
  '(kill-whole-line t)
  '(menu-bar-mode nil)
  '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1))))
+ '(rainbow-ansi-colors (quote auto))
+ '(rainbow-ansi-colors-major-mode-list
+   (quote
+    (sh-mode c-mode c++-mode clojure-mode emacs-lisp-mode html-mode)))
  '(tool-bar-mode nil))
 
 (scroll-bar-mode -1)
@@ -623,6 +627,16 @@
 
 ;; TODO: needs to be highlighted: throw+, try+
 
+;; -- Identifier highlighting
+(add-to-list 'load-path "~/.emacs.d/modules/dash.el/")
+(require 'dash)
+
+(add-to-list 'load-path "~/.emacs.d/modules/color-identifiers-mode/")
+(require 'color-identifiers-mode)
+(setq color-identifiers:timer
+      (run-with-idle-timer 0.1 t 'color-identifiers:refresh))
+(add-hook 'clojure-mode-hook 'color-identifiers-mode)
+
 ;; clear all text properties and overlays on entering text mode
 (add-hook 'text-mode-hook
           (lambda ()
@@ -657,8 +671,6 @@
             ))
 
 ;; -- Smartparens
-(add-to-list 'load-path "~/.emacs.d/modules/dash.el/")
-(require 'dash)
 ;; TODO: auto-format doc strings
 
  ;; Key bindings:
@@ -821,6 +833,10 @@
 (setq hl-paren-colors
       '("#ff0000" "#0000ff" "#00ff00" "#ff00ff" "#ffff00" "#00ffff"))
 
+;; -- Color highlighting
+(add-to-list 'load-path "~/.emacs.d/modules/rainbow-mode/")
+(require 'rainbow-mode)
+
 ;; -- Tramp
 ;; TODO: is scp faster? which one is the fastest one?
 (setq tramp-default-method "ssh")
@@ -971,3 +987,9 @@
 (require 'find-file-in-repository)
 (global-reset-key (kbd "C-x C-g") 'find-file-in-repository)
 (put 'narrow-to-region 'disabled nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
