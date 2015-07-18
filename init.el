@@ -833,10 +833,6 @@
 (setq hl-paren-colors
       '("#ff0000" "#0000ff" "#00ff00" "#ff00ff" "#ffff00" "#00ffff"))
 
-;; -- Color highlighting
-(add-to-list 'load-path "~/.emacs.d/modules/rainbow-mode/")
-(require 'rainbow-mode)
-
 ;; -- Tramp
 ;; TODO: is scp faster? which one is the fastest one?
 (setq tramp-default-method "ssh")
