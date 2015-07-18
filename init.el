@@ -18,7 +18,7 @@
 (setq default-frame-alist (append (list
                                    '(width  . 80)
                                    '(height . 55)
-                                   '(left . 840))
+                                   '(left   . 840))
   default-frame-alist))
 
 ;; -- Various settings
@@ -31,7 +31,7 @@
  '(column-number-mode t)
  '(company-auto-complete t)
  '(company-auto-complete-chars (quote (32 40 46)))
- '(company-idle-delay 0.3)
+ '(company-idle-delay 0.5)
  '(company-minimum-prefix-length 2)
  '(default-tab-width 2 t)
  '(frame-title-format (quote ("%f")) t)
@@ -40,6 +40,8 @@
  '(kill-whole-line t)
  '(menu-bar-mode nil)
  '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1))))
+ '(org-M-RET-may-split-line t)
+ '(org-table-auto-blank-field t)
  '(rainbow-ansi-colors (quote auto))
  '(rainbow-ansi-colors-major-mode-list
    (quote
@@ -102,6 +104,12 @@
 ;; TODO
 ;; (global-set-key (kbd "<next>") 'sfp-page-down)
 ;; (global-set-key (kbd "<prior>") 'sfp-page-up)
+
+;; --- Org mode
+;; Emacs comes with org-mode, but ours is hacked so need to load locally
+;(add-to-list 'load-path "~/.emacs.d/org-mode/")
+                                        ;(require 'org-table)
+(load-file "~/.emacs.d/org-mode/lisp/org-table.el")
 
 ;; -- Search
 (add-to-list 'load-path "~/.emacs.d/color-occur/")
@@ -528,11 +536,11 @@
                    (propertize "∁")
                    )
                   )
-                 ("\\(comp\\|[|]\\)\\(\\b\\| \\)"
-                  (concat
-                   (propertize "∘")
-                   )
-                  )
+                 ;; ("\\(comp\\|[|]\\)\\(\\b\\| \\)"
+                 ;;  (concat
+                 ;;   (propertize "∘")
+                 ;;   )
+                 ;;  )
                  ("\\b\\(not\\)\\b"
                   "¬"
                   )
@@ -855,6 +863,22 @@
 (add-hook 'clojure-mode-hook '(lambda () (highlight-parentheses-mode 1)))
 (setq hl-paren-colors
       '("#ff0000" "#0000ff" "#00ff00" "#ff00ff" "#ffff00" "#00ffff"))
+
+;; -- Orgtbl-mode for table editing (useful for Midje tests)
+(add-hook 'clojure-mode-hook 'orgtbl-mode)
+
+;; -- MMM mode
+;; (multiple major mode in one buffer to allow editing Midje tabular tests
+;; in CSV mode and possibly other goodies)
+(add-to-list 'load-path "~/.emacs.d/modules/mmm-mode//")
+(require 'mmm-auto)
+
+(mmm-add-classes
+ '((markdown-midje
+    :submode csv-mode
+    :face mmm-declaration-submode-face
+    :front "tabular"
+    :back ",,")))
 
 ;; -- Tramp
 ;; TODO: is scp faster? which one is the fastest one?
