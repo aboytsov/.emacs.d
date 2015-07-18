@@ -52,3 +52,6 @@
 [submodule "color-identifiers-mode"]
 	path = color-identifiers-mode
 	url = git@github.com:aboytsov/color-identifiers-mode.git
+[submodule "company-mode"]
+	path = company-mode
+	url = git@github.com:aboytsov/company-mode.git

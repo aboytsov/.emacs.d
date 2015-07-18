@@ -655,7 +655,7 @@
 (add-to-list 'load-path "~/.emacs.d/modules/dash.el/")
 (require 'dash)
 
-(add-to-list 'load-path "~/.emacs.d/modules/color-identifiers-mode/")
+(add-to-list 'load-path "~/.emacs.d/color-identifiers-mode/")
 (require 'color-identifiers-mode)
 (setq color-identifiers:timer
       (run-with-idle-timer 0.1 t 'color-identifiers:refresh))
@@ -989,7 +989,7 @@
 (setq ido-use-faces nil)
 
 ;; -- Symbol completion
-(add-to-list 'load-path "~/.emacs.d/modules/company-mode")
+(add-to-list 'load-path "~/.emacs.d/company-mode")
 (require 'company)
 (global-company-mode)
 (global-set-key (kbd "M-<return>") 'company-complete)
