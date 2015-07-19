@@ -55,9 +55,6 @@
 [submodule "company-mode"]
 	path = company-mode
 	url = git@github.com:aboytsov/company-mode.git
-[submodule "modules/helm"]
-	path = modules/helm
-	url = https://github.com/emacs-helm/helm.git
 [submodule "modules/projectile"]
 	path = modules/projectile
 	url = https://github.com/bbatsov/projectile.git
@@ -67,3 +64,6 @@
 [submodule "modules/undo-tree"]
 	path = modules/undo-tree
 	url = https://github.com/emacsmirror/undo-tree.git
+[submodule "modules/buffer-move"]
+	path = modules/buffer-move
+	url = https://github.com/lukhas/buffer-move.git

@@ -37,6 +37,27 @@
 (global-reset-key (kbd "C-q")
   (lambda () (interactive) (kill-buffer (window-buffer (previous-window)))))
 
+;; so that quit (escape) doesn't unsplit all the windows
+(defadvice one-window-p (around always (arg))
+  (setq ad-return-value t))
+
+(defun keyboard-escape-quit-leave-windows-alone ()
+  (interactive)
+  (ad-enable-advice 'one-window-p 'around 'always)
+  (ad-activate 'one-window-p)
+  (unwind-protect
+      (keyboard-escape-quit)
+    (ad-disable-advice 'one-window-p 'around 'always)
+    (ad-deactivate 'one-window-p)))
+
+;; switch esc and ctrl+g and use only one escape instead of 3
+;;(global-set-key (kbd "<escape>") 'keyboard-quit)
+;;(global-set-key (kbd "C-g") 'keyboard-escape-quit)
+(global-set-key (kbd "<escape>")
+                (lambda () (interactive)
+                  (keyboard-escape-quit-leave-windows-alone)
+                  (keyboard-quit)))
+
 ;; -- Various settings
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -45,11 +66,13 @@
  ;; If there is more than one, they won't work right.
  '(blink-cursor-interval nil)
  '(column-number-mode t)
+ '(comint-scroll-to-bottom-on-input (quote all))
  '(company-auto-complete t)
  '(company-auto-complete-chars (quote (32 40 46)))
  '(company-idle-delay 0.5)
  '(company-minimum-prefix-length 2)
  '(default-tab-width 2 t)
+ '(eshell-scroll-to-bottom-on-input (quote this))
  '(frame-title-format (quote ("%f")) t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
@@ -161,20 +184,28 @@
 (helm-mode)
 
 (helm-adaptive-mode t)
-(setq helm-always-two-windows nil
-      helm-buffer-skip-remote-checking t
-      helm-apropos-fuzzy-match                    t
-      helm-M-x-fuzzy-match                        t
-      helm-tramp-verbose                          6
-      helm-buffers-fuzzy-matching                 t
+(setq helm-always-two-windows               nil
+      helm-split-window-default-side        'other
+      helm-buffer-skip-remote-checking      t
+      helm-mode-fuzzy-match                 t
+      helm-M-x-fuzzy-match                  t
+      helm-apropos-fuzzy-match              t
+      helm-buffers-fuzzy-matching           t
+      helm-locate-fuzzy-match               t
+      helm-recentf-fuzzy-match              t
+      helm-tramp-verbose                    6
+      helm-buffers-favorite-modes           '(clojure-mode org-mode)
+      helm-descbinds-window-style           'one-window
+      helm-ff-file-name-history-use-recentf t
+      helm-ff-history-max-length            1000
+      helm-ff-skip-boring-files             t
+      helm-reuse-last-window-split-state    t)
 
-)
 (defun helm-debug-toggle ()
   (interactive)
   (setq helm-debug (not helm-debug))
   (message "Helm Debug is now %s"
            (if helm-debug "Enabled" "Disabled")))
-
 
 ;; -- grep
 (setq helm-grep-default-command
@@ -186,7 +217,7 @@
 (setq helm-default-zgrep-command
       "zgrep --color=always -a -n%cH -e %p %f")
 
-;;(global-reset-key )
+(global-reset-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "C-b") 'helm-buffers-list)
 (global-reset-key (kbd "C-x C-r") 'helm-recentf)
 (global-reset-key (kbd "M-l") 'helm-locate)
@@ -242,12 +273,6 @@
 (global-reset-key (kbd "C-c C-o") 'multi-occur-in-this-mode)
 
 ;; -- Other key bindings
-;; switch esc and ctrl+g and use only one escape instead of 3
-;;(global-set-key (kbd "<escape>") 'keyboard-quit)
-(global-set-key (kbd "<escape>")
-                (lambda () (interactive) (keyboard-escape-quit) (keyboard-quit)))
-;;(global-set-key (kbd "C-g") 'keyboard-escape-quit)
-
 ;; auto-complete on Ctrl-Enter
 (global-reset-key (kbd "C-<return>") 'dabbrev-expand)
 
@@ -791,6 +816,13 @@
 (global-set-key (kbd "A-M-<down>")  'windmove-down)
 (global-set-key (kbd "A-M-<up>")    'windmove-up)
 
+(add-to-list 'load-path "~/.emacs.d/modules/buffer-move/")
+(require 'buffer-move)
+(global-set-key (kbd "A-M-S-<left>")  'buf-move-left)
+(global-set-key (kbd "A-M-S-<right>") 'buf-move-right)
+(global-set-key (kbd "A-M-S-<down>")  'buf-move-down)
+(global-set-key (kbd "A-M-S-<up>")    'buf-move-up)
+
 ;; -- Smartparens
 
 ;; Key bindings:
@@ -807,8 +839,8 @@
 ;; * ctrl+shift         Mark until backward/forward/down/up sexpr
 ;; * cmd+ctrl           Org-table mode: move row or column left/right/down/up
 ;; * cmd+ctrl+shift     Org-table mode: insert (down) or delete (up) row/column
-;; ? cmd+alt            Moving between windows
-;;   cmd+alt+shift      <empty>
+;; * cmd+alt            Select window to the left/right/down/up
+;; * cmd+alt+shift      Move (swap with) selected window left/right/down/up
 ;;   cmd+alt+ctrl       <empty>
 ;;   cmd+alt+ctrl+shift <empty>
 ;;
