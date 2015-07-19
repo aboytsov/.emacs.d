@@ -8,6 +8,7 @@
         dabbrev-expand
         kill-region
         next-error
+        orgtbl-self-insert-command
         sp-backward-delete-char
         sp-backward-unwrap-sexp
         sp-delete-char

@@ -14,12 +14,28 @@
 (load-file "~/.emacs.d/utils.el")
 (load-file (concat "~/.emacs.d/profile-" (getenv "EMACS_PROFILE") ".el"))
 
-;; -- Set window width/height
-(setq default-frame-alist (append (list
-                                   '(width  . 80)
-                                   '(height . 55)
-                                   '(left   . 840))
-  default-frame-alist))
+;; -- Windows
+(let ((width 165)
+      (frame (selected-frame)))
+  (when (/= (frame-width frame) width)
+    (set-frame-width    frame width)
+    (set-frame-height   frame 56)
+    (set-frame-position frame 260 0)
+
+    (split-window-right)
+    (split-window-below)
+    (windmove-right)
+    (split-window-below)))
+
+;; previous window
+(global-set-key (kbd "C-x p") (lambda () (interactive) (other-window -1)))
+
+;; kill buffer in the current window
+(global-reset-key (kbd "C-w")
+  (lambda () (interactive) (kill-this-buffer)))
+;; kill buffer in the other window (for error messages, greps etc)
+(global-reset-key (kbd "C-q")
+  (lambda () (interactive) (kill-buffer (window-buffer (previous-window)))))
 
 ;; -- Various settings
 (custom-set-variables
@@ -75,13 +91,32 @@
 
 ;; -- Clipboard and undo
 (setq undo-limit 100000)
+
+(add-to-list 'load-path "~/.emacs.d/modules/undo-tree/")
+(require 'undo-tree)
+
+(setq undo-tree-auto-save-history t)
+(setq undo-tree-visualizer-timestamps t)
+(setq undo-tree-visualizer-diff t)
+
+(global-unset-key (kbd "C-_"))
+(global-reset-key (kbd "C--") 'undo-tree-undo)
+(global-set-key (kbd "C-=") 'undo-tree-redo)
+
+(global-set-key (kbd "A--") 'undo-tree-visualize)
+
+(add-to-list 'load-path "~/.emacs.d/modules/point-undo/")
+(require 'point-undo)
+(global-set-key (kbd "M--") 'point-undo)
+(global-reset-key (kbd "M-=") 'point-redo)
+
+;; -- Clipboard
+
 (setq x-select-enable-clipboard t)
 (global-reset-key (kbd "M-c") 'kill-ring-save)
 (global-reset-key (kbd "A-c") 'kill-ring-save)
 (global-reset-key (kbd "M-v") 'yank)
 (global-reset-key (kbd "A-v") 'yank)
-(global-reset-key (kbd "M-z") 'undo)
-(global-reset-key (kbd "A-z") 'undo)
 
 ;; -- Trail whitespaces in all files
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -92,7 +127,8 @@
 (global-hl-line-mode 1)
 (set-face-background 'hl-line "#FFD")
 
-;; -- Mac key bindings
+;; -- Mac-specific including key bindings
+(menu-bar-mode)
 
 ;; TODO
 (defun sfp-page-down (&optional arg)
@@ -114,6 +150,67 @@
 ;; TODO
 ;; (global-set-key (kbd "<next>") 'sfp-page-down)
 ;; (global-set-key (kbd "<prior>") 'sfp-page-up)
+
+;; -- Dash is used to several packages below
+(add-to-list 'load-path "~/.emacs.d/modules/dash.el/")
+(require 'dash)
+
+;; -- Helm
+(add-to-list 'load-path "~/.emacs.d/modules/helm/")
+(require 'helm-config)
+(helm-mode)
+
+(helm-adaptive-mode t)
+(setq helm-always-two-windows nil
+      helm-buffer-skip-remote-checking t
+      helm-apropos-fuzzy-match                    t
+      helm-M-x-fuzzy-match                        t
+      helm-tramp-verbose                          6
+      helm-buffers-fuzzy-matching                 t
+
+)
+(defun helm-debug-toggle ()
+  (interactive)
+  (setq helm-debug (not helm-debug))
+  (message "Helm Debug is now %s"
+           (if helm-debug "Enabled" "Disabled")))
+
+
+;; -- grep
+(setq helm-grep-default-command
+      "ack-grep -Hn --smart-case --no-group %e %p %f")
+(setq helm-grep-default-recurse-command
+      "ack-grep -H --smart-case --no-group %e %p %f")
+(setq helm-ls-git-grep-command
+      "git grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p %f")
+(setq helm-default-zgrep-command
+      "zgrep --color=always -a -n%cH -e %p %f")
+
+;;(global-reset-key )
+(global-set-key (kbd "C-b") 'helm-buffers-list)
+(global-reset-key (kbd "C-x C-r") 'helm-recentf)
+(global-reset-key (kbd "M-l") 'helm-locate)
+(global-reset-key (kbd "M-X") 'helm-complex-command-history)
+
+(add-to-list 'load-path "~/.emacs.d/modules/helm-descbinds/")
+(require 'helm-descbinds)
+(helm-descbinds-install)            ; C-h b, C-x C-h
+
+;; -- Projectile
+(add-to-list 'load-path "~/.emacs.d/modules/projectile/")
+(require 'projectile)
+(require 'helm-projectile)
+(projectile-global-mode)
+(helm-projectile-on)
+
+(global-set-key (kbd "C-<tab>") 'helm-projectile-switch-to-buffer)
+(global-reset-key (kbd "M-o") 'helm-projectile-grep)
+(global-reset-key (kbd "C-p") (make-sparse-keymap))
+(global-set-key (kbd "C-p p") 'helm-projectile)
+(global-set-key (kbd "C-p s") 'helm-projectile-switch-project)
+(global-set-key (kbd "C-p f") 'helm-projectile-find-file-in-known-projects)
+(global-set-key (kbd "C-p o") 'helm-projectile-find-file-dwim)
+(global-set-key (kbd "C-p r") 'helm-projectile-recentf)
 
 ;; -- Search
 (add-to-list 'load-path "~/.emacs.d/color-occur/")
@@ -153,16 +250,6 @@
 
 ;; auto-complete on Ctrl-Enter
 (global-reset-key (kbd "C-<return>") 'dabbrev-expand)
-
-;; previous window
-(global-set-key (kbd "C-x p") (lambda () (interactive) (other-window -1)))
-
-;; kill buffer in the current window
-(global-reset-key (kbd "C-w")
-  (lambda () (interactive) (kill-this-buffer)))
-;; kill buffer in the other window (for error messages, greps etc)
-(global-reset-key (kbd "C-q")
-  (lambda () (interactive) (kill-buffer (window-buffer (previous-window)))))
 
 ;; recording and replaying macros
 (global-set-key (kbd "C-,") 'kmacro-start-macro-or-insert-counter)
@@ -664,27 +751,18 @@
 ;; TODO: needs to be highlighted: throw+, try+
 
 ;; -- Identifier highlighting
-(add-to-list 'load-path "~/.emacs.d/modules/dash.el/")
-(require 'dash)
-
 (add-to-list 'load-path "~/.emacs.d/color-identifiers-mode/")
 (require 'color-identifiers-mode)
 (setq color-identifiers:timer
       (run-with-idle-timer 0.1 t 'color-identifiers:refresh))
 (add-hook 'clojure-mode-hook 'color-identifiers-mode)
 
-;; clear all text properties and overlays on entering text mode
-(add-hook 'text-mode-hook
-          (lambda ()
-            (interactive)
-            (set-text-properties 1 (buffer-size) nil)
-            (remove-overlays)))
-
 (defun reload-syntax-highlighting ()
   (interactive)
   (eval-buffer)
   (other-window -1)
-  (text-mode)
+  (set-text-properties 1 (buffer-size) nil)
+  (remove-overlays)
   (clojure-mode)
   (other-window -1))
 
@@ -707,48 +785,38 @@
             (orgtbl-mode)
             ))
 
+;; -- Window navigation
+(global-set-key (kbd "A-M-<left>")  'windmove-left)
+(global-set-key (kbd "A-M-<right>") 'windmove-right)
+(global-set-key (kbd "A-M-<down>")  'windmove-down)
+(global-set-key (kbd "A-M-<up>")    'windmove-up)
+
 ;; -- Smartparens
-;; TODO: auto-format doc strings
 
- ;; Key bindings:
- ;;*  ctrl-left/right       switch desktop space
- ;;*  ctrl-up/down          switch desktop space
- ;;
- ;;*  shift-left/right      mark region
- ;;*  shift-up/down         mark region
- ;;
- ;;*  command-left/right        go to end/beginning of line
- ;;*  command-up/down           go to end/beginning of document
- ;;*  shift+command-left/right  mark to end/beginning of line
- ;;*  shift+command-up/down     mark to end/beginning of document
- ;;
- ;;?  ctrl+command-left/right   switch window
- ;;?  ctrl+command-up/down      switch window
- ;;
- ;;*  alt-left/right             next/previous word
- ;;*  shift+alt-left/right       mark to next/previous word
+;; Key bindings:
 
- ;;*  ctrl+alt-left/right       next/previous sexpr
- ;;?  + shift????????
- ;;*  ctrl+alt-up/down          down/up sexpr
- ;;?  + shift?????????
-
- ;;*  alt+], alt+shift+]              slurp/barf forwards
- ;;*  alt+[, alt+shift+[              slurp/barf backwards
-
- ;;  alt-up/down
- ;;  shift+alt-up/down
- ;;
- ;;  shift+ctrl-left/right
- ;;  shift+ctrl-up/down
- ;;
- ;;  alt+command-left/right
- ;;  alt+command-up/down
- ;;
-
+;; * shift              Marking in the buffer
+;; * cmd                Beginning/end of line (left/right) or document (up/down)
+;; * cmd+shift          Mark until beginning/end of line or document
+;; * ctrl+alt           Switch desktop space (OS X, TotalSpaces2)
+;; * ctrl+alt+shift     Move window to another space (OS X, TotalSpaces2)
+;; * alt                Left/right: next/prev word; down/up - split/join sexpr
+;; * alt+shift          Left-right: mark to next/prev word; down/up - split
+;;                      sexpr killing backward/forward
+;; * ctrl               Backward/forward/down/up sexpr
+;; * ctrl+shift         Mark until backward/forward/down/up sexpr
+;; * cmd+ctrl           Org-table mode: move row or column left/right/down/up
+;; * cmd+ctrl+shift     Org-table mode: insert (down) or delete (up) row/column
+;; ? cmd+alt            Moving between windows
+;;   cmd+alt+shift      <empty>
+;;   cmd+alt+ctrl       <empty>
+;;   cmd+alt+ctrl+shift <empty>
 ;;
-;; TODO: continuning comments on enter
-;; TODO: (comment's )
+;; * ctrl+backspace     Backward-kill sexp
+;; * ctrl+delete        Forward-kill sexp
+
+;; * alt+], alt+ctrl+]  slurp/barf forwards
+;; * alt+[, alt+ctrl+[  slurp/barf backwards
 
 (setq sp-autoskip-closing-pair 'always)
 (setq sp-base-key-bindings 'sp)
@@ -759,19 +827,24 @@
 (setq sp-successive-kill-preserve-whitespace 2)
 (setq sp-override-key-bindings
       '(("<eturn>" . indent-new-comment-line)
-        ("C-k"   . sp-kill-sexp)
-        ("C-M-k" . sp-kill-hybrid-sexp)
-        ("C-M-<right>" . sp-forward-sexp)
-        ("C-M-<left>" . sp-backward-sexp)
-        ("C-M-<down>" . sp-down-sexp)
-        ("C-M-<up>" . sp-up-sexp)
+        ;; as per the map above
+        ("M-<down>" . sp-split-sexp)
+        ("M-<up>" . sp-join-sexp)
+        ("C-<left>" . sp-backward-sexp)
+        ("C-<right>" . sp-forward-sexp)
+        ("C-<down>" . sp-down-sexp)
+        ("C-<up>" . sp-up-sexp)
+        ;; -- killing
+        ("C-k" . sp-kill-hybrid-sexp)  ;; this kills a line respecting forms
+        ("C-<delete>"   . sp-kill-sexp)
+        ("C-<backspace>"   . sp-backward-kill-sexp)
+        ("M-S-<up>"   . sp-splice-sexp-killing-backward)
+        ("M-S-<down>"   . sp-splice-sexp-killing-forward)
+        ;; -- barfing/slurping
         ("M-]" . sp-forward-slurp-sexp)
         ("M-C-]" . sp-forward-barf-sexp)
         ("M-[" . sp-backward-slurp-sexp)
-        ("M-C-[" . sp-backward-barf-sexp)
-        ("M-s" . sp-split-sexp)
-        ("M-j" . sp-join-sexp)
-        ))
+        ("M-C-[" . sp-backward-barf-sexp)))
 
 ;; TODO: DRY
 (add-to-list 'load-path "~/.emacs.d/modules/smartparens")
@@ -973,7 +1046,7 @@
   (interactive)
   (cider-connect "127.0.0.1" 12121))
 
-(global-reset-key (kbd "C-c C-l") 'cider-local)
+(global-reset-key (kbd "C-c C-d") 'cider-local)
 (global-reset-key (kbd "M-g f") 'find-tag)
 (global-reset-key (kbd "M-g r") 'cider-switch-to-repl-buffer)
 

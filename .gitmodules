@@ -55,3 +55,15 @@
 [submodule "company-mode"]
 	path = company-mode
 	url = git@github.com:aboytsov/company-mode.git
+[submodule "modules/helm"]
+	path = modules/helm
+	url = https://github.com/emacs-helm/helm.git
+[submodule "modules/projectile"]
+	path = modules/projectile
+	url = https://github.com/bbatsov/projectile.git
+[submodule "modules/point-undo"]
+	path = modules/point-undo
+	url = https://github.com/emacsmirror/point-undo.git
+[submodule "modules/undo-tree"]
+	path = modules/undo-tree
+	url = https://github.com/emacsmirror/undo-tree.git
