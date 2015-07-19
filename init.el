@@ -179,7 +179,7 @@
 (require 'dash)
 
 ;; -- Helm
-(add-to-list 'load-path "~/.emacs.d/modules/helm/")
+(add-to-list 'load-path "~/.emacs.d/helm/")
 (require 'helm-config)
 (helm-mode)
 
