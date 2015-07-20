@@ -67,3 +67,21 @@
 [submodule "modules/buffer-move"]
 	path = modules/buffer-move
 	url = https://github.com/lukhas/buffer-move.git
+[submodule "helm"]
+	path = helm
+	url = git@github.com:aboytsov/helm.git
+[submodule "modules/emacs-helm-ag"]
+	path = modules/emacs-helm-ag
+	url = https://github.com/syohex/emacs-helm-ag
+[submodule "modules/workgroups2"]
+	path = modules/workgroups2
+	url = https://github.com/pashinin/workgroups2.git
+[submodule "modules/f.el"]
+	path = modules/f.el
+	url = https://github.com/rejeep/f.el.git
+[submodule "modules/s.el"]
+	path = modules/s.el
+	url = https://github.com/magnars/s.el.git
+[submodule "modules/anaphora"]
+	path = modules/anaphora
+	url = https://github.com/rolandwalker/anaphora.git
