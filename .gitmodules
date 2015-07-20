@@ -85,3 +85,6 @@
 [submodule "modules/anaphora"]
 	path = modules/anaphora
 	url = https://github.com/rolandwalker/anaphora.git
+[submodule "modules/helm-descbinds"]
+	path = modules/helm-descbinds
+	url = https://github.com/emacs-helm/helm-descbinds.git

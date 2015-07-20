@@ -11,3 +11,10 @@
 \#*\#
 ido.last
 .DS_Store
+/TAGS
+eshell/
+helm-adaptive-history
+projectile-bookmarks.eld
+projectile.cache
+recentf
+tramp
