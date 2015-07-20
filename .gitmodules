@@ -88,3 +88,6 @@
 [submodule "modules/helm-descbinds"]
 	path = modules/helm-descbinds
 	url = https://github.com/emacs-helm/helm-descbinds.git
+[submodule "org-mode"]
+	path = org-mode
+	url = git@github.com:aboytsov/org-mode.git
