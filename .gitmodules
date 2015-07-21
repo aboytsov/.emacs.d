@@ -22,9 +22,6 @@
 [submodule "use-package"]
 	path = modules/use-package
 	url = https://github.com/jwiegley/use-package
-[submodule "magit"]
-	path = modules/magit
-	url = https://github.com/magit/magit
 [submodule "smartparens"]
 	path = modules/smartparens
 	url = https://github.com/Fuco1/smartparens
@@ -91,3 +88,6 @@
 [submodule "org-mode"]
 	path = org-mode
 	url = git@github.com:aboytsov/org-mode.git
+[submodule "modules/popwin-el"]
+	path = modules/popwin-el
+	url = https://github.com/m2ym/popwin-el.git

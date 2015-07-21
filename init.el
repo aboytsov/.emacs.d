@@ -78,6 +78,38 @@
                   (keyboard-escape-quit-leave-windows-alone)
                   (keyboard-quit)))
 
+;; -- Popwin
+
+(add-to-list 'load-path "~/.emacs.d/modules/popwin-el/")
+
+(require 'popwin)
+(popwin-mode 1)
+
+(setq popwin:special-display-config
+      '(("*Miniedit Help*" :noselect t)
+        help-mode
+        (completion-list-mode :noselect t)
+        (compilation-mode :noselect t)
+        (grep-mode :noselect t)
+        (occur-mode :noselect t)
+       (" *undo-tree*" :width 60 :position right)
+       (" *undo-tree*" :width 60 :position right)
+;;        ("*undo-tree Diff*" :height 0.3 :position bottom)
+        ;; TODO: increase height for descbinds
+        ;; seems like descbinds breaks my bindings! (cmd+c)
+        ("^\*helm.*\*$" :regexp t)
+        ("*cider-error*" :height 0.5)
+        ("*Messages*" :height 0.5)
+        ))
+
+
+;; (push '(flycheck-error-list-mode :height 0.5 :regexp t :position bottom) popwin:special-display-config)
+;; ;; direx
+;; (push '(direx:direx-mode :position left :width 40 :dedicated t)
+;;       popwin:special-display-config)
+
+(global-set-key (kbd "M-w") popwin:keymap)
+
 ;; -- Various settings
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -105,6 +137,8 @@
  '(rainbow-ansi-colors-major-mode-list
    (quote
     (sh-mode c-mode c++-mode clojure-mode emacs-lisp-mode html-mode)))
+ '(recentf-max-menu-items 200)
+ '(recentf-max-saved-items 200)
  '(safe-local-variable-values
    (quote
     ((outline-minor-mode)
@@ -203,40 +237,51 @@
 (require 'dash)
 
 ;; -- Helm
-(add-to-list 'load-path "~/.emacs.d/helm/")
+;;(add-to-list 'load-path "~/.emacs.d/helm/")
+(add-to-list 'load-path "~/.emacs.prelude/elpa/helm-20150719.721/")
+(add-to-list 'load-path "~/.emacs.prelude/elpa/helm-core-20150719.845/")
 (require 'helm-config)
+;;(require 'helm)
 (helm-mode)
 
-;; (helm-adaptive-mode t)
-(setq
-  helm-always-two-windows               nil
-       helm-split-window-default-side        'vertical
-      helm-quick-update                     t
-;;       helm-buffer-skip-remote-checking      t
-      helm-candidate-number-limit         500
-      helm-mode-fuzzy-match                 t
-      helm-M-x-fuzzy-match                  t
-      helm-apropos-fuzzy-match              t
-      helm-buffers-fuzzy-matching           t
-      helm-locate-fuzzy-match               t
-      helm-recentf-fuzzy-match              t
-;;       helm-tramp-verbose                    6
-;;       helm-buffers-favorite-modes           '(clojure-mode org-mode)
-      helm-descbinds-window-style           'one-window
-      helm-ff-file-name-history-use-recentf t
-      helm-move-to-line-cycle-in-source nil
-;;       helm-ff-history-max-length            500
-      helm-ff-skip-boring-files             t
-;;       helm-ff-transformer-show-only-basename nil
-;; ;;      helm-ff-file-name-history-use-recentf t
-;;       ;;helm-reuse-last-window-split-state    t
-      )
+(set-face-attribute 'helm-source-header nil :family "Menlo"
+                    :weight 'normal :height 100)
 
-;; (defun helm-debug-toggle ()
-;;   (interactive)
-;;   (setq helm-debug (not helm-debug))
-;;   (message "Helm Debug is now %s"
-;;            (if helm-debug "Enabled" "Disabled")))
+(helm-adaptive-mode t)   ;; NOT-CONFIRMED
+(setq helm-always-two-windows               nil
+  helm-split-window-default-side        'other
+  helm-quick-update                     t
+  helm-buffer-skip-remote-checking      t ;; NOT-CONFIRMED
+  helm-candidate-number-limit         500
+  helm-mode-fuzzy-match                 t
+  helm-M-x-fuzzy-match                  t
+  helm-apropos-fuzzy-match              t
+  helm-buffers-fuzzy-matching           t
+  helm-locate-fuzzy-match               t
+  helm-recentf-fuzzy-match              t
+  helm-tramp-verbose                    6 ;; NOT-CONFIRMED
+  helm-buffers-favorite-modes           '(clojure-mode org-mode) ;; NOT-CONFIRMED
+  helm-descbinds-window-style           'split-window
+  helm-ff-file-name-history-use-recentf t
+  helm-move-to-line-cycle-in-source nil
+  helm-ff-history-max-length            500 ;; NOT-CONFIRMED
+  helm-ff-skip-boring-files             t   ;; NOT-SURE
+;;  helm-ff-transformer-show-only-basename nil ;; NOT-SURE NOT-CONFIRMED
+  ;;       ;;helm-reuse-last-window-split-state    t ;; NOT-SURE
+  )
+
+;; (add-hook 'helm-minibuffer-set-up-hook
+;;           (lambda ()
+;;             (message "ME")
+;;            (helm-attrset 'follow 1 helm-source-buffers-list)
+;;             ))
+
+
+(defun helm-debug-toggle ()
+  (interactive)
+  (setq helm-debug (not helm-debug))
+  (message "Helm Debug is now %s"
+           (if helm-debug "Enabled" "Disabled")))
 
 ;; -- grep coloring
 (setq helm-grep-default-command
@@ -253,6 +298,8 @@
 (global-reset-key (kbd "C-x C-r") 'helm-recentf)
 (global-reset-key (kbd "M-l") 'helm-locate)
 (global-reset-key (kbd "M-X") 'helm-complex-command-history)
+(global-reset-key (kbd "C-\\") 'helm-resume)
+(global-reset-key (kbd "C-|") (lambda () (interactive) (helm-resume 1)))
 
 ;; helm-mode keys
 (define-key helm-map (kbd "A-<up>") 'helm-beginning-of-buffer)
@@ -940,7 +987,7 @@
         ;; -- we use this for buffer switching
         ("C-M-]" . nil)
         ("C-M-p" . nil)
-        ("C-A" . nil)))
+        ("C-S-a" . nil)))
 
 ;; TODO: DRY
 (add-to-list 'load-path "~/.emacs.d/modules/smartparens")
@@ -1073,20 +1120,6 @@
 (global-reset-key (kbd "C-c C-k") 'eval-buffer)
 (global-reset-key (kbd "C-c C-r") 'eval-region-print)
 
-;; reverting all buffers
-;; (defun revert-all-buffers ()
-;;   (interactive)
-;;   (let* ((list (buffer-list))
-;;          (buffer (car list)))
-;;     (while buffer
-;;       (when (and (buffer-file-name buffer)
-;;                  (not (buffer-modified-p buffer)))
-;;         (set-buffer buffer)
-;;         (revert-buffer t t t))
-;;       (setq list (cdr list))
-;;       (setq buffer (car list))))
-;;   (message "Reverted all buffers"))
-
 ;; --- CIDER
 ;; TODO: add-to-list & require
 (add-to-list 'load-path "~/.emacs.d/queue/")
@@ -1129,6 +1162,7 @@
           (lambda ()
             (bind-keys*
               ;; REPL
+              ("<return>"   . cider-repl-closing-return)
               ("S-<return>" . newline-and-indent)
               ("M-<up>"     . cider-repl-previous-input)
               ("M-<down>"   . cider-repl-next-input)
@@ -1180,8 +1214,8 @@
 ;; TODO: finish
 ;;(setq magit-last-seen-setup-instructions "1.4.0")
 
-;;(add-to-list 'load-path "~/.emacs.d/modules/magit")
-;;(require 'magit)
+(add-to-list 'load-path "~/.emacs.d/modules/magit")
+(require 'magit)
 
 ;; -- Finding any file in the current git repository
 (add-to-list 'load-path "~/.emacs.d/modules/find-file-in-repository")
