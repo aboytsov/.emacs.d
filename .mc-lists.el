@@ -6,10 +6,12 @@
         color-occur-next
         color-occur-prev
         dabbrev-expand
+        indent-new-comment-line
         kill-region
         next-error
         orgtbl-self-insert-command
         sp-backward-delete-char
+        sp-backward-kill-word
         sp-backward-unwrap-sexp
         sp-delete-char
         sp-forward-slurp-sexp
@@ -18,4 +20,5 @@
 
 (setq mc/cmds-to-run-once
       '(
+        pp-eval-expression
         ))

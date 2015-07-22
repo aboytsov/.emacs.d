@@ -1,3 +1,42 @@
+;; TODO: ace-window mode
+;; TOOD: all other packages installed
+;; http://www.emacswiki.org/emacs/WinnerMode
+;; http://www.emacswiki.org/emacs/WhiteSpace
+;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Highlight-Interactively.html https://www.masteringemacs.org/article/highlighting-by-word-line-regexp
+;; TODO: full screen
+;; smart-mode-line (was recently adapted by Prelude)
+
+(require 'auto-package-update)
+(auto-package-update-maybe)
+
+(require 'use-package)   ;; TODO: tidy init.el, start using
+
+;; TODO: cleanup (this is not auto-compile package, this is manual!)
+(require 'dash)
+(require 'f)
+
+(defun was-compiled-p (path)
+  "Does the directory at PATH contain any .elc files?"
+  (--any-p (f-ext? it "elc") (f-files path)))
+
+(defun ensure-packages-compiled ()
+  "If any packages installed with package.el aren't compiled yet, compile them."
+  (--each (f-directories package-user-dir)
+    (unless (was-compiled-p it)
+      (byte-recompile-directory it 0))))
+
+(ensure-packages-compiled)
+
+;; ;; this will install undo-tree if it's not there
+;; ;; and it will set it up how I want
+;; (use-package undo-tree
+;;   :init (global-undo-tree-mode 1)
+;;   :bind (("C-c j" . undo-tree-undo)
+;;          ("C-c k" . undo-tree-redo)
+;;          ("C-c l" . undo-tree-switch-branch)
+;;          ("C-c ;" . undo-tree-visualize))
+;;   :ensure t)
+
 ;; -- Clear all hooks and font-locks for config reloading without
 ;; restarting Emacs
 (dolist (hook '(clojure-mode-hook
@@ -7,7 +46,8 @@
                 before-save-hook
                 smartparens-mode-hook
                 cider-mode-hook
-                cider-repl-mode-hook))
+                cider-repl-mode-hook
+                lisp-interaction-mode-hook))
   (setq hook nil))
 (setq font-lock-keywords-alist nil)
 
@@ -40,15 +80,15 @@
 ;; -- Windows
 (let ((width 165)
       (frame (selected-frame)))
-  (when (/= (frame-width frame) width)
-    (set-frame-width    frame width)
-    (set-frame-height   frame 56)
-    (set-frame-position frame 260 0)
+  (set-frame-width    frame width)
+  (set-frame-height   frame 56)
+  (set-frame-position frame 260 0)
 
-    (split-window-right)
-    (split-window-below)
-    (windmove-right)
-    (split-window-below)))
+  (delete-other-windows)
+  (split-window-right)
+  (split-window-below)
+  (windmove-right)
+  (split-window-below))
 
 ;; kill buffer in the current window
 (global-reset-key (kbd "C-w")
@@ -101,12 +141,6 @@
         ("*cider-error*" :height 0.5)
         ("*Messages*" :height 0.5)
         ))
-
-
-;; (push '(flycheck-error-list-mode :height 0.5 :regexp t :position bottom) popwin:special-display-config)
-;; ;; direx
-;; (push '(direx:direx-mode :position left :width 40 :dedicated t)
-;;       popwin:special-display-config)
 
 (global-set-key (kbd "M-w") popwin:keymap)
 
@@ -999,8 +1033,7 @@
 (dolist (hook '(clojure-mode-hook
                 emacs-lisp-mode-hook
                 lisp-mode-hook
-                lisp-interaction-mode-hook
-                cider-repl-mode-hook))
+                lisp-interaction-mode-hook))
   (add-hook hook 'smartparens-mode))
 
 ;; (defun comment-sexp (arg)
@@ -1121,10 +1154,11 @@
 (global-reset-key (kbd "C-c C-r") 'eval-region-print)
 
 ;; --- CIDER
+
 ;; TODO: add-to-list & require
 (add-to-list 'load-path "~/.emacs.d/queue/")
 (require 'queue)
-(add-to-list 'load-path "~/.emacs.d/modules/cider")
+(add-to-list 'load-path "~/.emacs.prelude/elpa/cider-20150719.2231/")
 (require 'cider)
 (require 'cider-macroexpansion)
 
@@ -1133,21 +1167,18 @@
 (setq cider-prefer-local-resources t)
 (setq cider-stacktrace-fill-column 80)
 (setq nrepl-buffer-name-show-port t)
-(setq cider-repl-display-in-current-window t)
 (setq cider-prompt-save-file-on-load nil)
-(setq cider-repl-use-clojure-font-lock t)
 (setq cider-interactive-eval-result-prefix "")
-(setq cider-repl-tab-command 'indent-for-tab-command)
 (setq cider-auto-select-error-buffer nil)
 
+(setq cider-repl-display-in-current-window t)
+(setq cider-repl-use-clojure-font-lock t)
+(setq cider-repl-tab-command 'indent-for-tab-command)
 (cider-repl-toggle-pretty-printing)
 
 (setq cider-test-infer-test-ns
       (lambda (ns) (replace-regexp-in-string "stuph\\." "stuph.test." ns)))
 (add-hook 'clojure-mode-hook 'midje-test-mode)
-
-(add-to-list 'load-path "~/.emacs.d/modules/use-package/")
-(require 'bind-key)
 
 (add-hook 'cider-mode-hook 'eldoc-mode)
 (add-hook 'clojure-mode-hook 'eldoc-mode)
@@ -1158,27 +1189,35 @@
 
 ;;(add-hook 'cider-repl-mode-hook 'paredit-mode)
 
-(add-hook 'cider-repl-mode-hook
-          (lambda ()
-            (bind-keys*
-              ;; REPL
-              ("<return>"   . cider-repl-closing-return)
-              ("S-<return>" . newline-and-indent)
-              ("M-<up>"     . cider-repl-previous-input)
-              ("M-<down>"   . cider-repl-next-input)
-              ("M-S-<up>"   . cider-repl-previous-prompt)
-              ("M-S-<down>" . cider-repl-next-prompt)))
-              ;; sensibile key bindings
-
-          )
-
 (defun cider-local ()
   (interactive)
   (cider-connect "127.0.0.1" 12121))
 
-(global-reset-key (kbd "C-c C-d") 'cider-local)
+(global-reset-key (kbd "C-c r") 'cider-local)
 (global-reset-key (kbd "M-g f") 'find-tag)
 (global-reset-key (kbd "M-g r") 'cider-switch-to-repl-buffer)
+
+;;(define-key cider-repl-mode-map (kbd "<return>")   'cider-repl-closing-return)
+;;(define-key cider-repl-mode-map (kbd "S-<return>") 'newline-and-indent)
+(define-key cider-repl-mode-map (kbd "M-<up>")     'cider-repl-previous-input)
+(define-key cider-repl-mode-map (kbd "M-<down>")   'cider-repl-next-input)
+(define-key cider-repl-mode-map (kbd "M-S-<up>")   'cider-repl-previous-prompt)
+(define-key cider-repl-mode-map (kbd "M-S-<down>") 'cider-repl-next-prompt)
+
+;; (define-derived-mode cider-repl-mode-fixed cider-repl-mode "REPL"
+;;   (derived-mode-set-keymap cider-repl-mode-map))
+
+;; believe it or not, it seems like they just forgot to do it?
+;; what am I not understanding?
+;; (add-hook 'cider-repl-mode-hook (lambda ()
+;; ;;                                  (smartparens-mode)
+;;                                   (use-local-map 'cider-repl-mode-map)
+;;                                   ))
+
+;; (add-hook 'cider-repl-mode-hook
+;;           (lambda ()
+;;             (setq sp-backward-bound-fn (lambda ()
+;;                                          cider-repl-input-start-mark))))
 
 ;; -- Midje
 (provide 'clojure-test-mode)      ;; fool midje-test-mode.el
@@ -1214,8 +1253,10 @@
 ;; TODO: finish
 ;;(setq magit-last-seen-setup-instructions "1.4.0")
 
-(add-to-list 'load-path "~/.emacs.d/modules/magit")
+(add-to-list 'load-path "~/.emacs.d/modules/magit/lisp")
 (require 'magit)
+
+(global-set-key (kbd "C-p m") 'magit-status)
 
 ;; -- Finding any file in the current git repository
 (add-to-list 'load-path "~/.emacs.d/modules/find-file-in-repository")

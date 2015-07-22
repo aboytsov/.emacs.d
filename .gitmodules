@@ -91,3 +91,6 @@
 [submodule "modules/popwin-el"]
 	path = modules/popwin-el
 	url = https://github.com/m2ym/popwin-el.git
+[submodule "modules/magit"]
+	path = modules/magit
+	url = https://github.com/magit/magit.git
