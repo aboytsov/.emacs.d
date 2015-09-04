@@ -1,9 +1,6 @@
 [submodule "cider"]
 	path = modules/cider
 	url = https://github.com/clojure-emacs/cider.git
-[submodule "company-mode"]
-	path = modules/company-mode
-	url = https://github.com/company-mode/company-mode
 [submodule "dash.el"]
 	path = modules/dash.el
 	url = https://github.com/magnars/dash.el
@@ -25,9 +22,6 @@
 [submodule "use-package"]
 	path = modules/use-package
 	url = https://github.com/jwiegley/use-package
-[submodule "magit"]
-	path = modules/magit
-	url = https://github.com/magit/magit
 [submodule "smartparens"]
 	path = modules/smartparens
 	url = https://github.com/Fuco1/smartparens
@@ -40,3 +34,63 @@
 [submodule "modules/midje-test-mode"]
 	path = modules/midje-test-mode
 	url = https://github.com/bpoweski/midje-test-mode.git
+[submodule "rainbow-mode"]
+	path = rainbow-mode
+	url = https://github.com/emacsmirror/rainbow-mode.git
+[submodule "modules/rainbow-mode"]
+	path = modules/rainbow-mode
+	url = https://github.com/emacsmirror/rainbow-mode.git
+[submodule "modules/rainbow-identifiers"]
+	path = modules/rainbow-identifiers
+	url = https://github.com/Fanael/rainbow-identifiers.git
+[submodule "modules/color-identifiers-mode"]
+	path = modules/color-identifiers-mode
+	url = https://github.com/ankurdave/color-identifiers-mode.git
+[submodule "color-identifiers-mode"]
+	path = color-identifiers-mode
+	url = git@github.com:aboytsov/color-identifiers-mode.git
+[submodule "company-mode"]
+	path = company-mode
+	url = git@github.com:aboytsov/company-mode.git
+[submodule "modules/projectile"]
+	path = modules/projectile
+	url = https://github.com/bbatsov/projectile.git
+[submodule "modules/point-undo"]
+	path = modules/point-undo
+	url = https://github.com/emacsmirror/point-undo.git
+[submodule "modules/undo-tree"]
+	path = modules/undo-tree
+	url = https://github.com/emacsmirror/undo-tree.git
+[submodule "modules/buffer-move"]
+	path = modules/buffer-move
+	url = https://github.com/lukhas/buffer-move.git
+[submodule "helm"]
+	path = helm
+	url = git@github.com:aboytsov/helm.git
+[submodule "modules/emacs-helm-ag"]
+	path = modules/emacs-helm-ag
+	url = https://github.com/syohex/emacs-helm-ag
+[submodule "modules/workgroups2"]
+	path = modules/workgroups2
+	url = https://github.com/pashinin/workgroups2.git
+[submodule "modules/f.el"]
+	path = modules/f.el
+	url = https://github.com/rejeep/f.el.git
+[submodule "modules/s.el"]
+	path = modules/s.el
+	url = https://github.com/magnars/s.el.git
+[submodule "modules/anaphora"]
+	path = modules/anaphora
+	url = https://github.com/rolandwalker/anaphora.git
+[submodule "modules/helm-descbinds"]
+	path = modules/helm-descbinds
+	url = https://github.com/emacs-helm/helm-descbinds.git
+[submodule "org-mode"]
+	path = org-mode
+	url = git@github.com:aboytsov/org-mode.git
+[submodule "modules/popwin-el"]
+	path = modules/popwin-el
+	url = https://github.com/m2ym/popwin-el.git
+[submodule "modules/magit"]
+	path = modules/magit
+	url = https://github.com/magit/magit.git

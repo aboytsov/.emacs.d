@@ -1,0 +1,33 @@
+- helm configuration
+
+- helm first/second problem
+
+  - grep is always moving
+    - ack & ag
+      - specify files
+        - search in grep results?
+        - file ambiguity (saving should work)
+          - projectile configuration
+            - remove .gitignore & saas files (serch for "mo" or "mongo") (can't do with ack?)
+
+TODO:
+  helm-ag
+  helm within helm
+  switch to another window
+  tab key mapping
+
+;; - `completion-at-point'(M-tab)   =>`helm-lisp-completion-at-point'[1]
+;; - `dabbrev-expand'(M-/)          =>`helm-dabbrev'
+
+https://github.com/ShingoFukuyama/helm-swoop
+https://github.com/syohex/emacs-helm-ag
+
+prelude font full name: Menlo:pixelsize=12:weight=normal:slant=normal:width=normal:spacing=100:scalable=true
+            size: 12
+          height: 14
+ baseli
+
+byte-compile faster or not
++ package manager
+
+solarized-light theme

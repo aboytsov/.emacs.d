@@ -1,3 +1,42 @@
+;; TODO: ace-window mode
+;; TOOD: all other packages installed
+;; http://www.emacswiki.org/emacs/WinnerMode
+;; http://www.emacswiki.org/emacs/WhiteSpace
+;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Highlight-Interactively.html https://www.masteringemacs.org/article/highlighting-by-word-line-regexp
+;; TODO: full screen
+;; smart-mode-line (was recently adapted by Prelude)
+
+(require 'auto-package-update)
+(auto-package-update-maybe)
+
+(require 'use-package)   ;; TODO: tidy init.el, start using
+
+;; TODO: cleanup (this is not auto-compile package, this is manual!)
+(require 'dash)
+(require 'f)
+
+(defun was-compiled-p (path)
+  "Does the directory at PATH contain any .elc files?"
+  (--any-p (f-ext? it "elc") (f-files path)))
+
+(defun ensure-packages-compiled ()
+  "If any packages installed with package.el aren't compiled yet, compile them."
+  (--each (f-directories package-user-dir)
+    (unless (was-compiled-p it)
+      (byte-recompile-directory it 0))))
+
+(ensure-packages-compiled)
+
+;; ;; this will install undo-tree if it's not there
+;; ;; and it will set it up how I want
+;; (use-package undo-tree
+;;   :init (global-undo-tree-mode 1)
+;;   :bind (("C-c j" . undo-tree-undo)
+;;          ("C-c k" . undo-tree-redo)
+;;          ("C-c l" . undo-tree-switch-branch)
+;;          ("C-c ;" . undo-tree-visualize))
+;;   :ensure t)
+
 ;; -- Clear all hooks and font-locks for config reloading without
 ;; restarting Emacs
 (dolist (hook '(clojure-mode-hook
@@ -7,19 +46,103 @@
                 before-save-hook
                 smartparens-mode-hook
                 cider-mode-hook
-                cider-repl-mode-hook))
+                cider-repl-mode-hook
+                lisp-interaction-mode-hook))
   (setq hook nil))
 (setq font-lock-keywords-alist nil)
 
 (load-file "~/.emacs.d/utils.el")
 (load-file (concat "~/.emacs.d/profile-" (getenv "EMACS_PROFILE") ".el"))
 
-;; -- Set window width/height
-(setq default-frame-alist (append (list
-                                   '(width  . 80)
-                                   '(height . 55)
-                                   '(left . 840))
-  default-frame-alist))
+;; -- Backups & autosave
+(defconst backup-directory "~/.backups-emacs/")
+(if (not (file-exists-p backup-directory))
+    (make-directory backup-directory t))
+
+(setq backup-directory-alist `(("." . ,backup-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,(expand-file-name backup-directory) t)))
+(setq auto-save-list-file-prefix (concat backup-directory "autosave-filenames/"))
+
+(setq make-backup-files    t
+      vc-make-backup-files t    ;; even if under version control
+      backup-by-copying    t    ;; don't clobber symlinks
+      version-control      t    ;; add version numbers for backup files
+      delete-old-versions  t    ;; delete excess backup files silently
+      ;; oldest versions to keep when a new numbered backup is made (default: 2)
+      kept-old-versions    100
+
+
+      auto-save-default    t    ;; auto-save every buffer that visits a file
+      auto-save-timeout    20   ;; number of seconds idle time before auto-save
+      auto-save-interval   200) ;; number of keystrokes between auto-saves
+
+;; -- Windows
+(let ((width 165)
+      (frame (selected-frame)))
+  (set-frame-width    frame width)
+  (set-frame-height   frame 56)
+  (set-frame-position frame 260 0)
+
+  (delete-other-windows)
+  (split-window-right)
+  (split-window-below)
+  (windmove-right)
+  (split-window-below))
+
+;; kill buffer in the current window
+(global-reset-key (kbd "C-w")
+  (lambda () (interactive) (kill-this-buffer)))
+;; kill buffer in the other window (for error messages, greps etc)
+(global-reset-key (kbd "C-q")
+  (lambda () (interactive) (kill-buffer (window-buffer (previous-window)))))
+
+;; so that quit (escape) doesn't unsplit all the windows
+(defadvice one-window-p (around always (arg))
+  (setq ad-return-value t))
+
+(defun keyboard-escape-quit-leave-windows-alone ()
+  (interactive)
+  (ad-enable-advice 'one-window-p 'around 'always)
+  (ad-activate 'one-window-p)
+  (unwind-protect
+      (keyboard-escape-quit)
+    (ad-disable-advice 'one-window-p 'around 'always)
+    (ad-deactivate 'one-window-p)))
+
+;; switch esc and ctrl+g and use only one escape instead of 3
+;;(global-set-key (kbd "<escape>") 'keyboard-quit)
+;;(global-set-key (kbd "C-g") 'keyboard-escape-quit)
+(global-set-key (kbd "<escape>")
+                (lambda () (interactive)
+                  (keyboard-escape-quit-leave-windows-alone)
+                  (keyboard-quit)))
+
+;; -- Popwin
+
+(add-to-list 'load-path "~/.emacs.d/modules/popwin-el/")
+
+(require 'popwin)
+(popwin-mode 1)
+
+(setq popwin:special-display-config
+      '(("*Miniedit Help*" :noselect t)
+        help-mode
+        (completion-list-mode :noselect t)
+        (compilation-mode :noselect t)
+        (grep-mode :noselect t)
+        (occur-mode :noselect t)
+       (" *undo-tree*" :width 60 :position right)
+       (" *undo-tree*" :width 60 :position right)
+;;        ("*undo-tree Diff*" :height 0.3 :position bottom)
+        ;; TODO: increase height for descbinds
+        ;; seems like descbinds breaks my bindings! (cmd+c)
+        ("^\*helm.*\*$" :regexp t)
+        ("*cider-error*" :height 0.5)
+        ("*Messages*" :height 0.5)
+        ))
+
+(global-set-key (kbd "M-w") popwin:keymap)
 
 ;; -- Various settings
 (custom-set-variables
@@ -29,15 +152,31 @@
  ;; If there is more than one, they won't work right.
  '(blink-cursor-interval nil)
  '(column-number-mode t)
- '(company-idle-delay 0.3)
+ '(comint-scroll-to-bottom-on-input (quote all))
+ '(company-auto-complete t)
+ '(company-auto-complete-chars (quote (32 40 46)))
+ '(company-idle-delay 0.5)
  '(company-minimum-prefix-length 2)
  '(default-tab-width 2 t)
+ '(eshell-scroll-to-bottom-on-input (quote this))
  '(frame-title-format (quote ("%f")) t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(kill-whole-line t)
  '(menu-bar-mode nil)
  '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1))))
+ '(org-M-RET-may-split-line t)
+ '(org-table-auto-blank-field t)
+ '(rainbow-ansi-colors (quote auto))
+ '(rainbow-ansi-colors-major-mode-list
+   (quote
+    (sh-mode c-mode c++-mode clojure-mode emacs-lisp-mode html-mode)))
+ '(recentf-max-menu-items 200)
+ '(recentf-max-saved-items 200)
+ '(safe-local-variable-values
+   (quote
+    ((outline-minor-mode)
+     (whitespace-style face tabs spaces trailing lines space-before-tab::space newline indentation::space empty space-after-tab::space space-mark tab-mark newline-mark))))
  '(tool-bar-mode nil))
 
 (scroll-bar-mode -1)
@@ -46,15 +185,53 @@
 ;; just 'y'/'n' instead of 'yes'/'no'
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; revert files when they change
+(global-auto-revert-mode t)
+
+;; --- Org mode
+;; Emacs comes with org-mode, but ours is hacked so need to load locally
+;(add-to-list 'load-path "~/.emacs.d/org-mode/")
+;(require 'org-table)
+;;(require 'org-mode)
+(load-file "~/.emacs.d/org-mode/lisp/org-table.el")
+;; -- Orgtbl-mode for table editing (useful for Midje tests)
+;;(add-hook 'clojure-mode-hook 'orgtbl-mode)
+
 ;; -- Clipboard and undo
 (setq undo-limit 100000)
+
+(global-unset-key (kbd "C-_"))
+(setq undo-tree-map (let ((map (make-sparse-keymap)))
+                      (define-key map (kbd "C--") 'undo-tree-undo)
+                      (define-key map (kbd "C-=") 'undo-tree-redo)
+                      (define-key map (kbd "A--") 'undo-tree-visualize)
+                      (define-key map (kbd "C-x i") 'undo-tree-visualize)
+                      (define-key map "\C-x o" 'undo-tree-visualize)
+                      map))
+
+(add-to-list 'load-path "~/.emacs.d/modules/undo-tree/")
+(require 'undo-tree)
+
+(setq undo-tree-auto-save-history t)
+(setq undo-tree-history-directory-alist
+      `(("." . ,(expand-file-name backup-directory))))
+(setq undo-tree-visualizer-timestamps t)
+(setq undo-tree-visualizer-diff t)
+
+(global-undo-tree-mode)
+
+(add-to-list 'load-path "~/.emacs.d/modules/point-undo/")
+(require 'point-undo)
+(global-set-key (kbd "M--") 'point-undo)
+(global-reset-key (kbd "M-=") 'point-redo)
+
+;; -- Clipboard
+
 (setq x-select-enable-clipboard t)
 (global-reset-key (kbd "M-c") 'kill-ring-save)
 (global-reset-key (kbd "A-c") 'kill-ring-save)
 (global-reset-key (kbd "M-v") 'yank)
 (global-reset-key (kbd "A-v") 'yank)
-(global-reset-key (kbd "M-z") 'undo)
-(global-reset-key (kbd "A-z") 'undo)
 
 ;; -- Trail whitespaces in all files
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -65,7 +242,8 @@
 (global-hl-line-mode 1)
 (set-face-background 'hl-line "#FFD")
 
-;; -- Mac key bindings
+;; -- Mac-specific including key bindings
+(menu-bar-mode)
 
 ;; TODO
 (defun sfp-page-down (&optional arg)
@@ -88,14 +266,125 @@
 ;; (global-set-key (kbd "<next>") 'sfp-page-down)
 ;; (global-set-key (kbd "<prior>") 'sfp-page-up)
 
+;; -- Dash is used to several packages below
+(add-to-list 'load-path "~/.emacs.d/modules/dash.el/")
+(require 'dash)
+
+;; -- Helm
+;;(add-to-list 'load-path "~/.emacs.d/helm/")
+(add-to-list 'load-path "~/.emacs.prelude/elpa/helm-20150719.721/")
+(add-to-list 'load-path "~/.emacs.prelude/elpa/helm-core-20150719.845/")
+(require 'helm-config)
+;;(require 'helm)
+(helm-mode)
+
+(set-face-attribute 'helm-source-header nil :family "Menlo"
+                    :weight 'normal :height 100)
+
+(helm-adaptive-mode t)   ;; NOT-CONFIRMED
+(setq helm-always-two-windows               nil
+  helm-split-window-default-side        'other
+  helm-quick-update                     t
+  helm-buffer-skip-remote-checking      t ;; NOT-CONFIRMED
+  helm-candidate-number-limit         500
+  helm-mode-fuzzy-match                 t
+  helm-M-x-fuzzy-match                  t
+  helm-apropos-fuzzy-match              t
+  helm-buffers-fuzzy-matching           t
+  helm-locate-fuzzy-match               t
+  helm-recentf-fuzzy-match              t
+  helm-tramp-verbose                    6 ;; NOT-CONFIRMED
+  helm-buffers-favorite-modes           '(clojure-mode org-mode) ;; NOT-CONFIRMED
+  helm-descbinds-window-style           'split-window
+  helm-ff-file-name-history-use-recentf t
+  helm-move-to-line-cycle-in-source nil
+  helm-ff-history-max-length            500 ;; NOT-CONFIRMED
+  helm-ff-skip-boring-files             t   ;; NOT-SURE
+;;  helm-ff-transformer-show-only-basename nil ;; NOT-SURE NOT-CONFIRMED
+  ;;       ;;helm-reuse-last-window-split-state    t ;; NOT-SURE
+  )
+
+;; (add-hook 'helm-minibuffer-set-up-hook
+;;           (lambda ()
+;;             (message "ME")
+;;            (helm-attrset 'follow 1 helm-source-buffers-list)
+;;             ))
+
+
+(defun helm-debug-toggle ()
+  (interactive)
+  (setq helm-debug (not helm-debug))
+  (message "Helm Debug is now %s"
+           (if helm-debug "Enabled" "Disabled")))
+
+;; -- grep coloring
+(setq helm-grep-default-command
+      "ack-grep -Hn --smart-case --no-group %e %p %f")
+(setq helm-grep-default-recurse-command
+      "ack-grep -H --smart-case --no-group %e %p %f")
+(setq helm-ls-git-grep-command
+      "git grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p %f")
+(setq helm-default-zgrep-command
+      "zgrep --color=always -a -n%cH -e %p %f")
+
+(global-reset-key (kbd "C-y") 'helm-show-kill-ring)
+(global-reset-key (kbd "C-x C-f") 'helm-find-files)
+(global-reset-key (kbd "C-x C-r") 'helm-recentf)
+(global-reset-key (kbd "M-l") 'helm-locate)
+(global-reset-key (kbd "M-X") 'helm-complex-command-history)
+(global-reset-key (kbd "C-\\") 'helm-resume)
+(global-reset-key (kbd "C-|") (lambda () (interactive) (helm-resume 1)))
+
+;; helm-mode keys
+(define-key helm-map (kbd "A-<up>") 'helm-beginning-of-buffer)
+(define-key helm-map (kbd "A-<down>") 'helm-end-of-buffer)
+
+(add-to-list 'load-path "~/.emacs.d/modules/helm-descbinds/")
+(require 'helm-descbinds)
+(helm-descbinds-install)            ; C-h b, C-x C-h
+
+;; -- Buffers
+(global-unset-key (kbd "C-x b"))
+(global-unset-key (kbd "C-x C-b"))
+
+(global-set-key (kbd "C-M-[") 'switch-to-prev-buffer)
+(global-set-key (kbd "C-M-]") 'switch-to-next-buffer)
+(global-set-key (kbd "C-M-p") (lambda () (interactive) (switch-to-buffer nil)))
+
+;; -- Projectile
+(add-to-list 'load-path "~/.emacs.d/modules/projectile/")
+(require 'projectile)
+(require 'helm-projectile)
+
+(setq projectile-enable-caching t)
+(projectile-global-mode)
+(helm-projectile-on)
+
+(global-set-key (kbd "C-<tab>") 'helm-mini)
+(global-set-key (kbd "C-b") 'helm-projectile-switch-to-buffer)
+(global-reset-key (kbd "M-o") 'helm-projectile-grep)
+(global-reset-key (kbd "C-p") (make-sparse-keymap))
+(global-set-key (kbd "C-p p") 'helm-projectile)
+(global-set-key (kbd "C-p s") 'helm-projectile-switch-project)
+(global-set-key (kbd "C-p f") 'helm-projectile-find-file-in-known-projects)
+(global-set-key (kbd "C-p o") 'helm-projectile-find-file-dwim)
+(global-set-key (kbd "C-p r") 'helm-projectile-recentf)
+(global-set-key (kbd "C-p d") 'helm-projectile-find-dir)
+
 ;; -- Search
-(add-to-list 'load-path "~/.emacs.d/color-occur/")
-(require 'color-occur)
+;;(add-to-list 'load-path "~/.emacs.d/color-occur/")
+;;(require 'color-occur)
+
+;; make clipboard work in isearch
+(define-key isearch-mode-map (kbd "A-v") 'isearch-yank-kill)
+
+(global-set-key (kbd "C-a") 'helm-occur)
+(global-set-key (kbd "C-S-a") 'helm-multi-occur)
 
 ;; don't need isearch extended actions
 (global-unset-key (kbd "M-s"))
 ;; but occur mode is handy
-(global-reset-key (kbd "C-o") 'occur)
+;;(global-reset-key (kbd "C-o") 'occur)
 
 ;; multi-occur will search all buffers in the current mode
 
@@ -117,19 +406,14 @@
 
 (global-reset-key (kbd "C-c C-o") 'multi-occur-in-this-mode)
 
+;; -- Helm interface for the Silver Searcher
+;; TODO: some of earlier search configuration is probably not needed now?
+;;(add-to-list 'load-path "~/.emacs.d/modules/emacs-helm-ag/")
+;;(require 'helm-ag)
+
 ;; -- Other key bindings
 ;; auto-complete on Ctrl-Enter
 (global-reset-key (kbd "C-<return>") 'dabbrev-expand)
-
-;; previous window
-(global-set-key (kbd "C-x p") (lambda () (interactive) (other-window -1)))
-
-;; kill buffer in the current window
-(global-reset-key (kbd "C-w")
-  (lambda () (interactive) (kill-this-buffer)))
-;; kill buffer in the other window (for error messages, greps etc)
-(global-reset-key (kbd "C-q")
-  (lambda () (interactive) (kill-buffer (window-buffer (previous-window)))))
 
 ;; recording and replaying macros
 (global-set-key (kbd "C-,") 'kmacro-start-macro-or-insert-counter)
@@ -208,12 +492,19 @@
 (global-set-key (kbd "A-,") 'mc/mark-previous-like-this)
 (global-set-key (kbd "A-m a") 'mc/mark-all-like-this)
 
+;; -- Autofill (very useful for writing comments)
+(setq default-fill-column 80)
+(add-hook 'clojure-mode-hook 'auto-fill-mode)
+
 ;; -- Clojure mode
 (add-to-list 'load-path "~/.emacs.d/clojure-mode/")
 (require 'clojure-mode)
 
 (setq open-paren-in-column-0-is-defun-start nil)
 (setq clojure--prettify-symbols-alist nil)
+
+(setq clojure-docstring-fill-column 80)
+(setq clojure-docstring-fill-prefix-width 3)
 
 ;; indentation
 (setq clojure-use-backtracking-indent nil)
@@ -500,11 +791,11 @@
                    (propertize "∁")
                    )
                   )
-                 ("\\(comp\\|[|]\\)\\(\\b\\| \\)"
-                  (concat
-                   (propertize "∘")
-                   )
-                  )
+                 ;; ("\\(comp\\|[|]\\)\\(\\b\\| \\)"
+                 ;;  (concat
+                 ;;   (propertize "∘")
+                 ;;   )
+                 ;;  )
                  ("\\b\\(not\\)\\b"
                   "¬"
                   )
@@ -623,18 +914,19 @@
 
 ;; TODO: needs to be highlighted: throw+, try+
 
-;; clear all text properties and overlays on entering text mode
-(add-hook 'text-mode-hook
-          (lambda ()
-            (interactive)
-            (set-text-properties 1 (buffer-size) nil)
-            (remove-overlays)))
+;; -- Identifier highlighting
+(add-to-list 'load-path "~/.emacs.d/color-identifiers-mode/")
+(require 'color-identifiers-mode)
+(setq color-identifiers:timer
+      (run-with-idle-timer 0.1 t 'color-identifiers:refresh))
+(add-hook 'clojure-mode-hook 'color-identifiers-mode)
 
 (defun reload-syntax-highlighting ()
   (interactive)
   (eval-buffer)
   (other-window -1)
-  (text-mode)
+  (set-text-properties 1 (buffer-size) nil)
+  (remove-overlays)
   (clojure-mode)
   (other-window -1))
 
@@ -654,54 +946,52 @@
 ;;            (add-hook 'font-lock-extend-region-functions
   ;;                    'let-font-lock-extend-region)
             (font-lock-add-keywords 'clojure-mode clojure-font-locks)
+            (orgtbl-mode)
             ))
 
+;; -- Window navigation
+(global-set-key (kbd "A-M-<left>")  'windmove-left)
+(global-set-key (kbd "A-M-<right>") 'windmove-right)
+(global-set-key (kbd "A-M-<down>")  'windmove-down)
+(global-set-key (kbd "A-M-<up>")    'windmove-up)
+(global-unset-key (kbd "C-x o"))
+
+(add-to-list 'load-path "~/.emacs.d/modules/buffer-move/")
+(require 'buffer-move)
+(global-set-key (kbd "A-M-S-<left>")  'buf-move-left)
+(global-set-key (kbd "A-M-S-<right>") 'buf-move-right)
+(global-set-key (kbd "A-M-S-<down>")  'buf-move-down)
+(global-set-key (kbd "A-M-S-<up>")    'buf-move-up)
+
 ;; -- Smartparens
-(add-to-list 'load-path "~/.emacs.d/modules/dash.el/")
-(require 'dash)
-;; TODO: auto-format doc strings
 
- ;; Key bindings:
- ;;*  ctrl-left/right       switch desktop space
- ;;*  ctrl-up/down          switch desktop space
- ;;
- ;;*  shift-left/right      mark region
- ;;*  shift-up/down         mark region
- ;;
- ;;*  command-left/right        go to end/beginning of line
- ;;*  command-up/down           go to end/beginning of document
- ;;*  shift+command-left/right  mark to end/beginning of line
- ;;*  shift+command-up/down     mark to end/beginning of document
- ;;
- ;;?  ctrl+command-left/right   switch window
- ;;?  ctrl+command-up/down      switch window
- ;;
- ;;*  alt-left/right             next/previous word
- ;;*  shift+alt-left/right       mark to next/previous word
+;; Key bindings
 
- ;;*  ctrl+alt-left/right       next/previous sexpr
- ;;?  + shift????????
- ;;*  ctrl+alt-up/down          down/up sexpr
- ;;?  + shift?????????
-
- ;;*  alt+], alt+shift+]              slurp/barf forwards
- ;;*  alt+[, alt+shift+[              slurp/barf backwards
-
- ;;  alt-up/down
- ;;  shift+alt-up/down
- ;;
- ;;  shift+ctrl-left/right
- ;;  shift+ctrl-up/down
- ;;
- ;;  alt+command-left/right
- ;;  alt+command-up/down
- ;;
-
+;; * ;shift              Marking in the buffer
+;; * cmd                Beginning/end of line (left/right) or document (up/down)
+;; * cmd+shift          Mark until beginning/end of line or document
+;; * ctrl+alt           Switch desktop space (OS X, TotalSpaces2)
+;; * ctrl+alt+shift     Move window to another space (OS X, TotalSpaces2)
+;; * alt                Left/right: next/prev word; down/up - split/join sexpr
+;; * alt+shift          Left-right: mark to next/prev word; down/up - split
+;;                      sexpr killing backward/forward
+;; * ctrl               Backward/forward/down/up sexpr
+;; * ctrl+shift         Mark until backward/forward/down/up sexpr
+;; * cmd+ctrl           Org-table mode: move row or column left/right/down/up
+;; * cmd+ctrl+shift     Org-table mode: insert (down) or delete (up) row/column
+;; * cmd+alt            Select window to the left/right/down/up
+;; * cmd+alt+shift      Move (swap with) selected window left/right/down/up
+;;   cmd+alt+ctrl       <empty>
+;;   cmd+alt+ctrl+shift <empty>
 ;;
-;; TODO: continuning comments on enter
-;; TODO: (comment's )
+;; * ctrl+backspace     Backward-kill sexp
+;; * ctrl+delete        Forward-kill sexp
 
-(setq sp-autoskip-closing-pair 'always)
+;; * alt+], alt+shift+]  slurp/barf forwards
+;; * alt+[, alt+shift+[  slurp/barf backwards
+;;
+;; * alt+ctrl+], alt+ctrl+[ Switch to next/previous buffer
+
 (setq sp-base-key-bindings 'sp)
 (setq sp-cancel-autoskip-on-backward-movement nil)
 (setq sp-hybrid-kill-entire-symbol t)
@@ -709,20 +999,29 @@
 (setq sp-navigate-close-if-unbalanced t)
 (setq sp-successive-kill-preserve-whitespace 2)
 (setq sp-override-key-bindings
-      '(("<eturn>" . indent-new-comment-line)
-        ("C-k"   . sp-kill-sexp)
-        ("C-M-k" . sp-kill-hybrid-sexp)
-        ("C-M-<right>" . sp-forward-sexp)
-        ("C-M-<left>" . sp-backward-sexp)
-        ("C-M-<down>" . sp-down-sexp)
-        ("C-M-<up>" . sp-up-sexp)
+      '(("<return>" . indent-new-comment-line)
+        ;; as per the map above
+        ("M-<down>" . sp-split-sexp)
+        ("M-<up>" . sp-join-sexp)
+        ("C-<left>" . sp-backward-sexp)
+        ("C-<right>" . sp-forward-sexp)
+        ("C-<down>" . sp-down-sexp)
+        ("C-<up>" . sp-up-sexp)
+        ;; -- killing
+        ("C-k" . sp-kill-hybrid-sexp)  ;; this kills a line respecting forms
+        ("C-<delete>"   . sp-kill-sexp)
+        ("C-<backspace>"   . sp-backward-kill-sexp)
+        ("M-S-<up>"   . sp-splice-sexp-killing-backward)
+        ("M-S-<down>"   . sp-splice-sexp-killing-forward)
+        ;; -- barfing/slurping
         ("M-]" . sp-forward-slurp-sexp)
-        ("M-C-]" . sp-forward-barf-sexp)
+        ("M-}" . sp-forward-barf-sexp)
         ("M-[" . sp-backward-slurp-sexp)
-        ("M-C-[" . sp-backward-barf-sexp)
-        ("M-s" . sp-split-sexp)
-        ("M-j" . sp-join-sexp)
-        ))
+        ("M-{" . sp-backward-barf-sexp)
+        ;; -- we use this for buffer switching
+        ("C-M-]" . nil)
+        ("C-M-p" . nil)
+        ("C-S-a" . nil)))
 
 ;; TODO: DRY
 (add-to-list 'load-path "~/.emacs.d/modules/smartparens")
@@ -731,12 +1030,10 @@
 
 (add-hook 'smartparens-mode-hook 'smartparens-strict-mode)
 
-
 (dolist (hook '(clojure-mode-hook
                 emacs-lisp-mode-hook
                 lisp-mode-hook
-                lisp-interaction-mode-hook
-                cider-repl-mode-hook))
+                lisp-interaction-mode-hook))
   (add-hook hook 'smartparens-mode))
 
 ;; (defun comment-sexp (arg)
@@ -856,25 +1153,12 @@
 (global-reset-key (kbd "C-c C-k") 'eval-buffer)
 (global-reset-key (kbd "C-c C-r") 'eval-region-print)
 
-;; reverting all buffers
-;; (defun revert-all-buffers ()
-;;   (interactive)
-;;   (let* ((list (buffer-list))
-;;          (buffer (car list)))
-;;     (while buffer
-;;       (when (and (buffer-file-name buffer)
-;;                  (not (buffer-modified-p buffer)))
-;;         (set-buffer buffer)
-;;         (revert-buffer t t t))
-;;       (setq list (cdr list))
-;;       (setq buffer (car list))))
-;;   (message "Reverted all buffers"))
-
 ;; --- CIDER
+
 ;; TODO: add-to-list & require
 (add-to-list 'load-path "~/.emacs.d/queue/")
 (require 'queue)
-(add-to-list 'load-path "~/.emacs.d/modules/cider")
+(add-to-list 'load-path "~/.emacs.prelude/elpa/cider-20150719.2231/")
 (require 'cider)
 (require 'cider-macroexpansion)
 
@@ -883,21 +1167,18 @@
 (setq cider-prefer-local-resources t)
 (setq cider-stacktrace-fill-column 80)
 (setq nrepl-buffer-name-show-port t)
-(setq cider-repl-display-in-current-window t)
 (setq cider-prompt-save-file-on-load nil)
-(setq cider-repl-use-clojure-font-lock t)
 (setq cider-interactive-eval-result-prefix "")
-(setq cider-repl-tab-command 'indent-for-tab-command)
 (setq cider-auto-select-error-buffer nil)
 
+(setq cider-repl-display-in-current-window t)
+(setq cider-repl-use-clojure-font-lock t)
+(setq cider-repl-tab-command 'indent-for-tab-command)
 (cider-repl-toggle-pretty-printing)
 
 (setq cider-test-infer-test-ns
       (lambda (ns) (replace-regexp-in-string "stuph\\." "stuph.test." ns)))
 (add-hook 'clojure-mode-hook 'midje-test-mode)
-
-(add-to-list 'load-path "~/.emacs.d/modules/use-package/")
-(require 'bind-key)
 
 (add-hook 'cider-mode-hook 'eldoc-mode)
 (add-hook 'clojure-mode-hook 'eldoc-mode)
@@ -908,26 +1189,35 @@
 
 ;;(add-hook 'cider-repl-mode-hook 'paredit-mode)
 
-(add-hook 'cider-repl-mode-hook
-          (lambda ()
-            (bind-keys*
-              ;; REPL
-              ("S-<return>" . newline-and-indent)
-              ("M-<up>"     . cider-repl-previous-input)
-              ("M-<down>"   . cider-repl-next-input)
-              ("M-S-<up>"   . cider-repl-previous-prompt)
-              ("M-S-<down>" . cider-repl-next-prompt)))
-              ;; sensibile key bindings
-
-          )
-
 (defun cider-local ()
   (interactive)
   (cider-connect "127.0.0.1" 12121))
 
-(global-reset-key (kbd "C-c C-l") 'cider-local)
+(global-reset-key (kbd "C-c r") 'cider-local)
 (global-reset-key (kbd "M-g f") 'find-tag)
 (global-reset-key (kbd "M-g r") 'cider-switch-to-repl-buffer)
+
+;;(define-key cider-repl-mode-map (kbd "<return>")   'cider-repl-closing-return)
+;;(define-key cider-repl-mode-map (kbd "S-<return>") 'newline-and-indent)
+(define-key cider-repl-mode-map (kbd "M-<up>")     'cider-repl-previous-input)
+(define-key cider-repl-mode-map (kbd "M-<down>")   'cider-repl-next-input)
+(define-key cider-repl-mode-map (kbd "M-S-<up>")   'cider-repl-previous-prompt)
+(define-key cider-repl-mode-map (kbd "M-S-<down>") 'cider-repl-next-prompt)
+
+;; (define-derived-mode cider-repl-mode-fixed cider-repl-mode "REPL"
+;;   (derived-mode-set-keymap cider-repl-mode-map))
+
+;; believe it or not, it seems like they just forgot to do it?
+;; what am I not understanding?
+;; (add-hook 'cider-repl-mode-hook (lambda ()
+;; ;;                                  (smartparens-mode)
+;;                                   (use-local-map 'cider-repl-mode-map)
+;;                                   ))
+
+;; (add-hook 'cider-repl-mode-hook
+;;           (lambda ()
+;;             (setq sp-backward-bound-fn (lambda ()
+;;                                          cider-repl-input-start-mark))))
 
 ;; -- Midje
 (provide 'clojure-test-mode)      ;; fool midje-test-mode.el
@@ -954,7 +1244,7 @@
 (setq ido-use-faces nil)
 
 ;; -- Symbol completion
-(add-to-list 'load-path "~/.emacs.d/modules/company-mode")
+(add-to-list 'load-path "~/.emacs.d/company-mode")
 (require 'company)
 (global-company-mode)
 (global-set-key (kbd "M-<return>") 'company-complete)
@@ -963,11 +1253,32 @@
 ;; TODO: finish
 ;;(setq magit-last-seen-setup-instructions "1.4.0")
 
-;;(add-to-list 'load-path "~/.emacs.d/modules/magit")
-;;(require 'magit)
+(add-to-list 'load-path "~/.emacs.d/modules/magit/lisp")
+(require 'magit)
+
+(global-set-key (kbd "C-p m") 'magit-status)
 
 ;; -- Finding any file in the current git repository
 (add-to-list 'load-path "~/.emacs.d/modules/find-file-in-repository")
 (require 'find-file-in-repository)
 (global-reset-key (kbd "C-x C-g") 'find-file-in-repository)
 (put 'narrow-to-region 'disabled nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;; -- Sessions
+;; TODO: DRY
+(unless (boundp 'loaded-once)
+  (add-to-list 'load-path "~/.emacs.d/modules/f.el/")
+  (add-to-list 'load-path "~/.emacs.d/modules/s.el/")
+  (add-to-list 'load-path "~/.emacs.d/modules/anaphora/")
+  (add-to-list 'load-path "~/.emacs.d/modules/workgroups2/src/")
+  (require 'workgroups2)
+
+  (workgroups-mode 1))        ; put this one at the bottom of .emacs
+
+(setq loaded-once t)
